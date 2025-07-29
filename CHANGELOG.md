@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.2] - 2025-01-29
+
+### Fixed
+- **GitHub Pages Deployment Issues**
+  - Fixed missing source files (`src/`, `tests/`) in GitHub Pages deployment
+  - Updated GitHub Actions workflow to copy all necessary files for demo
+  - Fixed hardcoded localhost URLs in scenery demo
+  - Added smart environment detection (GitHub Pages vs localhost)
+  - Resolved favicon 404 errors on GitHub Pages
+  - Fixed file loading paths for Pyodide integration
+
+### Added
+- **Enhanced Deployment**
+  - Environment detection for GitHub Pages vs local development
+  - Automatic base URL switching for file loading
+  - Comprehensive file copying in deployment workflow
+  - Better error handling for missing resources
+
+### Changed
+- **Scenery Demo Improvements**
+  - Dynamic URL generation based on environment
+  - Relative path support for GitHub Pages
+  - Improved file loading reliability
+
+## [0.0.1] - 2025-01-29
+
 ### Added
 - Python 3.13.5 and Pyodide 0.27.7 compatibility information in README
 
@@ -83,5 +109,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/pointcarre-app/teachers/releases/tag/v0.0.1 
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.2...HEAD
+[0.0.2]: https://github.com/pointcarre-app/teachers/compare/0.0.1...0.0.2
+[0.0.1]: https://github.com/pointcarre-app/teachers/releases/tag/0.0.1 
