@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.3] - 2025-01-29
+
+### Fixed
+- **Critical GitHub Pages Deployment Fix**
+  - Simplified deployment workflow to copy entire repository
+  - Fixed incorrect base URL generation causing 404 errors
+  - Corrected file paths for Pyodide file loading
+  - Files now properly accessible at correct GitHub Pages URLs
+  - Resolved scenery demo loading issues completely
+
+### Changed
+- **Deployment Strategy**
+  - Switched from selective file copying to full repository deployment
+  - Much simpler and more reliable deployment process
+  - Better error handling and path resolution
+
 ## [0.0.2] - 2025-01-29
 
 ### Fixed
@@ -109,6 +125,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.2...HEAD
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.3...HEAD
+[0.0.3]: https://github.com/pointcarre-app/teachers/compare/0.0.2...0.0.3
 [0.0.2]: https://github.com/pointcarre-app/teachers/compare/0.0.1...0.0.2
 [0.0.1]: https://github.com/pointcarre-app/teachers/releases/tag/0.0.1 
