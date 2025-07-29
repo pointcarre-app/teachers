@@ -1,5 +1,7 @@
 # 🧮 PCA Teachers - Mathematical Framework
 
+Tested with Python 3.13.5 and Pyodide 0.27.7
+
 A comprehensive Python framework for educational mathematical content creation, built on SymPy with robust validation, LaTeX generation, and correction workflows.
 
 ## 📋 Table of Contents
