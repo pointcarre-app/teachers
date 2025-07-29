@@ -40,6 +40,11 @@ PCA Teachers is designed for educational platforms that need to:
 
 Experience PCA Teachers in action: **[https://pointcarre-app.github.io/teachers/](https://pointcarre-app.github.io/teachers/)**
 
+### 🌐 **Live Demo URLs:**
+- **Main Site**: https://pointcarre-app.github.io/teachers/
+- **Interactive Demo**: https://pointcarre-app.github.io/teachers/scenery/
+- **Repository**: https://github.com/pointcarre-app/teachers
+
 The interactive demo showcases:
 - Live mathematical computation with Pyodide
 - Real-time LaTeX rendering  
