@@ -31,7 +31,7 @@ const testFiles = [
 
 // Detect if we're running on GitHub Pages or localhost
 const isGitHubPages = window.location.hostname.includes('github.io');
-const baseUrl = isGitHubPages ? window.location.origin + window.location.pathname : 'http://127.0.0.1:8001';
+const baseUrl = isGitHubPages ? window.location.origin + '/teachers/' : 'http://127.0.0.1:8001/';
 
 const filesToLoad = [...sourceFiles, ...testFiles].map(file => {
     const path = file.startsWith('src/') ? file.substring(4) : file;

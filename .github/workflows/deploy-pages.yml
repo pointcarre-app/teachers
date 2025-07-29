@@ -34,20 +34,17 @@ jobs:
         
       - name: Build site
         run: |
-          # Copy scenery folder contents to root of _site
+          # Deploy everything - simple and easy!
           mkdir -p _site
-          cp -r scenery/* _site/
           
-          # Copy favicon to root for HTML reference
-          cp favicon.png _site/
+          # Copy everything except .git, env, and other ignore patterns
+          cp -r * _site/ 2>/dev/null || true
+          cp -r .github _site/ 2>/dev/null || true
+          cp -r .nojekyll _site/ 2>/dev/null || true
           
-          # Copy source files for the demo to access
-          cp -r src _site/
-          cp -r tests _site/
-          
-          # Copy other files the demo might need
-          cp pyproject.toml _site/
-          cp README.md _site/
+          # Remove env folder and other large unnecessary folders
+          rm -rf _site/env 2>/dev/null || true
+          rm -rf _site/.git 2>/dev/null || true
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
