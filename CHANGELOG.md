@@ -126,6 +126,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
 [Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.3...HEAD
+[0.0.4]: https://github.com/pointcarre-app/teachers/compare/0.0.3...0.0.4
 [0.0.3]: https://github.com/pointcarre-app/teachers/compare/0.0.2...0.0.3
 [0.0.2]: https://github.com/pointcarre-app/teachers/compare/0.0.1...0.0.2
 [0.0.1]: https://github.com/pointcarre-app/teachers/releases/tag/0.0.1 

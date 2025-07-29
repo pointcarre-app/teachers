@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pca-teachers"
-version = "0.0.3"
+version = "0.0.4"
 
 requires-python = ">= 3.13"
 dependencies = [
@@ -16,7 +16,7 @@ dependencies = [
     "sympy==1.14.0"
 ]
 
-license = {text = "MIT"}
+license = {text = "AGPL-3.0"}
 readme = "README.md"
 authors = [
     {name = "PCA Teachers", email = "contact@pointcarre.app"},
@@ -26,7 +26,7 @@ keywords = ["mathematics", "education", "sympy", "latex", "correction"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Education",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.13",
     "Topic :: Education",
