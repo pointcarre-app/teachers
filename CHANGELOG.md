@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.4] - 2025-01-09
+
+### Changed
+- **License Update**: Changed from MIT to AGPL-3.0-or-later (GNU Affero General Public License v3+)
+- **Documentation**: Enhanced README with comprehensive GitHub Pages URLs section
+- **URLs**: Added clear live demo URLs, interactive demo links, and repository access points
+
+### Added
+- **Live Demo URLs Section**: Added dedicated section in README with:
+  - Main GitHub Pages site URL
+  - Direct interactive demo link
+  - Repository and development URLs
+- **Better Navigation**: Improved user experience for finding and accessing live demo
+
+### Technical
+- Updated `pyproject.toml` license classifier to match AGPL-3.0-or-later
+- Enhanced README structure for better discoverability of live resources
+
 ## [0.0.3] - 2025-01-29
 
 ### Fixed

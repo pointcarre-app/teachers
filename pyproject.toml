@@ -16,7 +16,7 @@ dependencies = [
     "sympy==1.14.0"
 ]
 
-license = {text = "AGPL-3.0"}
+license = {text = "AGPL-3.0-or-later"}
 readme = "README.md"
 authors = [
     {name = "PCA Teachers", email = "contact@pointcarre.app"},
