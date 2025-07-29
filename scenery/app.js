@@ -29,17 +29,21 @@ const testFiles = [
     "tests/test_maths_collection_sympy.py"
 ];
 
+// Detect if we're running on GitHub Pages or localhost
+const isGitHubPages = window.location.hostname.includes('github.io');
+const baseUrl = isGitHubPages ? window.location.origin + window.location.pathname : 'http://127.0.0.1:8001';
+
 const filesToLoad = [...sourceFiles, ...testFiles].map(file => {
     const path = file.startsWith('src/') ? file.substring(4) : file;
     return {
-        url: `http://127.0.0.1:8001/${file}`,
+        url: `${baseUrl}${file}`,
         path: path
     };
 });
 
 // also need to load __init__.py and __main__.py from tests
-filesToLoad.push({url: `http://127.0.0.1:8001/tests/__init__.py`, path: `tests/__init__.py`});
-filesToLoad.push({url: `http://127.0.0.1:8001/tests/__main__.py`, path: `tests/__main__.py`});
+filesToLoad.push({url: `${baseUrl}tests/__init__.py`, path: `tests/__init__.py`});
+filesToLoad.push({url: `${baseUrl}tests/__main__.py`, path: `tests/__main__.py`});
 
 
 const manager = await Nagini.createManager(

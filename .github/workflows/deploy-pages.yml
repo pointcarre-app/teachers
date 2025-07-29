@@ -34,10 +34,20 @@ jobs:
         
       - name: Build site
         run: |
-          # Copy only scenery folder contents to root of _site
+          # Copy scenery folder contents to root of _site
           mkdir -p _site
           cp -r scenery/* _site/
+          
+          # Copy favicon to root for HTML reference
           cp favicon.png _site/
+          
+          # Copy source files for the demo to access
+          cp -r src _site/
+          cp -r tests _site/
+          
+          # Copy other files the demo might need
+          cp pyproject.toml _site/
+          cp README.md _site/
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
