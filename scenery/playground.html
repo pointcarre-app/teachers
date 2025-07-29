@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="PCA Teachers - Interactive Code Playground" />
+    <meta name="keywords" content="mathematics, education, sympy, latex, pyodide, python, webassembly, codemirror" />
+    <title>PCA Teachers - Code Playground</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="shortcut icon" type="image/png" href="favicon.png" />
+    <link rel="apple-touch-icon" type="image/png" href="favicon.png" />
+    
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/monokai.min.css">
+    
+    <style>
+        body {
+            margin: auto;
+            padding: 20px;
+            width: 1000px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h2 {
+            margin-top: 2rem;
+            color: #333;
+        }
+
+        button {
+            font-size: 1em;
+            padding: 0.8rem 1.5rem;
+            margin: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #1e7e34;
+        }
+
+        .editor-container {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .CodeMirror {
+            height: 400px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .output-container {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 1rem 0;
+            min-height: 150px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .status-ready {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-loading {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 1rem 0;
+        }
+
+        .example-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .example-card:hover {
+            background: #e9ecef;
+            border-color: #007bff;
+            transform: translateY(-2px);
+        }
+
+        .example-title {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 8px;
+        }
+
+        .example-description {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .example-preview {
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 3px;
+            padding: 8px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            color: #333;
+            max-height: 60px;
+            overflow: hidden;
+        }
+
+        .nav-bar {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border-radius: 5px;
+        }
+
+        .nav-bar h3 {
+            margin: 0 0 10px 0;
+        }
+
+        .nav-bar a {
+            display: inline-block;
+            padding: 8px 16px;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .loading-spinner {
+            display: none;
+            margin-left: 10px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+  </head>
+  <body>
+    <h1>🧮 PCA Teachers - Code Playground</h1>
+    
+    <nav class="nav-bar">
+      <h3>🧮 Interactive Demo Pages</h3>
+      <a href="playground.html" style="background-color: #007bff;">
+        🚀 Code Playground
+      </a>
+      <a href="index.html" style="background-color: #28a745;">
+        📊 Test Suite
+      </a>
+    </nav>
+
+    <div style="background: #e7f3ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
+      <h3 style="margin: 0 0 10px 0;">✨ Interactive Mathematical Framework Testing</h3>
+      <p style="margin: 0;">
+        Test the PCA Teachers framework directly in your browser! Write Python code using the teachers module,
+        run mathematical computations, and see LaTeX output in real-time.
+      </p>
+    </div>
+
+    <h2>🚀 Quick Examples</h2>
+    <div class="examples-grid">
+      <div class="example-card" onclick="loadExample('basic')">
+        <div class="example-title">🔢 Basic Objects</div>
+        <div class="example-description">Create integers, symbols, and basic operations</div>
+        <div class="example-preview">x = tm.Symbol(s="x")
+result = x + tm.Integer(n=5)</div>
+      </div>
+      
+      <div class="example-card" onclick="loadExample('fractions')">
+        <div class="example-title">🍰 Fractions & LaTeX</div>
+        <div class="example-description">Work with fractions and generate LaTeX</div>
+        <div class="example-preview">frac = tm.Fraction(p=3, q=4)
+print(frac.latex())</div>
+      </div>
+      
+      <div class="example-card" onclick="loadExample('equations')">
+        <div class="example-title">⚖️ Equations & Relations</div>
+        <div class="example-description">Create equations and mathematical relations</div>
+        <div class="example-preview">eq = tm.Equality(l=x, r=tm.Integer(n=10))
+print(eq.latex())</div>
+      </div>
+      
+      <div class="example-card" onclick="loadExample('correction')">
+        <div class="example-title">✅ Correction System</div>
+        <div class="example-description">Test the automated correction pipeline</div>
+        <div class="example-preview">result = tc.correct("\\frac{3}{4}", "Fraction(p=3, q=4)")
+print(result["is_correct"])</div>
+      </div>
+      
+      <div class="example-card" onclick="loadExample('complex')">
+        <div class="example-title">🔬 Complex Expressions</div>
+        <div class="example-description">Build and simplify complex mathematical expressions</div>
+        <div class="example-preview">expr = (x + 1) ** 2 / (2 * x)
+simplified = expr.simplified()</div>
+      </div>
+      
+      <div class="example-card" onclick="loadExample('test')">
+        <div class="example-title">🧪 Unit Tests</div>
+        <div class="example-description">Run actual test cases from the test suite</div>
+        <div class="example-preview">import unittest
+# Run specific test cases...</div>
+      </div>
+    </div>
+
+    <h2>💻 Code Editor</h2>
+    <div>
+      Status: <span id="status">Initializing...</span>
+      <span class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+      </span>
+    </div>
+    
+    <div class="editor-container">
+      <textarea id="code-editor"># Welcome to PCA Teachers Code Playground!
+# The framework is loading... Please wait for the "Ready" status above.
+
+import teachers.maths as tm
+import teachers.corrector as tc
+
+# Create a simple mathematical expression
+x = tm.Symbol(s="x")
+expr = x + tm.Integer(n=5)
+
+print(f"Expression: {expr}")
+print(f"LaTeX: {expr.latex()}")
+print(f"SymPy: {expr.sympy_expr}")
+
+# Try a fraction
+frac = tm.Fraction(p=3, q=4)
+print(f"\\nFraction: {frac}")
+print(f"LaTeX: {frac.latex()}")
+print(f"Decimal: {frac.eval()}")
+
+# Test the correction system
+user_input = "\\frac{3}{4}"
+teacher_answer = "Fraction(p=3, q=4)"
+result = tc.correct(user_input, teacher_answer)
+print(f"\\nCorrection test:")
+print(f"User input: {user_input}")
+print(f"Is correct: {result['is_correct']}")
+print(f"Is perfect: {result['is_perfect']}")
+</textarea>
+    </div>
+
+    <div>
+      <button class="btn-primary" onclick="runCode()" id="runButton" disabled>
+        🚀 Run Code
+      </button>
+      <button class="btn-secondary" onclick="clearOutput()">
+        🗑️ Clear Output
+      </button>
+      <button class="btn-success" onclick="clearEditor()">
+        📝 Clear Editor
+      </button>
+    </div>
+
+    <h2>📤 Output</h2>
+    <div class="output-container" id="output">
+      Waiting for code execution...
+    </div>
+
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/python/python.min.js"></script>
+    
+    <script type="module">
+      import { Nagini } from "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@0.0.5/src/nagini.js";
+
+      // Configuration
+      const backend = "pyodide";
+      const packages = ["sympy", "pydantic"];
+      const micropipPackages = ["antlr4-python3-runtime==4.11.0"];
+      const workerUrl = "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@0.0.5/src/pyodide/worker/worker-dist.js";
+
+      const sourceFiles = [
+          "src/teachers/__init__.py",
+          "src/teachers/corrector.py",
+          "src/teachers/defaults.py",
+          "src/teachers/formatting.py",
+          "src/teachers/generator.py",
+          "src/teachers/maths.py"
+      ];
+
+      // Detect environment
+      const isGitHubPages = window.location.hostname.includes('github.io');
+      const baseUrl = isGitHubPages ? window.location.origin + '/teachers/' : 'http://127.0.0.1:8001/';
+
+      const filesToLoad = sourceFiles.map(file => {
+          const path = file.startsWith('src/') ? file.substring(4) : file;
+          return {
+              url: `${baseUrl}${file}`,
+              path: path
+          };
+      });
+
+      // Global variables
+      let manager;
+      let editor;
+
+      // Initialize CodeMirror
+      function initializeEditor() {
+          const textarea = document.getElementById('code-editor');
+          editor = CodeMirror.fromTextArea(textarea, {
+              mode: 'python',
+              theme: 'monokai',
+              lineNumbers: true,
+              indentUnit: 4,
+              indentWithTabs: false,
+              lineWrapping: true,
+              autoCloseBrackets: true,
+              matchBrackets: true,
+              extraKeys: {
+                  "Ctrl-Enter": runCode,
+                  "Cmd-Enter": runCode
+              }
+          });
+      }
+
+      // Update status indicator
+      function updateStatus(message, type = 'loading') {
+          const statusElement = document.getElementById('status');
+          const spinner = document.getElementById('loadingSpinner');
+          const runButton = document.getElementById('runButton');
+          
+          statusElement.textContent = message;
+          statusElement.className = `status-indicator status-${type}`;
+          
+          if (type === 'loading') {
+              spinner.style.display = 'inline-block';
+              runButton.disabled = true;
+          } else {
+              spinner.style.display = 'none';
+              runButton.disabled = (type === 'error');
+          }
+      }
+
+      // Initialize the manager
+      async function initializeManager() {
+          try {
+              updateStatus('Loading Pyodide and packages...', 'loading');
+              
+              manager = await Nagini.createManager(
+                  backend,
+                  packages,
+                  micropipPackages,
+                  filesToLoad,
+                  workerUrl
+              );
+
+              updateStatus('Waiting for Pyodide to be ready...', 'loading');
+              await Nagini.waitForReady(manager);
+              
+              updateStatus('Ready! 🎉', 'ready');
+              
+              console.log("PCA Teachers framework loaded successfully!");
+              
+          } catch (error) {
+              console.error("Failed to initialize:", error);
+              updateStatus('Failed to load framework', 'error');
+              document.getElementById('output').textContent = `Initialization Error: ${error.message}`;
+          }
+      }
+
+      // Run code function
+      window.runCode = async function() {
+          if (!manager) {
+              alert('Framework not ready yet. Please wait for initialization to complete.');
+              return;
+          }
+
+          const code = editor.getValue();
+          const outputElement = document.getElementById('output');
+          
+          try {
+              outputElement.textContent = 'Executing code...\n';
+              
+              const result = await manager.executeAsync('user_code.py', code);
+              
+              if (result.error) {
+                  outputElement.textContent = `Error: ${result.error}`;
+              } else if (result.output) {
+                  outputElement.textContent = result.output;
+              } else {
+                  outputElement.textContent = 'Code executed successfully (no output)';
+              }
+              
+              // If there's a missive, append it
+              if (result.missive) {
+                  outputElement.textContent += `\n\nMissive: ${JSON.stringify(result.missive, null, 2)}`;
+              }
+              
+          } catch (error) {
+              outputElement.textContent = `Execution Error: ${error.message}`;
+              console.error('Execution error:', error);
+          }
+      };
+
+      // Clear output function
+      window.clearOutput = function() {
+          document.getElementById('output').textContent = 'Output cleared.';
+      };
+
+      // Clear editor function
+      window.clearEditor = function() {
+          editor.setValue('# Write your PCA Teachers code here...\n');
+          editor.focus();
+      };
+
+      // Load example function
+      window.loadExample = function(exampleType) {
+          const examples = {
+              basic: `# Basic Mathematical Objects
+import teachers.maths as tm
+
+# Create symbols and integers
+x = tm.Symbol(s="x")
+y = tm.Symbol(s="y")
+num = tm.Integer(n=42)
+
+# Basic operations
+addition = x + y
+multiplication = tm.Integer(n=3) * x
+power = x ** tm.Integer(n=2)
+
+print(f"Symbol x: {x}")
+print(f"LaTeX: {x.latex()}")
+print(f"Addition x + y: {addition.latex()}")
+print(f"Multiplication 3x: {multiplication.latex()}")
+print(f"Power x²: {power.latex()}")`,
+
+              fractions: `# Working with Fractions
+import teachers.maths as tm
+
+# Create fractions
+half = tm.Fraction(p=1, q=2)
+three_quarters = tm.Fraction(p=3, q=4)
+x = tm.Symbol(s="x")
+symbolic_frac = tm.Fraction(p=x, q=tm.Integer(n=3))
+
+print(f"Half: {half.latex()}")
+print(f"Three quarters: {three_quarters.latex()}")
+print(f"Symbolic fraction: {symbolic_frac.latex()}")
+
+# Fraction operations
+sum_fractions = half + three_quarters
+print(f"Sum: {sum_fractions.latex()}")
+print(f"Simplified: {sum_fractions.simplified().latex()}")
+
+# Convert to decimal
+print(f"Half as decimal: {half.eval()}")
+print(f"As percentage: {half.as_percent}")`,
+
+              equations: `# Equations and Relations
+import teachers.maths as tm
+
+x = tm.Symbol(s="x")
+y = tm.Symbol(s="y")
+
+# Create equations
+eq1 = tm.Equality(l=x, r=tm.Integer(n=5))
+eq2 = tm.Equality(l=x + y, r=tm.Integer(n=10))
+
+# Create inequalities
+ineq1 = tm.StrictGreaterThan(l=x, r=tm.Integer(n=0))
+
+print(f"Equation 1: {eq1.latex()}")
+print(f"Equation 2: {eq2.latex()}")
+print(f"Inequality: {ineq1.latex()}")
+
+# Intervals
+interval = tm.Interval(
+    l=tm.Integer(n=0), 
+    r=tm.Integer(n=5),
+    left_open=False,
+    right_open=False
+)
+print(f"Closed interval [0,5]: {interval.latex()}")
+
+open_interval = tm.Interval(
+    l=tm.Integer(n=0), 
+    r=tm.Integer(n=1),
+    left_open=True,
+    right_open=True
+)
+print(f"Open interval (0,1): {open_interval.latex()}")`,
+
+              correction: `# Correction System Testing
+import teachers.maths as tm
+import teachers.corrector as tc
+
+# Test perfect matches
+print("=== Perfect Match Tests ===")
+result1 = tc.correct("42", "Integer(n=42)")
+print(f"Input: '42' -> Correct: {result1['is_correct']}, Perfect: {result1['is_perfect']}")
+
+result2 = tc.correct("\\\\frac{3}{4}", "Fraction(p=3, q=4)")
+print(f"Input: '\\\\frac{{3}}{{4}}' -> Correct: {result2['is_correct']}, Perfect: {result2['is_perfect']}")
+
+# Test mathematical equivalence
+print("\\n=== Equivalence Tests ===")
+result3 = tc.correct("\\\\frac{6}{8}", "Fraction(p=3, q=4)")
+print(f"Input: '\\\\frac{{6}}{{8}}' (equivalent to 3/4) -> Correct: {result3['is_correct']}")
+
+# Test wrong answers
+print("\\n=== Wrong Answer Tests ===")
+result4 = tc.correct("\\\\frac{1}{2}", "Fraction(p=3, q=4)")
+print(f"Input: '\\\\frac{{1}}{{2}}' (should be 3/4) -> Correct: {result4['is_correct']}")
+
+# Display detailed results
+print("\\n=== Detailed Result ===")
+print(f"User LaTeX: {result1['user_latex']}")
+print(f"Perfect LaTeX: {result1['perfect_latex']}")`,
+
+              complex: `# Complex Mathematical Expressions
+import teachers.maths as tm
+
+x = tm.Symbol(s="x")
+y = tm.Symbol(s="y")
+
+# Build complex expressions step by step
+print("=== Building Complex Expressions ===")
+
+# (x + 1)²
+base_expr = x + tm.Integer(n=1)
+squared = base_expr ** tm.Integer(n=2)
+print(f"(x + 1)²: {squared.latex()}")
+
+# (x + 1)² / (2y)
+denominator = tm.Integer(n=2) * y
+complex_frac = tm.Fraction(p=squared, q=denominator)
+print(f"(x + 1)² / (2y): {complex_frac.latex()}")
+
+# Simplification
+print("\\n=== Simplification ===")
+simple_frac = tm.Fraction(p=6, q=8)
+print(f"6/8 original: {simple_frac.latex()}")
+print(f"6/8 simplified: {simple_frac.simplified().latex()}")
+
+# Function applications
+print("\\n=== Functions ===")
+f = tm.Function(name="f")
+fx = f(x)
+fxy = f(tm.MathsCollection(elements=[x, y]))
+print(f"Function f: {f.latex()}")
+print(f"f(x): {fx.latex()}")
+print(f"f(x,y): {fxy.latex()}")
+
+# Evaluate numerical expressions
+print("\\n=== Numerical Evaluation ===")
+numerical_expr = tm.Fraction(p=3, q=4) + tm.Fraction(p=1, q=4)
+print(f"3/4 + 1/4: {numerical_expr.latex()}")
+print(f"Simplified: {numerical_expr.simplified().latex()}")
+print(f"Numerical value: {numerical_expr.eval()}")`,
+
+              test: `# Running Unit Tests from the Test Suite
+import teachers.maths as tm
+import teachers.corrector as tc
+
+print("=== Running Sample Unit Tests ===")
+
+# Test 1: Integer creation and validation
+print("\\n1. Testing Integer creation...")
+try:
+    i = tm.Integer(n=5)
+    print(f"✓ Integer(5) created: {i}")
+    print(f"  LaTeX: {i.latex()}")
+    print(f"  Eval: {i.eval()}")
+except Exception as e:
+    print(f"✗ Error: {e}")
+
+# Test 2: Symbol creation
+print("\\n2. Testing Symbol creation...")
+try:
+    x = tm.Symbol(s="x")
+    alpha = tm.Symbol(s="α")
+    print(f"✓ Symbol('x'): {x.latex()}")
+    print(f"✓ Symbol('α'): {alpha.latex()}")
+except Exception as e:
+    print(f"✗ Error: {e}")
+
+# Test 3: Fraction operations
+print("\\n3. Testing Fraction operations...")
+try:
+    frac1 = tm.Fraction(p=1, q=2)
+    frac2 = tm.Fraction(p=1, q=3)
+    sum_frac = frac1 + frac2
+    print(f"✓ 1/2 + 1/3 = {sum_frac.latex()}")
+    print(f"  Simplified: {sum_frac.simplified().latex()}")
+    print(f"  Numerical: {sum_frac.eval()}")
+except Exception as e:
+    print(f"✗ Error: {e}")
+
+# Test 4: Correction system
+print("\\n4. Testing Correction system...")
+try:
+    test_cases = [
+        ("42", "Integer(n=42)"),
+        ("\\\\frac{1}{2}", "Fraction(p=1, q=2)"),
+        ("x", "Symbol(s='x')")
+    ]
+    
+    for user_input, teacher_answer in test_cases:
+        result = tc.correct(user_input, teacher_answer)
+        status = "✓" if result["is_correct"] else "✗"
+        print(f"  {status} '{user_input}' -> {result['is_correct']}")
+        
+except Exception as e:
+    print(f"✗ Error: {e}")
+
+# Test 5: Complex expression building
+print("\\n5. Testing Complex expressions...")
+try:
+    x = tm.Symbol(s="x")
+    expr = ((x + tm.Integer(n=1)) ** tm.Integer(n=2)) / tm.Integer(n=2)
+    print(f"✓ (x+1)²/2: {expr.latex()}")
+    
+    # Test with substitution using SymPy
+    sympy_expr = expr.sympy_expr
+    substituted = sympy_expr.subs(x.sympy_expr, 3)  # x = 3
+    print(f"  When x=3: {substituted} = {float(substituted)}")
+    
+except Exception as e:
+    print(f"✗ Error: {e}")
+
+print("\\n=== Test Suite Complete ===")
+print("All tests demonstrate core framework functionality!")`
+          };
+
+          if (examples[exampleType]) {
+              editor.setValue(examples[exampleType]);
+              editor.focus();
+          }
+      };
+
+      // Initialize everything when page loads
+      document.addEventListener('DOMContentLoaded', function() {
+          initializeEditor();
+          initializeManager();
+      });
+    </script>
+  </body>
+</html> 

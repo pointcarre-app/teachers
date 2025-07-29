@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.5] - 2025-01-09
+
+### Added
+- **Interactive Code Playground**: New `playground.html` page with CodeMirror editor for real-time testing
+  - Full-featured Python code editor with syntax highlighting and Monokai theme
+  - Real-time execution of PCA Teachers framework code using Pyodide
+  - Six comprehensive example categories covering all major framework features:
+    - Basic mathematical objects and operations
+    - Fractions and LaTeX generation
+    - Equations and mathematical relations
+    - Correction system testing
+    - Complex expression building and simplification
+    - Unit test execution from the test suite
+  - Professional UI with status indicators, keyboard shortcuts (Ctrl+Enter), and error handling
+  - Cross-platform compatibility for both GitHub Pages and local development
+
+### Enhanced
+- **Navigation System**: Added navigation bar to both demo pages
+  - Cross-page navigation between Test Suite and Code Playground
+  - Consistent styling and user experience across demo pages
+  - Easy discovery of interactive features for GitHub Pages visitors
+
+### Fixed
+- **TOML Configuration**: Improved `pyproject.toml` structure for better compatibility
+  - Moved project URLs to proper `[project.urls]` section
+  - Enhanced project metadata organization
+
+### Technical
+- **CodeMirror Integration**: Added CodeMirror 6.65.7 for professional code editing experience
+- **Example Library**: Comprehensive collection of predefined scripts demonstrating framework capabilities
+- **Enhanced UI/UX**: Modern responsive design with improved visual feedback and interactions
+
 ## [0.0.4] - 2025-01-09
 
 ### Changed
@@ -143,7 +175,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.3...HEAD
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.5...HEAD
+[0.0.5]: https://github.com/pointcarre-app/teachers/compare/0.0.4...0.0.5
 [0.0.4]: https://github.com/pointcarre-app/teachers/compare/0.0.3...0.0.4
 [0.0.3]: https://github.com/pointcarre-app/teachers/compare/0.0.2...0.0.3
 [0.0.2]: https://github.com/pointcarre-app/teachers/compare/0.0.1...0.0.2
