@@ -6,6 +6,47 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.0.8] - 2025-01-16
+
+### Fixed
+- **Critical Mul Simplification Bug**: Fixed NotImplementedError when simplifying nested multiplication operations
+  - `Mul.simplified()` now correctly handles `Integer * Mul(Integer, Symbol)` combinations in both orders
+  - Added support for `Mul(Integer, Symbol) * Integer` combinations  
+  - Added distributive property handling for nested Mul objects
+  - Resolved the original bug where polynomial expansions like `(ax + b)^2` would fail during simplification
+  - Added zero multiplication simplification (`0 * anything = 0`)
+
+### Added
+- **Comprehensive Mul Simplification Tests**: New `test_mul_simplification.py` test suite
+  - 9 comprehensive test cases covering all nested Mul operation combinations
+  - Tests for Integer*Mul, Mul*Integer, and polynomial expansion scenarios
+  - Validates zero and identity multiplication edge cases
+  - Tests nested multiplication flattening and associativity
+  - Validates the complete fix for the original problematic scenario
+
+### Enhanced
+- **Scenery Interface** (`scenery/index.html`, `scenery/app.js`)
+  - Added new test row for "Mul simplification: Integer*Mul nested operations, polynomial expansion"
+  - Updated test execution logic to include the new Mul simplification validation
+  - Enhanced error handling for multiplication edge cases
+  - Added comprehensive test coverage for polynomial expansion scenarios
+
+- **Test Suite Integration** (`tests/__main__.py`)
+  - Added import for new `test_mul_simplification` module
+  - Ensures comprehensive test coverage for the Mul simplification fix
+
+### Technical Details
+- **File Changes**:
+  - `src/teachers/maths.py`: Core fix for Mul simplification with nested Mul objects (lines 531-577)
+  - `tests/test_mul_simplification.py`: New comprehensive test suite (196 lines)
+  - `tests/__main__.py`: Added test import for integration
+  - `scenery/app.js`: Updated test execution and error handling
+  - `scenery/index.html`: Added UI row for Mul simplification tests
+
+### Known Issues Resolved
+- **Mul Simplification**: Previously reported NotImplementedError for Integer * Mul combinations is now fully resolved
+- **Polynomial Expansion**: Complex polynomial expressions like `(ax + b)^2` now expand correctly without errors
+
 ## [0.0.7] - 2025-01-16
 
 ### Fixed
@@ -275,7 +316,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.7...HEAD
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.8...HEAD
+[0.0.8]: https://github.com/pointcarre-app/teachers/compare/0.0.7...0.0.8
 [0.0.7]: https://github.com/pointcarre-app/teachers/compare/0.0.6...0.0.7
 [0.0.6]: https://github.com/pointcarre-app/teachers/compare/0.0.5...0.0.6
 [0.0.5]: https://github.com/pointcarre-app/teachers/compare/0.0.4...0.0.5

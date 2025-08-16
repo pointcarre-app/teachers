@@ -528,6 +528,9 @@ class Mul(MathsObject):
             case (Integer(1), x) | (x, Integer(1)):
                 return x
 
+            case (Integer(0), x) | (x, Integer(0)):
+                return Integer(n=0)
+
             case Integer(n1), Integer(n2):
                 return Integer(n=n1 * n2)
 
@@ -567,6 +570,14 @@ class Mul(MathsObject):
             case (Mul(mul_l, mul_r), Symbol(s)) | (Symbol(s), Mul(mul_l, mul_r)):
                 # Handle Mul(Mul, Symbol) - distribute the symbol into the Mul
                 return Mul(l=Mul(l=mul_l, r=mul_r), r=Symbol(s=s))
+
+            case (Integer(n), Mul(mul_l, mul_r)):
+                # Handle Integer * Mul - distribute the integer: n * (a * b) = (n * a) * b
+                return Mul(l=Mul(l=Integer(n=n), r=mul_l).simplified(), r=mul_r).simplified()
+
+            case (Mul(mul_l, mul_r), Integer(n)):
+                # Handle Mul * Integer - distribute the integer: (a * b) * n = a * (b * n)
+                return Mul(l=mul_l, r=Mul(l=mul_r, r=Integer(n=n)).simplified()).simplified()
 
             case _:
                 # return Mul(l=l, r=r)

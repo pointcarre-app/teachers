@@ -45,6 +45,7 @@ const sourceFiles = [
 
 const testFiles = [
     "tests/test_add_simplification.py",
+    "tests/test_mul_simplification.py",
     "tests/test_complex_operations.py",
     "tests/test_deserialization_from_formal.py",
     "tests/test_deserialization_from_sympy.py",
@@ -414,7 +415,33 @@ try:
     except Exception as e:
         results.append({"id": "status-teachers-add-simplification", "status": "fail", "error": str(e)})
     
-    # Test 4: Original scenario
+    # Test 4: Mul simplification (Integer * Mul nested operations)
+    try:
+        # Test Integer * Mul(Integer, Symbol) - reproduces user's error
+        x = tm.Symbol(s="x")
+        inner_mul = tm.Mul(l=tm.Integer(n=3), r=x)  # 3x
+        outer_mul = tm.Mul(l=tm.Integer(n=2), r=inner_mul)  # 2 * (3x)
+        simplified = outer_mul.simplified()
+        
+        # Should simplify to 6x
+        expected = tm.Mul(l=tm.Integer(n=6), r=x)
+        if simplified == expected:
+            # Test polynomial expansion scenario: (3x + 4)^2
+            a = tm.Integer(n=3)
+            b = tm.Integer(n=4)
+            polynomial = tm.Pow(base=tm.Add(l=tm.Mul(l=a, r=x), r=b), exp=tm.Integer(n=2))
+            expanded = polynomial.simplified()
+            # Should not raise NotImplementedError and should be an Add expression
+            if isinstance(expanded, tm.Add):
+                results.append({"id": "status-teachers-mul-simplification", "status": "pass"})
+            else:
+                results.append({"id": "status-teachers-mul-simplification", "status": "fail", "error": "Polynomial expansion failed"})
+        else:
+            results.append({"id": "status-teachers-mul-simplification", "status": "fail", "error": "Integer*Mul failed"})
+    except Exception as e:
+        results.append({"id": "status-teachers-mul-simplification", "status": "fail", "error": str(e)})
+    
+    # Test 5: Original scenario
     try:
         gen = tg.MathsGenerator(0)
         n1 = gen.random_integer(1, 4)
@@ -443,6 +470,7 @@ except Exception as e:
         {"id": "status-teachers-negative-exp", "status": "fail", "error": error_msg},
         {"id": "status-teachers-decimal-conv", "status": "fail", "error": error_msg},
         {"id": "status-teachers-add-simplification", "status": "fail", "error": error_msg},
+        {"id": "status-teachers-mul-simplification", "status": "fail", "error": error_msg},
         {"id": "status-teachers-original-bug", "status": "fail", "error": error_msg}
     ]})
 `;
@@ -481,7 +509,7 @@ try {
         }
     } else {
         // If tests failed to run, mark them as failed
-        ['status-teachers-negative-exp', 'status-teachers-decimal-conv', 'status-teachers-add-simplification', 'status-teachers-original-bug'].forEach(id => {
+        ['status-teachers-negative-exp', 'status-teachers-decimal-conv', 'status-teachers-add-simplification', 'status-teachers-mul-simplification', 'status-teachers-original-bug'].forEach(id => {
             const statusCell = document.getElementById(id);
             if (statusCell) {
                 statusCell.className = 'test-status-fail';
@@ -492,7 +520,7 @@ try {
     }
 } catch (error) {
     console.error("Error running negative exponent tests:", error);
-    ['status-teachers-negative-exp', 'status-teachers-decimal-conv', 'status-teachers-add-simplification', 'status-teachers-original-bug'].forEach(id => {
+    ['status-teachers-negative-exp', 'status-teachers-decimal-conv', 'status-teachers-add-simplification', 'status-teachers-mul-simplification', 'status-teachers-original-bug'].forEach(id => {
         const statusCell = document.getElementById(id);
         if (statusCell) {
             statusCell.className = 'test-status-fail';
