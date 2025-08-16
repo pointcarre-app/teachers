@@ -6,9 +6,13 @@ from http.server import SimpleHTTPRequestHandler
 
 class CORSRequestHandler(SimpleHTTPRequestHandler):
     def end_headers(self):
+        # Ensure CORS headers are always sent
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "*")
+        self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
         super().end_headers()
 
     def do_OPTIONS(self):
@@ -18,6 +22,7 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
 
 class ReusableTCPServer(socketserver.TCPServer):
     allow_reuse_address = True
+    allow_reuse_port = True  # Additional flag for port reuse
 
 
 PORT = 8001

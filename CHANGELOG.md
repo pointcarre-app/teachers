@@ -5,7 +5,67 @@ All notable changes to the PCA Teachers project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+
+## [0.0.6] - 2025-01-16
+
+### Fixed
+- **Critical Negative Exponent Bug**: Fixed ValidationError when simplifying negative integer exponents
+  - `Pow.simplified()` now correctly converts `Integer(n)^Integer(-m)` to `Fraction(1, n^m)` instead of attempting to create `Integer(n=float)`
+  - Added field validators to `Pow` class for automatic type conversion of base and exp parameters
+  - Resolved the original bug where `10^(-2)` would fail with "Input should be a valid integer, got a number with a fractional part"
+  
+- **Pyodide Test Runner**: Fixed JSON parsing issue in antlr4 test execution
+  - Added proper JSON parsing for missive results in `app.js`
+  - Test was passing but incorrectly showing as failed due to string/object type mismatch
+
+### Added
+- **Comprehensive Negative Exponent Tests**: New `test_negative_exponents.py` test suite
+  - 10 test cases covering various negative exponent scenarios
+  - Tests for conversion to Decimal, addition operations, and edge cases
+  - Validates the complete fix for the original problematic scenario
+
+- **Micropip Installation Test**: New `test_antlr4.py` for package installation verification
+  - Tests successful import of `antlr4-python3-runtime` via micropip
+  - Verifies presence of expected module attributes (InputStream, CommonTokenStream)
+  - Integrated into web test suite as "micropip install antlr4-python3-runtime"
+
+### Enhanced
+- **Web Test Infrastructure** (`scenery/app.js`)
+  - Refactored to use separate Nagini managers for different test groups
+  - Isolated micropip test in minimal manager for better performance
+  - Fixed CORS issues with dynamic `window.location.origin` usage
+  - Improved error handling and JSON parsing for test results
+  - Updated to Nagini v0.0.21 for better compatibility
+
+- **Server Configuration** (`serve.py`)
+  - Added cache-busting headers to prevent stale file loading
+  - Implemented `allow_reuse_port` for better port management
+  - Enhanced CORS headers with no-cache directives
+
+- **Test Suite Display** (`scenery/index.html`)
+  - Added visual indicators for negative exponent tests
+  - Reorganized test categories with clearer grouping
+  - Updated test status display for better visibility
+
+- **Code Playground** (`scenery/playground.html`)
+  - Added "Negative Exponents" example demonstrating the bug fix
+  - Enhanced error output to display Python stderr content
+  - Fixed CORS issues with dynamic base URL configuration
+  - Improved debugging capabilities with detailed error messages
+
+### Technical Details
+- **File Changes**:
+  - `src/teachers/maths.py`: Core fix for negative exponent handling in Pow class
+  - `tests/test_negative_exponents.py`: New comprehensive test suite (161 lines)
+  - `tests/test_antlr4.py`: New micropip installation test (36 lines)
+  - `scenery/app.js`: Major refactoring for test isolation (487 lines)
+  - `scenery/index.html`: Updated test display structure
+  - `scenery/playground.html`: Enhanced with new examples and error handling
+  - `serve.py`: Added cache control and port reuse configuration
+
+### Known Issues
+- **Corrector Tests**: Currently failing (5/12 passed) - investigation needed
+- **Add Simplification**: NotImplementedError for Integer + Decimal combinations
 
 ## [0.0.5] - 2025-01-09
 
@@ -175,7 +235,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.5...HEAD
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.6...HEAD
+[0.0.6]: https://github.com/pointcarre-app/teachers/compare/0.0.5...0.0.6
 [0.0.5]: https://github.com/pointcarre-app/teachers/compare/0.0.4...0.0.5
 [0.0.4]: https://github.com/pointcarre-app/teachers/compare/0.0.3...0.0.4
 [0.0.3]: https://github.com/pointcarre-app/teachers/compare/0.0.2...0.0.3

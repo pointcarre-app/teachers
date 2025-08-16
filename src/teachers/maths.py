@@ -713,6 +713,26 @@ class Pow(MathsObject):
         "exp",
     )
 
+    @field_validator("base", mode="before")
+    @classmethod
+    def format_base(cls, value: int | MathsObject) -> MathsObject:
+        if isinstance(value, int):
+            return Integer(n=value)
+        elif isinstance(value, MathsObject):
+            return value
+        else:
+            raise NotImplementedError(f"Unsupported base type: {type(value)}")
+
+    @field_validator("exp", mode="before")
+    @classmethod
+    def format_exp(cls, value: int | MathsObject) -> MathsObject:
+        if isinstance(value, int):
+            return Integer(n=value)
+        elif isinstance(value, MathsObject):
+            return value
+        else:
+            raise NotImplementedError(f"Unsupported exp type: {type(value)}")
+
     @model_validator(mode="before")
     @classmethod
     def compute_sympy_expr(cls, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -740,6 +760,11 @@ class Pow(MathsObject):
             case (_, Integer(-1)):
                 return Fraction(p=Integer(n=1), q=base)
 
+            # Handle negative integer exponents (other than -1)
+            case Integer(n1), Integer(n2) if n2 < 0:
+                # Convert a^(-n) to 1/(a^n) as a Fraction
+                return Fraction(p=Integer(n=1), q=Integer(n=n1 ** (-n2)))
+
             # Indeitité remarquables
             case Add(l, r), Integer(2):
                 return l ** Integer(n=2) + (Integer(n=2) * l * r).simplified() + r ** Integer(n=2)
@@ -748,7 +773,7 @@ class Pow(MathsObject):
             case Mul(l, r), Fraction(p, q):
                 return Pow(base=base, exp=exp)
 
-            # Simplif
+            # Simplif for positive integer exponents
             case Integer(n1), Integer(n2):
                 return Integer(n=n1**n2)
             case Integer(n), Fraction(Integer(p), Integer(q)):

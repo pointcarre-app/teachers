@@ -3,16 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content="PCA Teachers - Interactive Code Playground" />
-    <meta name="keywords" content="mathematics, education, sympy, latex, pyodide, python, webassembly, codemirror" />
+    <meta name="keywords"
+          content="mathematics, education, sympy, latex, pyodide, python, webassembly, codemirror" />
     <title>PCA Teachers - Code Playground</title>
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="shortcut icon" type="image/png" href="favicon.png" />
     <link rel="apple-touch-icon" type="image/png" href="favicon.png" />
-    
+
     <!-- CodeMirror CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/monokai.min.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/monokai.min.css" />
+
     <style>
         body {
             margin: auto;
@@ -196,22 +198,23 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
   </head>
   <body>
     <h1>🧮 PCA Teachers - Code Playground</h1>
-    
+
     <nav class="nav-bar">
       <h3>🧮 Interactive Demo Pages</h3>
-      <a href="playground.html" style="background-color: #007bff;">
-        🚀 Code Playground
-      </a>
-      <a href="index.html" style="background-color: #28a745;">
-        📊 Test Suite
-      </a>
+      <a href="playground.html" style="background-color: #007bff;">🚀 Code Playground</a>
+      <a href="index.html" style="background-color: #28a745;">📊 Test Suite</a>
     </nav>
 
     <div style="background: #e7f3ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
@@ -227,43 +230,64 @@
       <div class="example-card" onclick="loadExample('basic')">
         <div class="example-title">🔢 Basic Objects</div>
         <div class="example-description">Create integers, symbols, and basic operations</div>
-        <div class="example-preview">x = tm.Symbol(s="x")
-result = x + tm.Integer(n=5)</div>
+        <div class="example-preview">
+          x = tm.Symbol(s="x")
+          result = x + tm.Integer(n=5)
+        </div>
       </div>
-      
+
       <div class="example-card" onclick="loadExample('fractions')">
         <div class="example-title">🍰 Fractions & LaTeX</div>
         <div class="example-description">Work with fractions and generate LaTeX</div>
-        <div class="example-preview">frac = tm.Fraction(p=3, q=4)
-print(frac.latex())</div>
+        <div class="example-preview">
+          frac = tm.Fraction(p=3, q=4)
+          print(frac.latex())
+        </div>
       </div>
-      
+
       <div class="example-card" onclick="loadExample('equations')">
         <div class="example-title">⚖️ Equations & Relations</div>
         <div class="example-description">Create equations and mathematical relations</div>
-        <div class="example-preview">eq = tm.Equality(l=x, r=tm.Integer(n=10))
-print(eq.latex())</div>
+        <div class="example-preview">
+          eq = tm.Equality(l=x, r=tm.Integer(n=10))
+          print(eq.latex())
+        </div>
       </div>
-      
+
       <div class="example-card" onclick="loadExample('correction')">
         <div class="example-title">✅ Correction System</div>
         <div class="example-description">Test the automated correction pipeline</div>
-        <div class="example-preview">result = tc.correct("\\frac{3}{4}", "Fraction(p=3, q=4)")
-print(result["is_correct"])</div>
+        <div class="example-preview">
+          result = tc.correct("\\frac{3}{4}", "Fraction(p=3, q=4)")
+          print(result["is_correct"])
+        </div>
       </div>
-      
+
       <div class="example-card" onclick="loadExample('complex')">
         <div class="example-title">🔬 Complex Expressions</div>
         <div class="example-description">Build and simplify complex mathematical expressions</div>
-        <div class="example-preview">expr = (x + 1) ** 2 / (2 * x)
-simplified = expr.simplified()</div>
+        <div class="example-preview">
+          expr = (x + 1) ** 2 / (2 * x)
+          simplified = expr.simplified()
+        </div>
       </div>
-      
+
       <div class="example-card" onclick="loadExample('test')">
         <div class="example-title">🧪 Unit Tests</div>
         <div class="example-description">Run actual test cases from the test suite</div>
-        <div class="example-preview">import unittest
-# Run specific test cases...</div>
+        <div class="example-preview">
+          import unittest
+          # Run specific test cases...
+        </div>
+      </div>
+
+      <div class="example-card" onclick="loadExample('negative_exp')">
+        <div class="example-title">⚡ Negative Exponents</div>
+        <div class="example-description">Test the fixed negative exponent handling</div>
+        <div class="example-preview">
+          expr = tm.Integer(n=10) ** tm.Integer(n=-2)
+          simplified = expr.simplified()
+        </div>
       </div>
     </div>
 
@@ -274,7 +298,7 @@ simplified = expr.simplified()</div>
         <div class="spinner"></div>
       </span>
     </div>
-    
+
     <div class="editor-container">
       <textarea id="code-editor"># Welcome to PCA Teachers Code Playground!
 # The framework is loading... Please wait for the "Ready" status above.
@@ -308,173 +332,177 @@ print(f"Is perfect: {result['is_perfect']}")
     </div>
 
     <div>
-      <button class="btn-primary" onclick="runCode()" id="runButton" disabled>
-        🚀 Run Code
-      </button>
-      <button class="btn-secondary" onclick="clearOutput()">
-        🗑️ Clear Output
-      </button>
-      <button class="btn-success" onclick="clearEditor()">
-        📝 Clear Editor
-      </button>
+      <button class="btn-primary" onclick="runCode()" id="runButton" disabled>🚀 Run Code</button>
+      <button class="btn-secondary" onclick="clearOutput()">🗑️ Clear Output</button>
+      <button class="btn-success" onclick="clearEditor()">📝 Clear Editor</button>
     </div>
 
     <h2>📤 Output</h2>
-    <div class="output-container" id="output">
-      Waiting for code execution...
-    </div>
+    <div class="output-container" id="output">Waiting for code execution...</div>
 
     <!-- CodeMirror JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/python/python.min.js"></script>
-    
+
     <script type="module">
-      import { Nagini } from "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@0.0.5/src/nagini.js";
+        import {
+            Nagini
+        } from "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@0.0.21/src/nagini.js";
 
-      // Configuration
-      const backend = "pyodide";
-      const packages = ["sympy", "pydantic"];
-      const micropipPackages = ["antlr4-python3-runtime==4.11.0"];
-      const workerUrl = "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@0.0.5/src/pyodide/worker/worker-dist.js";
+        // Configuration
+        const backend = "pyodide";
+        const packages = ["sympy", "pydantic"];
+        const micropipPackages = ["antlr4-python3-runtime==4.11.0"];
+        const workerUrl = "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@0.0.21/src/pyodide/worker/worker-dist.js";
 
-      const sourceFiles = [
-          "src/teachers/__init__.py",
-          "src/teachers/corrector.py",
-          "src/teachers/defaults.py",
-          "src/teachers/formatting.py",
-          "src/teachers/generator.py",
-          "src/teachers/maths.py"
-      ];
+        const sourceFiles = [
+            "src/teachers/__init__.py",
+            "src/teachers/corrector.py",
+            "src/teachers/defaults.py",
+            "src/teachers/formatting.py",
+            "src/teachers/generator.py",
+            "src/teachers/maths.py"
+        ];
 
-      // Detect environment
-      const isGitHubPages = window.location.hostname.includes('github.io');
-      const baseUrl = isGitHubPages ? window.location.origin + '/teachers/' : 'http://127.0.0.1:8001/';
+        // Detect environment
+        const isGitHubPages = window.location.hostname.includes('github.io');
+        // Use the actual origin to avoid CORS issues between localhost and 127.0.0.1
+        const baseUrl = isGitHubPages ? window.location.origin + '/teachers/' : window.location.origin + '/';
 
-      const filesToLoad = sourceFiles.map(file => {
-          const path = file.startsWith('src/') ? file.substring(4) : file;
-          return {
-              url: `${baseUrl}${file}`,
-              path: path
-          };
-      });
+        const filesToLoad = sourceFiles.map(file => {
+            const path = file.startsWith('src/') ? file.substring(4) : file;
+            return {
+                url: `${baseUrl}${file}`,
+                path: path
+            };
+        });
 
-      // Global variables
-      let manager;
-      let editor;
+        // Global variables
+        let manager;
+        let editor;
 
-      // Initialize CodeMirror
-      function initializeEditor() {
-          const textarea = document.getElementById('code-editor');
-          editor = CodeMirror.fromTextArea(textarea, {
-              mode: 'python',
-              theme: 'monokai',
-              lineNumbers: true,
-              indentUnit: 4,
-              indentWithTabs: false,
-              lineWrapping: true,
-              autoCloseBrackets: true,
-              matchBrackets: true,
-              extraKeys: {
-                  "Ctrl-Enter": runCode,
-                  "Cmd-Enter": runCode
-              }
-          });
-      }
+        // Initialize CodeMirror
+        function initializeEditor() {
+            const textarea = document.getElementById('code-editor');
+            editor = CodeMirror.fromTextArea(textarea, {
+                mode: 'python',
+                theme: 'monokai',
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                lineWrapping: true,
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                extraKeys: {
+                    "Ctrl-Enter": runCode,
+                    "Cmd-Enter": runCode
+                }
+            });
+        }
 
-      // Update status indicator
-      function updateStatus(message, type = 'loading') {
-          const statusElement = document.getElementById('status');
-          const spinner = document.getElementById('loadingSpinner');
-          const runButton = document.getElementById('runButton');
-          
-          statusElement.textContent = message;
-          statusElement.className = `status-indicator status-${type}`;
-          
-          if (type === 'loading') {
-              spinner.style.display = 'inline-block';
-              runButton.disabled = true;
-          } else {
-              spinner.style.display = 'none';
-              runButton.disabled = (type === 'error');
-          }
-      }
+        // Update status indicator
+        function updateStatus(message, type = 'loading') {
+            const statusElement = document.getElementById('status');
+            const spinner = document.getElementById('loadingSpinner');
+            const runButton = document.getElementById('runButton');
 
-      // Initialize the manager
-      async function initializeManager() {
-          try {
-              updateStatus('Loading Pyodide and packages...', 'loading');
-              
-              manager = await Nagini.createManager(
-                  backend,
-                  packages,
-                  micropipPackages,
-                  filesToLoad,
-                  workerUrl
-              );
+            statusElement.textContent = message;
+            statusElement.className = `status-indicator status-${type}`;
 
-              updateStatus('Waiting for Pyodide to be ready...', 'loading');
-              await Nagini.waitForReady(manager);
-              
-              updateStatus('Ready! 🎉', 'ready');
-              
-              console.log("PCA Teachers framework loaded successfully!");
-              
-          } catch (error) {
-              console.error("Failed to initialize:", error);
-              updateStatus('Failed to load framework', 'error');
-              document.getElementById('output').textContent = `Initialization Error: ${error.message}`;
-          }
-      }
+            if (type === 'loading') {
+                spinner.style.display = 'inline-block';
+                runButton.disabled = true;
+            } else {
+                spinner.style.display = 'none';
+                runButton.disabled = (type === 'error');
+            }
+        }
 
-      // Run code function
-      window.runCode = async function() {
-          if (!manager) {
-              alert('Framework not ready yet. Please wait for initialization to complete.');
-              return;
-          }
+        // Initialize the manager
+        async function initializeManager() {
+            try {
+                updateStatus('Loading Pyodide and packages...', 'loading');
 
-          const code = editor.getValue();
-          const outputElement = document.getElementById('output');
-          
-          try {
-              outputElement.textContent = 'Executing code...\n';
-              
-              const result = await manager.executeAsync('user_code.py', code);
-              
-              if (result.error) {
-                  outputElement.textContent = `Error: ${result.error}`;
-              } else if (result.output) {
-                  outputElement.textContent = result.output;
-              } else {
-                  outputElement.textContent = 'Code executed successfully (no output)';
-              }
-              
-              // If there's a missive, append it
-              if (result.missive) {
-                  outputElement.textContent += `\n\nMissive: ${JSON.stringify(result.missive, null, 2)}`;
-              }
-              
-          } catch (error) {
-              outputElement.textContent = `Execution Error: ${error.message}`;
-              console.error('Execution error:', error);
-          }
-      };
+                manager = await Nagini.createManager(
+                    backend,
+                    packages,
+                    micropipPackages,
+                    filesToLoad,
+                    workerUrl
+                );
 
-      // Clear output function
-      window.clearOutput = function() {
-          document.getElementById('output').textContent = 'Output cleared.';
-      };
+                updateStatus('Waiting for Pyodide to be ready...', 'loading');
+                await Nagini.waitForReady(manager);
 
-      // Clear editor function
-      window.clearEditor = function() {
-          editor.setValue('# Write your PCA Teachers code here...\n');
-          editor.focus();
-      };
+                updateStatus('Ready! 🎉', 'ready');
 
-      // Load example function
-      window.loadExample = function(exampleType) {
-          const examples = {
-              basic: `# Basic Mathematical Objects
+                console.log("PCA Teachers framework loaded successfully!");
+
+            } catch (error) {
+                console.error("Failed to initialize:", error);
+                updateStatus('Failed to load framework', 'error');
+                document.getElementById('output').textContent = `Initialization Error: ${error.message}`;
+            }
+        }
+
+        // Run code function
+        window.runCode = async function() {
+            if (!manager) {
+                alert('Framework not ready yet. Please wait for initialization to complete.');
+                return;
+            }
+
+            const code = editor.getValue();
+            const outputElement = document.getElementById('output');
+
+            try {
+                outputElement.textContent = 'Executing code...\n';
+
+                const result = await manager.executeAsync('user_code.py', code);
+
+                if (result.error) {
+                    outputElement.textContent = `Error: ${result.error}`;
+                    // Show stderr if available for debugging
+                    if (result.stderr) {
+                        outputElement.textContent += `\n\n=== Python Error Details ===\n${result.stderr}`;
+                    }
+                } else if (result.output || result.stdout) {
+                    outputElement.textContent = result.output || result.stdout;
+                } else {
+                    outputElement.textContent = 'Code executed successfully (no output)';
+                }
+
+                // If there's stderr even on success, show it
+                if (!result.error && result.stderr) {
+                    outputElement.textContent += `\n\n=== Warnings/Errors ===\n${result.stderr}`;
+                }
+
+                // If there's a missive, append it
+                if (result.missive) {
+                    outputElement.textContent += `\n\nMissive: ${JSON.stringify(result.missive, null, 2)}`;
+                }
+
+            } catch (error) {
+                outputElement.textContent = `Execution Error: ${error.message}`;
+                console.error('Execution error:', error);
+            }
+        };
+
+        // Clear output function
+        window.clearOutput = function() {
+            document.getElementById('output').textContent = 'Output cleared.';
+        };
+
+        // Clear editor function
+        window.clearEditor = function() {
+            editor.setValue('# Write your PCA Teachers code here...\n');
+            editor.focus();
+        };
+
+        // Load example function
+        window.loadExample = function(exampleType) {
+            const examples = {
+                basic: `# Basic Mathematical Objects
 import teachers.maths as tm
 
 # Create symbols and integers
@@ -493,7 +521,7 @@ print(f"Addition x + y: {addition.latex()}")
 print(f"Multiplication 3x: {multiplication.latex()}")
 print(f"Power x²: {power.latex()}")`,
 
-              fractions: `# Working with Fractions
+                fractions: `# Working with Fractions
 import teachers.maths as tm
 
 # Create fractions
@@ -515,7 +543,7 @@ print(f"Simplified: {sum_fractions.simplified().latex()}")
 print(f"Half as decimal: {half.eval()}")
 print(f"As percentage: {half.as_percent}")`,
 
-              equations: `# Equations and Relations
+                equations: `# Equations and Relations
 import teachers.maths as tm
 
 x = tm.Symbol(s="x")
@@ -549,7 +577,7 @@ open_interval = tm.Interval(
 )
 print(f"Open interval (0,1): {open_interval.latex()}")`,
 
-              correction: `# Correction System Testing
+                correction: `# Correction System Testing
 import teachers.maths as tm
 import teachers.corrector as tc
 
@@ -576,7 +604,7 @@ print("\\n=== Detailed Result ===")
 print(f"User LaTeX: {result1['user_latex']}")
 print(f"Perfect LaTeX: {result1['perfect_latex']}")`,
 
-              complex: `# Complex Mathematical Expressions
+                complex: `# Complex Mathematical Expressions
 import teachers.maths as tm
 
 x = tm.Symbol(s="x")
@@ -617,7 +645,7 @@ print(f"3/4 + 1/4: {numerical_expr.latex()}")
 print(f"Simplified: {numerical_expr.simplified().latex()}")
 print(f"Numerical value: {numerical_expr.eval()}")`,
 
-              test: `# Running Unit Tests from the Test Suite
+                test: `# Running Unit Tests from the Test Suite
 import teachers.maths as tm
 import teachers.corrector as tc
 
@@ -688,20 +716,86 @@ except Exception as e:
     print(f"✗ Error: {e}")
 
 print("\\n=== Test Suite Complete ===")
-print("All tests demonstrate core framework functionality!")`
-          };
+print("All tests demonstrate core framework functionality!")`,
 
-          if (examples[exampleType]) {
-              editor.setValue(examples[exampleType]);
-              editor.focus();
-          }
-      };
+                negative_exp: `# Negative Exponents - Bug Fix Demonstration
+# This example demonstrates the fix for the negative exponent bug
+# Previously, 10^(-2) would fail with a ValidationError
+# Now it correctly returns a Fraction that can be converted to Decimal
 
-      // Initialize everything when page loads
-      document.addEventListener('DOMContentLoaded', function() {
-          initializeEditor();
-          initializeManager();
-      });
+import teachers.maths as tm
+import teachers.generator as tg
+from teachers.defaults import SEED
+
+print("=== Testing Negative Exponents (Bug Fix) ===")
+print("Previously, these operations would fail with:")
+print("ValidationError: Input should be a valid integer, got a number with a fractional part")
+print()
+
+# Test various negative exponents
+for n in [1, 2, 3, 4]:
+    expr = tm.Integer(n=10) ** tm.Integer(n=-n)
+    simplified = expr.simplified()
+    print(f"10^(-{n}):")
+    print(f"  Expression: {expr.latex()}")
+    print(f"  Simplified: {simplified} (type: {type(simplified).__name__})")
+    print(f"  LaTeX: {simplified.latex()}")
+    print(f"  Value: {simplified.eval()}")
+    
+    # Convert to decimal (this was the problematic operation)
+    as_decimal = simplified.as_decimal
+    print(f"  As Decimal: {as_decimal.latex()} = {as_decimal.eval()}")
+    print()
+
+# Original problematic scenario from the bug report
+print("=== Original Bug Scenario ===")
+print("The code that was failing:")
+print("  b = tm.Integer(n=10) ** (-n2)")
+print("  b = b.simplified().as_decimal  # <-- This line was failing")
+print()
+
+gen = tg.MathsGenerator(0)
+n1 = gen.random_integer(1, 4)
+n2 = gen.random_integer(1, 4)
+n3 = gen.random_integer(1, 4)
+
+print(f"Generated values: n1={n1}, n2={n2}, n3={n3}")
+
+# Create the expressions
+a = tm.Integer(n=10) ** tm.Integer(n=n1)
+b = tm.Integer(n=10) ** tm.Integer(n=-n2)
+c = tm.Fraction(p=tm.Integer(n=1), q=tm.Integer(n=10) ** tm.Integer(n=n3))
+
+# Apply the transformations (this used to fail)
+b_simplified = b.simplified()
+b_decimal = b_simplified.as_decimal
+c_simplified = c.simplified()
+
+print(f"\na = 10^{n1} = {a.latex()} = {a.eval()}")
+print(f"b = 10^(-{n2}) -> {b_simplified.latex()} -> {b_decimal.latex()} = {b_decimal.eval()}")
+print(f"c = 1/10^{n3} = {c_simplified.latex()} = {c_simplified.eval()}")
+
+# The final expression
+expr = a + b_decimal + c_simplified
+print(f"\nFinal expression: {expr.latex()}")
+print(f"Simplified: {expr.simplified().latex()}")
+print(f"Value: {expr.eval()}")
+
+print("\n✅ Success! The negative exponent bug has been fixed!")
+print("Negative integer exponents now correctly produce Fractions instead of trying to create Integers with float values.")`
+            };
+
+            if (examples[exampleType]) {
+                editor.setValue(examples[exampleType]);
+                editor.focus();
+            }
+        };
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEditor();
+            initializeManager();
+        });
     </script>
   </body>
-</html> 
+</html>
