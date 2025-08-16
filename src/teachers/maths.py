@@ -486,7 +486,10 @@ class Add(MathsObject):
                 return Add(l=l, r=r)
 
             # Pi cases
-            case (Pi(), Integer(_) | Decimal(_) | Fraction(_)) | (Integer(_) | Decimal(_) | Fraction(_), Pi()):
+            case (Pi(), Integer(_) | Decimal(_) | Fraction(_)) | (
+                Integer(_) | Decimal(_) | Fraction(_),
+                Pi(),
+            ):
                 return Add(l=l, r=r)
 
             # Do nothing
@@ -762,6 +765,65 @@ class Fraction(MathsObject):
 
             case Add(add_l, add_r), Add(add_l2, add_r2):
                 # Handle complex fractions with Add expressions - preserve as-is for now
+                return Fraction(p=p, q=q)
+
+            # Handle Symbol in numerator with various denominators
+            case Symbol(s), Mul(l, r):
+                # Symbol over multiplication - preserve as-is since it's already in simplest form
+                return Fraction(p=p, q=q)
+
+            case Symbol(s1), Symbol(s2):
+                # Symbol over symbol - preserve as-is
+                return Fraction(p=p, q=q)
+
+            case Symbol(s), Pi():
+                # Symbol over pi - preserve as-is
+                return Fraction(p=p, q=q)
+
+            case Symbol(s), Pow(base, exp):
+                # Symbol over power - preserve as-is
+                return Fraction(p=p, q=q)
+
+            # Handle Mul in numerator with various denominators
+            case Mul(l1, r1), Symbol(s):
+                # Multiplication over symbol - preserve as-is
+                return Fraction(p=p, q=q)
+
+            case Mul(l1, r1), Mul(l2, r2):
+                # Multiplication over multiplication - preserve as-is
+                return Fraction(p=p, q=q)
+
+            case Mul(l1, r1), Pi():
+                # Multiplication over pi - preserve as-is
+                return Fraction(p=p, q=q)
+
+            case Mul(l1, r1), Pow(base, exp):
+                # Multiplication over power - preserve as-is
+                return Fraction(p=p, q=q)
+
+            # Handle other combinations that should be preserved as-is
+            case Pi(), Symbol(s):
+                # Pi over symbol - preserve as-is
+                return Fraction(p=p, q=q)
+
+            case Pi(), Mul(l, r):
+                # Pi over multiplication - preserve as-is
+                return Fraction(p=p, q=q)
+
+            case Pi(), Pi():
+                # Pi over pi = 1
+                return Integer(n=1)
+
+            case Pow(base1, exp1), Symbol(s):
+                # Power over symbol - preserve as-is
+                return Fraction(p=p, q=q)
+
+            case Pow(base1, exp1), Mul(l, r):
+                # Power over multiplication - preserve as-is
+                return Fraction(p=p, q=q)
+
+            case Pow(base1, exp1), Pow(base2, exp2):
+                # Power over power - preserve as-is
                 return Fraction(p=p, q=q)
 
             case _:

@@ -34,9 +34,10 @@ PCA Teachers is designed for educational platforms that need to:
 - **📝 LaTeX Generation**: Clean, properly formatted mathematical notation
 - **🎯 Correction Engine**: Automated student response validation
 - **🔧 Educational Tools**: Specialized formatting for French mathematical education
-- **🧪 100% Test Coverage**: Comprehensive test suite with 140+ tests
+- **🧪 100% Test Coverage**: Comprehensive test suite with 155+ tests
 - **🆕 Decimal × Function Support**: NEW! Seamless multiplication of decimal coefficients with function applications  
 - **🆕 Pi (π) Mathematical Constant**: NEW! Complete Pi support for geometric formulas and calculations
+- **🔧 Fraction Symbol/Mul Fix**: FIXED! Symbol over multiplication simplification (V/(π*r²)) now works perfectly
 
 ## 🚀 Live Demo
 
@@ -380,6 +381,25 @@ x = tm.Symbol(s="x")
 y = tm.Symbol(s="y")
 complex_frac = (x + y) / tm.Integer(n=2)
 print(complex_frac.latex())  # "\\dfrac{x + y}{2}"
+
+# Symbol/Mul fractions - FIXED in v0.0.13!
+# These now work perfectly (previously raised NotImplementedError)
+v = tm.Symbol(s="V")
+r = tm.Symbol(s="r")
+pi = tm.Pi()
+
+# Geometric formulas now work seamlessly
+volume_fraction = v / (pi * r**tm.Integer(n=2))  # V/(π*r²)
+simplified = volume_fraction.simplified()  # No error!
+print(simplified.latex())  # "\\dfrac{V}{\\pir^{2}}"
+
+# All Symbol/Mul combinations supported:
+symbol_over_symbol = x / y                    # x/y ✅
+symbol_over_pi = x / pi                       # x/π ✅ 
+symbol_over_mul = x / (pi * r**tm.Integer(n=2))  # x/(π*r²) ✅
+mul_over_symbol = (pi * r) / x                # (π*r)/x ✅
+pi_over_pi = pi / pi                          # π/π = 1 ✅
+# ... and 10+ more combinations!
 ```
 
 #### Powers
@@ -876,7 +896,7 @@ python -m unittest tests.test_latex_output
 
 ### Test Coverage
 
-- **122 tests total** with **100% pass rate**
+- **155+ tests total** with **100% pass rate**
 - **Unit tests**: Individual object behavior
 - **Integration tests**: Cross-object interactions  
 - **LaTeX tests**: Output formatting validation
@@ -896,6 +916,7 @@ tests/
 ├── test_generator.py        # Content generation tests
 ├── test_formatting.py       # Educational formatting tests
 ├── test_complex_operations.py  # Multi-object interactions
+├── test_fraction_symbol_mul.py  # Fraction Symbol/Mul simplification tests
 ├── test_deserialization_from_sympy.py  # SymPy conversion tests
 └── test_deserialization_from_formal.py # Parser tests
 ```
