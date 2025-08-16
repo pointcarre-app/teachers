@@ -289,6 +289,15 @@
           simplified = expr.simplified()
         </div>
       </div>
+
+      <div class="example-card" onclick="loadExample('decimal_functions')">
+        <div class="example-title">🔢 Decimal × Function</div>
+        <div class="example-description">NEW! Decimal coefficients with function applications</div>
+        <div class="example-preview">
+          coeff = tm.Decimal(p=1, q=2)  # 0.5
+          result = coeff * tm.Function(name="V")(n)
+        </div>
+      </div>
     </div>
 
     <h2>💻 Code Editor</h2>
@@ -644,6 +653,79 @@ numerical_expr = tm.Fraction(p=3, q=4) + tm.Fraction(p=1, q=4)
 print(f"3/4 + 1/4: {numerical_expr.latex()}")
 print(f"Simplified: {numerical_expr.simplified().latex()}")
 print(f"Numerical value: {numerical_expr.eval()}")`,
+
+                decimal_functions: `# Decimal Coefficients with Functions - NEW FEATURE!
+import teachers.maths as tm
+
+print("=== Decimal * Function Multiplication ===")
+print("This demonstrates the newly fixed Decimal * Image multiplication!")
+print()
+
+# Basic example: 0.5 * V(n)
+n = tm.Symbol(s="n")
+v = tm.Function(name="V")
+decimal_half = tm.Decimal(p=1, q=2)  # 0.5
+vn = v(n)  # V(n)
+
+# Test the multiplication that was failing before
+mul_expr = decimal_half * vn
+print(f"Expression: {decimal_half} * {vn}")
+print(f"Simplified: {mul_expr.simplified()}")
+print(f"LaTeX: {mul_expr.simplified().latex()}")
+print()
+
+# Test commutative property
+mul_commute = vn * decimal_half
+print(f"Commutative: {vn} * {decimal_half}")
+print(f"Simplified: {mul_commute.simplified()}")
+print(f"LaTeX: {mul_commute.simplified().latex()}")
+print()
+
+# Various decimal forms
+print("=== Different Decimal Forms ===")
+decimal_float = tm.Decimal(x=0.75)
+decimal_quarter = tm.Decimal(p=1, q=4)
+decimal_whole = tm.Decimal(p=3, q=3)  # Should be 1
+
+print(f"0.75 * V(n): {(decimal_float * vn).simplified().latex()}")
+print(f"1/4 * V(n): {(decimal_quarter * vn).simplified().latex()}")
+print(f"1.0 * V(n): {(decimal_whole * vn).simplified().latex()}")
+print()
+
+# Different functions
+print("=== Various Functions ===")
+f = tm.Function(name="f")
+g = tm.Function(name="g")
+phi = tm.Function(name="\\\\phi")  # Greek function
+
+x = tm.Symbol(s="x")
+print(f"0.5 * f(x): {(decimal_half * f(x)).simplified().latex()}")
+print(f"0.5 * g(x): {(decimal_half * g(x)).simplified().latex()}")
+print(f"0.5 * φ(x): {(decimal_half * phi(x)).simplified().latex()}")
+print()
+
+# Complex function arguments
+print("=== Complex Function Arguments ===")
+complex_arg = x + tm.Integer(n=1)  # x + 1
+fx_plus_1 = f(complex_arg)
+print(f"0.25 * f(x + 1): {(decimal_quarter * fx_plus_1).simplified().latex()}")
+
+# Multiple arguments
+xy_collection = tm.MathsCollection(elements=[x, n])
+fxy = tm.Image(f=f, pre=xy_collection)
+print(f"0.75 * f(x, n): {(decimal_float * fxy).simplified().latex()}")
+print()
+
+# Real-world example: exponential decay
+print("=== Real-World Example: Exponential Decay ===")
+print("Volume decreases by 50% each year: V(n+1) = 0.5 * V(n)")
+n_plus_1 = n + tm.Integer(n=1)
+v_next = v(n_plus_1)
+decay_formula = decimal_half * vn
+
+print(f"V(n+1) = {v_next.latex()}")
+print(f"Decay formula: {decay_formula.simplified().latex()}")
+print("✅ This is the exact case that was failing before the fix!")`,
 
                 test: `# Running Unit Tests from the Test Suite
 import teachers.maths as tm

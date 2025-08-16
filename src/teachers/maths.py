@@ -337,6 +337,9 @@ class Image(MathsObject):
     def __repr__(self):
         return f"{repr(self.f)}({repr(self.pre)})"
 
+    def __str__(self):
+        return repr(self)
+
     def latex(self):
         return f"{self.f.latex()}({self.pre.latex()})"
 
@@ -579,6 +582,9 @@ class Mul(MathsObject):
 
             case (Integer(n), Symbol(s)) | (Symbol(s), Integer(n)):
                 return Mul(l=Integer(n=n), r=Symbol(s=s))
+
+            case (Decimal(p, q, x), Image(f, pre)) | (Image(f, pre), Decimal(p, q, x)):
+                return Mul(l=Decimal(p=p, q=q, x=x), r=Image(f=f, pre=pre))
 
             case (Mul(mul_l, mul_r), Symbol(s)) | (Symbol(s), Mul(mul_l, mul_r)):
                 # Handle Mul(Mul, Symbol) - distribute the symbol into the Mul

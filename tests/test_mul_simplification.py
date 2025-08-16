@@ -12,7 +12,7 @@ The specific error occurs when trying to simplify expressions like:
 This is similar to the Add simplification bug fixed in version 0.0.7.
 """
 
-from teachers.maths import Integer, Symbol, Mul, Add, Pow
+from teachers.maths import Integer, Symbol, Mul, Add, Pow, Decimal, Function, Image
 
 
 def test_integer_times_mul_integer_symbol():
@@ -191,3 +191,110 @@ if __name__ == "__main__":
             failed += 1
 
     print(f"\nResults: {passed} passed, {failed} failed")
+
+
+def test_decimal_times_image():
+    """Test Decimal * Image simplification."""
+    # This represents: 0.5 * V(n) where V is a function
+    n = Symbol(s="n")
+    v = Function(name="V")
+    decimal_coeff = Decimal(p=1, q=2)  # 0.5
+    image = v(n)  # V(n)
+    
+    mul_expr = Mul(l=decimal_coeff, r=image)
+    result = mul_expr.simplified()
+    expected = Mul(l=Decimal(p=1, q=2), r=Image(f=Function(name="V"), pre=Symbol(s="n")))
+    
+    assert result == expected
+    print(f"✅ Decimal * Image: {decimal_coeff} * {image} = {result}")
+
+
+def test_image_times_decimal():
+    """Test Image * Decimal simplification (commutative)."""
+    # This represents: V(n) * 0.5 where V is a function
+    n = Symbol(s="n")
+    v = Function(name="V")
+    decimal_coeff = Decimal(p=1, q=2)  # 0.5
+    image = v(n)  # V(n)
+    
+    mul_expr = Mul(l=image, r=decimal_coeff)
+    result = mul_expr.simplified()
+    expected = Mul(l=Decimal(p=1, q=2), r=Image(f=Function(name="V"), pre=Symbol(s="n")))
+    
+    assert result == expected
+    print(f"✅ Image * Decimal: {image} * {decimal_coeff} = {result}")
+
+
+def test_decimal_times_image_with_float():
+    """Test Decimal (float form) * Image simplification."""
+    # This represents: 0.41 * V(n) using float form
+    n = Symbol(s="n")
+    v = Function(name="V")
+    decimal_coeff = Decimal(x=0.41)
+    image = v(n)  # V(n)
+    
+    mul_expr = Mul(l=decimal_coeff, r=image)
+    result = mul_expr.simplified()
+    expected = Mul(l=Decimal(x=0.41), r=Image(f=Function(name="V"), pre=Symbol(s="n")))
+    
+    assert result == expected
+    print(f"✅ Decimal(float) * Image: {decimal_coeff} * {image} = {result}")
+
+
+def test_decimal_times_image_latex():
+    """Test LaTeX output for Decimal * Image."""
+    # This represents: 0.5 * V(n) and should render as "0.5V(n)"
+    n = Symbol(s="n")
+    v = Function(name="V")
+    decimal_coeff = Decimal(p=1, q=2)  # 0.5
+    image = v(n)  # V(n)
+    
+    mul_expr = Mul(l=decimal_coeff, r=image)
+    result = mul_expr.simplified()
+    latex_output = result.latex()
+    
+    # Should be implicit multiplication: coefficient directly followed by function
+    expected_latex = "0.5V(n)"
+    assert latex_output == expected_latex
+    print(f"✅ LaTeX: {result} → {latex_output}")
+
+
+def test_decimal_times_image_complex_function():
+    """Test Decimal * Image with more complex function arguments."""
+    # This represents: 0.75 * f(x + 1)
+    x = Symbol(s="x")
+    f = Function(name="f")
+    decimal_coeff = Decimal(p=3, q=4)  # 0.75
+    arg = Add(l=x, r=Integer(n=1))  # x + 1
+    image = f(arg)  # f(x + 1)
+    
+    mul_expr = Mul(l=decimal_coeff, r=image)
+    result = mul_expr.simplified()
+    expected = Mul(l=Decimal(p=3, q=4), r=Image(f=Function(name="f"), pre=Add(l=Symbol(s="x"), r=Integer(n=1))))
+    
+    assert result == expected
+    print(f"✅ Complex function: {decimal_coeff} * {image} = {result}")
+
+
+def test_original_failing_case():
+    """Test the exact case from the original error report."""
+    # Reproduces: Decimal(p=1, q=2) * Function(name=V)(Symbol(s='n'))
+    n = Symbol(s="n")
+    v = Function(name="V")
+    decimal_coeff = Decimal(p=1, q=2)
+    image = v(n)
+    
+    # This should not raise NotImplementedError anymore
+    mul_expr = Mul(l=decimal_coeff, r=image)
+    result = mul_expr.simplified()
+    
+    # Verify it's properly simplified
+    assert isinstance(result, Mul)
+    assert result.l == decimal_coeff
+    assert result.r == image
+    
+    # Verify LaTeX works
+    latex_output = result.latex()
+    assert latex_output == "0.5V(n)"
+    
+    print(f"✅ Original failing case fixed: {result} → {latex_output}")

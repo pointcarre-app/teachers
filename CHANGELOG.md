@@ -6,6 +6,47 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.0.11] - 2025-01-16
+
+### Fixed
+- **Critical Decimal × Function Multiplication Bug**: Fixed NotImplementedError when simplifying decimal coefficients with function applications
+  - `Mul.simplified()` now correctly handles `Decimal * Image` combinations in both orders
+  - Added support for `Image * Decimal` combinations with proper coefficient ordering
+  - Resolved the original bug where expressions like `Decimal(p=1, q=2) * Function(name=V)(Symbol(s='n'))` would fail with NotImplementedError
+  - Fixed in generator scenarios that were failing with "Simplification of Mul of Decimal and Image" errors
+  - Maintains proper mathematical notation: `0.5V(n)` (coefficient first, implicit multiplication)
+
+### Added
+- **Comprehensive Decimal × Function Tests**: Extended test suites with new test cases
+  - Added 6 new test cases in `test_mul_simplification.py` for Decimal × Image operations
+  - Added 2 new test methods in `test_latex_output.py` for LaTeX rendering validation
+  - Tests cover both p/q and x forms of Decimal objects with function applications
+  - Validates commutative property and proper coefficient ordering
+  - Tests edge cases including negative decimals, whole number decimals, and complex function arguments
+
+### Enhanced
+- **Interactive Playground**: New "Decimal × Function" example in scenery playground
+  - Added dedicated example demonstrating the newly fixed multiplication
+  - Interactive testing of various decimal forms with different functions
+  - Real-world exponential decay example showcasing practical applications
+  - Visual validation of LaTeX rendering with coefficient-first notation
+
+- **Image Class Improvements**: Added missing `__str__` method to Image class
+  - Resolved string representation issues in test output
+  - Improved debugging and error reporting capabilities
+
+### Technical Details
+- **File Changes**:
+  - `src/teachers/maths.py`: Core fix for Decimal × Image multiplication (line 583-584) and Image.__str__ method
+  - `tests/test_mul_simplification.py`: Added 6 comprehensive test cases for decimal-function multiplication
+  - `tests/test_latex_output.py`: Added 2 new test methods with edge case coverage
+  - `scenery/playground.html`: New interactive example with comprehensive demonstrations
+
+### Known Issues Resolved
+- **Decimal × Function Multiplication**: Previously reported NotImplementedError for `Decimal * Image` combinations is now fully resolved
+- **Generator Script Failures**: Production generator scripts now work correctly with decimal coefficients and function applications
+- **LaTeX Rendering**: Proper coefficient-first notation (`0.5V(n)`) with implicit multiplication formatting
+
 ## [0.0.10] - 2025-01-16
 
 ### Fixed
@@ -400,7 +441,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.10...HEAD
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.11...HEAD
+[0.0.11]: https://github.com/pointcarre-app/teachers/compare/0.0.10...0.0.11
 [0.0.10]: https://github.com/pointcarre-app/teachers/compare/0.0.9...0.0.10
 [0.0.9]: https://github.com/pointcarre-app/teachers/compare/0.0.8...0.0.9
 [0.0.8]: https://github.com/pointcarre-app/teachers/compare/0.0.7...0.0.8

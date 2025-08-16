@@ -34,7 +34,8 @@ PCA Teachers is designed for educational platforms that need to:
 - **📝 LaTeX Generation**: Clean, properly formatted mathematical notation
 - **🎯 Correction Engine**: Automated student response validation
 - **🔧 Educational Tools**: Specialized formatting for French mathematical education
-- **🧪 100% Test Coverage**: Comprehensive test suite with 122 tests
+- **🧪 100% Test Coverage**: Comprehensive test suite with 128+ tests
+- **🆕 Decimal × Function Support**: NEW! Seamless multiplication of decimal coefficients with function applications
 
 ## 🚀 Live Demo
 
@@ -285,6 +286,29 @@ print(coeff.latex())  # "3x"
 # Explicit multiplication
 explicit = tm.Integer(n=2) * tm.Integer(n=5)
 print(explicit.latex())  # "2 \\times 5"
+
+# Decimal coefficients with functions - NEW in v0.0.11!
+n = tm.Symbol(s="n")
+v = tm.Function(name="V")
+decimal_coeff = tm.Decimal(p=1, q=2)  # 0.5
+function_app = v(n)  # V(n)
+
+# Decimal * Function multiplication
+result = decimal_coeff * function_app
+print(result.simplified().latex())  # "0.5V(n)"
+
+# Commutative property works correctly
+result_commute = function_app * decimal_coeff  
+print(result_commute.simplified().latex())  # "0.5V(n)" (coefficient first)
+
+# Various decimal forms supported
+float_decimal = tm.Decimal(x=0.75)
+print((float_decimal * function_app).simplified().latex())  # "0.75V(n)"
+
+# Works with complex function arguments
+complex_arg = x + tm.Integer(n=1)  # x + 1
+f = tm.Function(name="f")
+print((decimal_coeff * f(complex_arg)).simplified().latex())  # "0.5f(x + 1)"
 ```
 
 #### Fractions
@@ -368,6 +392,19 @@ print(fx.latex())  # "f(x)"
 # Multi-argument functions f(x, y)
 fxy = f(tm.MathsCollection(elements=[x, y]))
 print(fxy.latex())  # "f(\\left(x, y\\right))"
+
+# NEW in v0.0.11: Decimal coefficients with functions
+decimal_coeff = tm.Decimal(p=3, q=4)  # 0.75
+result = decimal_coeff * fx  # 0.75 * f(x)
+print(result.simplified().latex())  # "0.75f(x)"
+
+# Perfect for modeling scenarios like exponential decay
+# V(n+1) = 0.5 * V(n) where volume decreases by 50% each period
+n = tm.Symbol(s="n")
+v = tm.Function(name="V")
+decay_rate = tm.Decimal(p=1, q=2)  # 50% = 0.5
+decay_formula = decay_rate * v(n)
+print(decay_formula.simplified().latex())  # "0.5V(n)"
 ```
 
 ## 🔍 Complete Mathematical Object Reference
