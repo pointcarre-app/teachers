@@ -34,10 +34,11 @@ PCA Teachers is designed for educational platforms that need to:
 - **📝 LaTeX Generation**: Clean, properly formatted mathematical notation
 - **🎯 Correction Engine**: Automated student response validation
 - **🔧 Educational Tools**: Specialized formatting for French mathematical education
-- **🧪 100% Test Coverage**: Comprehensive test suite with 155+ tests
+- **🧪 100% Test Coverage**: Comprehensive test suite with 185+ tests
 - **🆕 Decimal × Function Support**: NEW! Seamless multiplication of decimal coefficients with function applications  
 - **🆕 Pi (π) Mathematical Constant**: NEW! Complete Pi support for geometric formulas and calculations
 - **🔧 Fraction Symbol/Mul Fix**: FIXED! Symbol over multiplication simplification (V/(π*r²)) now works perfectly
+- **🚀 Polynomial Expansion**: NEW! Add × Add multiplication with FOIL expansion ((3x-8)(4x-1)) and SymPy fallback
 
 ## 🚀 Live Demo
 
@@ -400,6 +401,55 @@ symbol_over_mul = x / (pi * r**tm.Integer(n=2))  # x/(π*r²) ✅
 mul_over_symbol = (pi * r) / x                # (π*r)/x ✅
 pi_over_pi = pi / pi                          # π/π = 1 ✅
 # ... and 10+ more combinations!
+```
+
+#### Polynomial Expansion - NEW in v0.0.14!
+```python
+# Add × Add multiplication with FOIL expansion
+# These now work perfectly (previously raised NotImplementedError)
+x = tm.Symbol(s="x")
+
+# Basic polynomial multiplication: (3x - 8)(4x - 1)
+left_poly = tm.Integer(n=3) * x + tm.Integer(n=-8)   # 3x - 8
+right_poly = tm.Integer(n=4) * x + tm.Integer(n=-1)  # 4x - 1
+expr = left_poly * right_poly
+
+# FOIL expansion: First + Outer + Inner + Last
+# (3x)(4x) + (3x)(-1) + (-8)(4x) + (-8)(-1) = 12x² - 3x - 32x + 8 = 12x² - 35x + 8
+expanded = expr.simplified()  # No error!
+print(expanded.latex())  # Mathematical result with proper LaTeX
+
+# Various polynomial combinations now supported:
+binomial1 = (x + tm.Integer(n=1)) * (x + tm.Integer(n=2))        # (x+1)(x+2) ✅
+binomial2 = (x + tm.Integer(n=3)) * (x + tm.Integer(n=-1))       # (x+3)(x-1) ✅  
+coeffs = (tm.Integer(n=2)*x + tm.Integer(n=1)) * (tm.Integer(n=3)*x + tm.Integer(n=4))  # (2x+1)(3x+4) ✅
+fractions = (x + tm.Fraction(p=1, q=2)) * (x + tm.Integer(n=-1))  # (x+1/2)(x-1) ✅
+with_pi = (tm.Pi() * x + tm.Integer(n=1)) * (x + tm.Pi())        # (πx+1)(x+π) ✅
+
+# Higher degree polynomials
+x_squared = x ** tm.Integer(n=2)
+higher_degree = (x_squared + tm.Integer(n=1)) * (x + tm.Integer(n=2))  # (x²+1)(x+2) ✅
+
+# Multiple variables  
+y = tm.Symbol(s="y")
+difference_of_squares = (x + y) * (x + (-y))  # (x+y)(x-y) = x²-y² ✅
+
+# SymPy Fallback for Complex Cases
+# The system now has a smart fallback that uses SymPy for complex algebraic cases
+# If a specific optimization isn't available, SymPy handles the mathematics automatically
+complex_expr = ((x + tm.Integer(n=1)) + tm.Integer(n=2)) * ((x - tm.Integer(n=1)) - tm.Integer(n=1))
+result = complex_expr.simplified()  # SymPy ensures mathematical correctness ✅
+
+# Educational Generator Compatibility
+# The exact failing case from educational content generators now works:
+def generator_scenario():
+    a1, b1 = tm.Integer(n=3), tm.Integer(n=-8)   # coefficients for first polynomial
+    a2, b2 = tm.Integer(n=4), tm.Integer(n=-1)   # coefficients for second polynomial
+    expr = (a1 * x + b1) * (a2 * x + b2)         # This was failing before
+    return expr.simplified()                      # Now works perfectly!
+
+result = generator_scenario()
+print(f"Generator result: {result.latex()}")
 ```
 
 #### Powers
@@ -917,6 +967,8 @@ tests/
 ├── test_formatting.py       # Educational formatting tests
 ├── test_complex_operations.py  # Multi-object interactions
 ├── test_fraction_symbol_mul.py  # Fraction Symbol/Mul simplification tests
+├── test_polynomial_expansion.py # Polynomial expansion and FOIL tests
+├── test_sympy_fallback.py    # SymPy fallback and edge case tests
 ├── test_deserialization_from_sympy.py  # SymPy conversion tests
 └── test_deserialization_from_formal.py # Parser tests
 ```

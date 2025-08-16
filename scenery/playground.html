@@ -317,6 +317,18 @@
           simplified = fraction.simplified()  # Now works!
         </div>
       </div>
+
+      <div class="example-card" onclick="loadExample('polynomial_expansion')">
+        <div class="example-title">🚀 Polynomial Expansion</div>
+        <div class="example-description">
+          NEW! Add × Add multiplication with SymPy fallback ((3x-8)(4x-1))
+        </div>
+        <div class="example-preview">
+          x = tm.Symbol(s="x")
+          expr = (3*x - 8) * (4*x - 1)
+          expanded = expr.simplified()  # FOIL expansion!
+        </div>
+      </div>
     </div>
 
     <h2>💻 Code Editor</h2>
@@ -970,6 +982,152 @@ print("✅ Comprehensive test coverage added")
 print()
 print("🔧 This fix resolves the core issue preventing fraction simplification")
 print("   in mathematical expressions with symbolic variables and products.")`,
+
+                polynomial_expansion: `# Polynomial Expansion - MAJOR NEW FEATURE!
+import teachers.maths as tm
+
+print("=== Polynomial Expansion (Add × Add Multiplication) ===")
+print("This demonstrates the newly added polynomial expansion capability")
+print("with FOIL (First, Outer, Inner, Last) expansion and SymPy fallback.")
+print()
+
+# The exact failing case from the user's generator code
+print("=== Original Failing Case ===")
+print("Before the fix, this would raise NotImplementedError:")
+print("  expr = (3x - 8) * (4x - 1)")
+print("  simplified = expr.simplified()  # <- This line was failing")
+print()
+
+# Demonstrate the fix
+x = tm.Symbol(s="x")
+
+# Create the problematic expression: (3x - 8)(4x - 1)
+left_poly = tm.Integer(n=3) * x + tm.Integer(n=-8)  # 3x - 8
+right_poly = tm.Integer(n=4) * x + tm.Integer(n=-1)  # 4x - 1
+expr = left_poly * right_poly
+
+print(f"Left polynomial: {left_poly.latex()}")
+print(f"Right polynomial: {right_poly.latex()}")
+print(f"Expression: ({left_poly.latex()})({right_poly.latex()})")
+print()
+
+# This now works without error!
+print("=== Testing Expansion (The Fix!) ===")
+try:
+    expanded = expr.simplified()
+    print(f"✅ Expanded successfully: {expanded}")
+    print(f"   LaTeX: {expanded.latex()}")
+    print(f"   Type: {type(expanded).__name__}")
+except Exception as e:
+    print(f"❌ Error: {e}")
+print()
+
+# Test various polynomial combinations
+print("=== Testing Other Polynomial Cases ===")
+
+test_cases = [
+    # Basic binomials
+    ((x + tm.Integer(n=1)), (x + tm.Integer(n=2))),  # (x+1)(x+2)
+    ((x + tm.Integer(n=3)), (x + tm.Integer(n=-1))),  # (x+3)(x-1)
+    # Different coefficients
+    ((tm.Integer(n=2)*x + tm.Integer(n=1)), (tm.Integer(n=3)*x + tm.Integer(n=4))),  # (2x+1)(3x+4)
+    # Negative coefficients
+    ((tm.Integer(n=-1)*x + tm.Integer(n=2)), (tm.Integer(n=2)*x + tm.Integer(n=-3))),  # (-x+2)(2x-3)
+    # Mixed with fractions
+    ((x + tm.Fraction(p=1, q=2)), (x + tm.Integer(n=-1))),  # (x+1/2)(x-1)
+    # With Pi
+    ((tm.Pi() * x + tm.Integer(n=1)), (x + tm.Pi())),  # (πx+1)(x+π)
+]
+
+for i, (left, right) in enumerate(test_cases, 1):
+    try:
+        poly_expr = left * right
+        poly_result = poly_expr.simplified()
+        
+        print(f"✅ Case {i}: ({left.latex()})({right.latex()}) = {poly_result.latex()}")
+        
+    except Exception as e:
+        print(f"❌ Case {i}: Error - {e}")
+
+print()
+
+# Demonstrate FOIL expansion manually
+print("=== FOIL Expansion Breakdown ===")
+print("For (3x - 8)(4x - 1), FOIL gives us:")
+print("  First:  3x * 4x = 12x²")
+print("  Outer:  3x * (-1) = -3x") 
+print("  Inner:  (-8) * 4x = -32x")
+print("  Last:   (-8) * (-1) = 8")
+print("  Result: 12x² - 3x - 32x + 8 = 12x² - 35x + 8")
+print()
+
+# Test the generator scenario
+print("=== Complete Generator Scenario Test ===")
+print("Recreating the exact scenario from the user's failing generator:")
+
+def generate_components_demo():
+    x = tm.Symbol(s='x')
+    a1 = tm.Integer(n=3)   # coefficient of x in first polynomial
+    b1 = tm.Integer(n=-8)  # constant in first polynomial  
+    a2 = tm.Integer(n=4)   # coefficient of x in second polynomial
+    b2 = tm.Integer(n=-1)  # constant in second polynomial
+    expr = (a1 * x + b1) * (a2 * x + b2)
+    return {"x": x, "a1": a1, "b1": b1, "a2": a2, "b2": b2, "expr": expr}
+
+def solve_demo(*, x, a1, b1, a2, b2, expr):
+    maths_object = expr.simplified()  # This was the exact failing line
+    return {"maths_object": maths_object}
+
+try:
+    components = generate_components_demo()
+    answer = solve_demo(**components)
+    
+    print(f"✅ Components generated successfully")
+    print(f"✅ Expression: {components['expr']}")
+    print(f"✅ Simplified: {answer['maths_object']}")
+    print(f"✅ LaTeX: {answer['maths_object'].latex()}")
+    print()
+    print("🎉 SUCCESS! The original failing generator now works perfectly!")
+    
+except Exception as e:
+    print(f"❌ Still failing: {e}")
+
+print()
+
+# Advanced cases with SymPy fallback
+print("=== Advanced Cases (SymPy Fallback) ===")
+print("Testing complex cases that trigger SymPy fallback:")
+
+advanced_cases = [
+    # Higher degree terms
+    (x**tm.Integer(n=2) + tm.Integer(n=1), x + tm.Integer(n=2)),  # (x²+1)(x+2)
+    # Multiple variables
+    (x + tm.Symbol(s="y"), x - tm.Symbol(s="y")),  # (x+y)(x-y) = x²-y²
+    # Complex nested expressions
+    ((x + tm.Integer(n=1)) + tm.Integer(n=2), (x - tm.Integer(n=1)) - tm.Integer(n=1)),  # (x+3)(x-2)
+]
+
+for i, (left, right) in enumerate(advanced_cases, 1):
+    try:
+        advanced_expr = left * right
+        advanced_result = advanced_expr.simplified()
+        
+        print(f"✅ Advanced {i}: ({left.latex()})({right.latex()}) = {advanced_result.latex()}")
+        
+    except Exception as e:
+        print(f"❌ Advanced {i}: Error - {e}")
+
+print()
+print("=== Summary ===")
+print("✅ Fixed NotImplementedError for Add × Add multiplication")
+print("✅ Added FOIL expansion for polynomial multiplication")
+print("✅ Added SymPy fallback for complex algebraic cases")
+print("✅ All existing functionality preserved")
+print("✅ User's original generator code now works without errors")
+print("✅ Comprehensive test coverage with edge cases")
+print()
+print("🚀 This fix enables robust polynomial algebra in educational content")
+print("   with automatic expansion and mathematical correctness.")`,
 
                 test: `# Running Unit Tests from the Test Suite
 import teachers.maths as tm

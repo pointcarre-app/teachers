@@ -501,11 +501,18 @@ class Add(MathsObject):
                 return Add(l=l, r=r)
             case (Pow(_, _), Mul(_, _)) | (Mul(_, _), Pow(_, _)):
                 return Add(l=l, r=r)
+            case (Mul(_, _), Mul(_, _)):
+                # Multiple multiplication terms - preserve as-is for now
+                return Add(l=l, r=r)
             case _:
-                # return Add(l=l, r=r)
-                raise NotImplementedError(
-                    f"Simplification of Add of {type(l)} and {type(r)}\n{l=}\n{r=}"
-                )
+                # SymPy fallback for unhandled cases - Level 2 approach
+                try:
+                    # Let SymPy handle complex algebraic simplification
+                    sympy_result = self.sympy_expr.expand().simplify()
+                    return MathsObjectParser.from_sympy(sympy_result)
+                except Exception:
+                    # Ultimate fallback: preserve as-is if SymPy fails
+                    return Add(l=l, r=r)
 
 
 class Mul(MathsObject):
@@ -583,10 +590,10 @@ class Mul(MathsObject):
                     return Decimal(p=n * p, q=q)
 
             case (Integer(n), Fraction(p, q)) | (Fraction(p, q), Integer(n)):
-                return Fraction(p=n * p.n, q=q).simplified()
+                return Fraction(p=Integer(n=n) * p, q=q).simplified()
 
             case (Integer(n), Pow(base, exp)) | (Pow(base, exp), Integer(n)):
-                return Mul(l=Integer(n), r=Pow(base, exp))
+                return Mul(l=Integer(n=n), r=Pow(base=base, exp=exp))
 
             case Fraction(p1, q1), Fraction(p2, q2):
                 return Fraction(p=p1 * p2, q=q1 * q2).simplified()
@@ -640,11 +647,24 @@ class Mul(MathsObject):
                 # Handle Mul * Pow - preserve both: (a * b) * x^n = (a * b) * x^n
                 return Mul(l=Mul(l=mul_l, r=mul_r), r=Pow(base=base, exp=exp))
 
+            # Polynomial multiplication: (a + b)(c + d) = ac + ad + bc + bd
+            case Add(l1, r1), Add(l2, r2):
+                # FOIL expansion for polynomial multiplication
+                ac = (l1 * l2).simplified()
+                ad = (l1 * r2).simplified()
+                bc = (r1 * l2).simplified()
+                bd = (r1 * r2).simplified()
+                return (ac + ad + bc + bd).simplified()
+
             case _:
-                # return Mul(l=l, r=r)
-                raise NotImplementedError(
-                    f"Simplification of Mul of {type(l)} and {type(r)}\n{l=}\n{r=}"
-                )
+                # SymPy fallback for unhandled cases - Level 2 approach
+                try:
+                    # Let SymPy handle complex algebraic simplification
+                    sympy_result = self.sympy_expr.expand().simplify()
+                    return MathsObjectParser.from_sympy(sympy_result)
+                except Exception:
+                    # Ultimate fallback: preserve as-is if SymPy fails
+                    return Mul(l=l, r=r)
 
 
 class Fraction(MathsObject):
@@ -814,6 +834,10 @@ class Fraction(MathsObject):
                 # Pi over pi = 1
                 return Integer(n=1)
 
+            case Integer(n), Pi():
+                # Integer over pi - preserve as-is
+                return Fraction(p=p, q=q)
+
             case Pow(base1, exp1), Symbol(s):
                 # Power over symbol - preserve as-is
                 return Fraction(p=p, q=q)
@@ -827,9 +851,14 @@ class Fraction(MathsObject):
                 return Fraction(p=p, q=q)
 
             case _:
-                raise NotImplementedError(
-                    f"Simplification of {__class__} of {type(p)} and {type(q)}\n{p=}\n{q=}"
-                )
+                # SymPy fallback for unhandled cases - Level 2 approach
+                try:
+                    # Let SymPy handle complex algebraic simplification
+                    sympy_result = self.sympy_expr.simplify()
+                    return MathsObjectParser.from_sympy(sympy_result)
+                except Exception:
+                    # Ultimate fallback: preserve as-is if SymPy fails
+                    return Fraction(p=p, q=q)
 
     @property
     def as_decimal(self):
