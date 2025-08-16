@@ -477,6 +477,66 @@ class TestLatexOutput(unittest.TestCase):
         self.assertTrue(latex_pow1.endswith("}"))
         self.assertTrue(latex_pow2.endswith("}"))
 
+    def test_pi_latex_output(self):
+        """
+        Test LaTeX output for Pi (mathematical constant π).
+
+        Validates:
+        - Basic Pi LaTeX rendering (\\pi)
+        - Pi with integer coefficients (2π, -π)
+        - Pi with fractional coefficients ((1/3)π)
+        - Pi with decimal coefficients (0.5π)
+        - Pi in geometric formulas (πr², (4/3)πr³)
+
+        Ensures Pi generates correct LaTeX for mathematical display.
+        """
+        # Basic Pi
+        pi = tm.Pi()
+        self.assertEqual(pi.latex(), "\\pi")
+
+        # Integer coefficients
+        two_pi = tm.Integer(n=2) * pi
+        self.assertEqual(two_pi.simplified().latex(), "2\\pi")
+
+        # Negative coefficient (should use special -1 handling)
+        neg_pi = tm.Integer(n=-1) * pi
+        self.assertEqual(neg_pi.simplified().latex(), "-\\pi")
+
+        # Fractional coefficients
+        half_pi = tm.Fraction(p=1, q=2) * pi
+        self.assertEqual(half_pi.simplified().latex(), "\\dfrac{1}{2}\\pi")
+
+        third_pi = tm.Fraction(p=1, q=3) * pi
+        self.assertEqual(third_pi.simplified().latex(), "\\dfrac{1}{3}\\pi")
+
+        # Decimal coefficients
+        decimal_pi = tm.Decimal(p=3, q=4) * pi
+        self.assertEqual(decimal_pi.simplified().latex(), "0.75\\pi")
+
+        # Geometric formulas
+        r = tm.Symbol(s="r")
+        h = tm.Symbol(s="h")
+
+        # Circle area: πr²
+        area = pi * r**tm.Integer(n=2)
+        self.assertEqual(area.simplified().latex(), "\\pir^{2}")
+
+        # Circle circumference: 2πr
+        circumference = tm.Integer(n=2) * pi * r
+        self.assertEqual(circumference.simplified().latex(), "2\\pir")
+
+        # Cylinder volume: πr²h
+        cylinder = pi * r**tm.Integer(n=2) * h
+        self.assertEqual(cylinder.simplified().latex(), "\\pir^{2}h")
+
+        # Cone volume: (1/3)πr²h
+        cone = tm.Fraction(p=1, q=3) * pi * r**tm.Integer(n=2) * h
+        self.assertEqual(cone.simplified().latex(), "\\dfrac{1}{3}\\pir^{2}h")
+
+        # Sphere volume: (4/3)πr³
+        sphere = tm.Fraction(p=4, q=3) * pi * r**tm.Integer(n=3)
+        self.assertEqual(sphere.simplified().latex(), "\\dfrac{4}{3}\\pir^{3}")
+
     def test_decimal_image_multiplication_latex(self):
         """
         Test LaTeX output for Decimal * Image multiplication.

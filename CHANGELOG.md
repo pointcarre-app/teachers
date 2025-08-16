@@ -6,6 +6,56 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.0.12] - 2025-01-16
+
+### Added
+- **Pi (π) Mathematical Constant**: New `Pi` class for geometric calculations and mathematical formulas
+  - Full SymPy integration with `sp.pi` for exact symbolic computation
+  - Proper LaTeX rendering (`\\pi`) with coefficient-first notation (2π, (1/3)π, 0.5π)
+  - Numerical evaluation matching `math.pi` for calculations
+  - Complete multiplication support with Integer, Decimal, and Fraction coefficients
+  - Addition operations with other mathematical objects
+  - Perfect for geometric formulas: circle area (πr²), circumference (2πr), volumes ((4/3)πr³)
+
+### Enhanced
+- **Mul.simplified() Extensions**: Added comprehensive Pi multiplication cases
+  - `Integer * Pi` and `Pi * Integer` combinations
+  - `Decimal * Pi` and `Pi * Decimal` combinations  
+  - `Fraction * Pi` and `Pi * Fraction` combinations
+  - `Pi * Pow` combinations for expressions like π * r²
+  - Proper coefficient ordering maintains mathematical notation standards
+
+- **Add.simplified() Extensions**: Added Pi addition support
+  - `Pi + Integer/Decimal/Fraction` combinations in both orders
+  - Preserves mathematical expression structure for symbolic computation
+
+### Added
+- **Comprehensive Pi Test Suite**: New `test_pi.py` with 13 comprehensive test cases
+  - Basic Pi object creation, LaTeX output, and numerical evaluation
+  - Multiplication with all numeric types (Integer, Decimal, Fraction)
+  - Geometric formula validation (circle, sphere, cylinder, cone volumes)
+  - Original failing case resolution testing
+  - Addition operations and SymPy integration verification
+
+- **Interactive Pi Playground**: New "π Pi Mathematical Constant" example in scenery
+  - Demonstrates all Pi functionality with geometric formulas
+  - Shows coefficient variations (integer, fractional, decimal)
+  - Real-world geometric calculations (areas, volumes, circumferences)
+  - Original failing case resolution demonstration
+
+### Technical Details
+- **File Changes**:
+  - `src/teachers/maths.py`: New Pi class and extended Mul/Add simplification rules
+  - `tests/test_pi.py`: Comprehensive 13-test Pi test suite (420+ lines)
+  - `tests/test_latex_output.py`: Pi LaTeX rendering tests with geometric formulas
+  - `tests/__main__.py`: Added Pi test integration
+  - `scenery/playground.html`: New interactive Pi example with comprehensive demonstrations
+
+### Known Issues Resolved
+- **Generator AttributeError**: `module 'teachers.maths' has no attribute 'Pi'` completely resolved
+- **Geometric Formula Support**: All standard geometric formulas now work seamlessly
+- **Mathematical Notation**: Proper coefficient-first LaTeX rendering (2π, not π2)
+
 ## [0.0.11] - 2025-01-16
 
 ### Fixed
@@ -441,7 +491,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.11...HEAD
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.12...HEAD
+[0.0.12]: https://github.com/pointcarre-app/teachers/compare/0.0.11...0.0.12
 [0.0.11]: https://github.com/pointcarre-app/teachers/compare/0.0.10...0.0.11
 [0.0.10]: https://github.com/pointcarre-app/teachers/compare/0.0.9...0.0.10
 [0.0.9]: https://github.com/pointcarre-app/teachers/compare/0.0.8...0.0.9

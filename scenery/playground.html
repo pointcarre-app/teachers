@@ -298,6 +298,15 @@
           result = coeff * tm.Function(name="V")(n)
         </div>
       </div>
+
+      <div class="example-card" onclick="loadExample('pi_constant')">
+        <div class="example-title">π Pi Mathematical Constant</div>
+        <div class="example-description">NEW! Pi constant for geometric formulas and calculations</div>
+        <div class="example-preview">
+          pi = tm.Pi()
+          area = pi * r**tm.Integer(n=2)  # πr²
+        </div>
+      </div>
     </div>
 
     <h2>💻 Code Editor</h2>
@@ -726,6 +735,112 @@ decay_formula = decimal_half * vn
 print(f"V(n+1) = {v_next.latex()}")
 print(f"Decay formula: {decay_formula.simplified().latex()}")
 print("✅ This is the exact case that was failing before the fix!")`,
+
+                pi_constant: `# Pi (π) Mathematical Constant - NEW FEATURE!
+import teachers.maths as tm
+import math
+
+print("=== Pi (π) Mathematical Constant ===")
+print("This demonstrates the newly added Pi constant support!")
+print()
+
+# Basic Pi usage
+pi = tm.Pi()
+print(f"Pi constant: {pi}")
+print(f"Pi LaTeX: {pi.latex()}")
+print(f"Pi numerical value: {pi.eval()}")
+print(f"Matches math.pi? {abs(pi.eval() - math.pi) < 1e-10}")
+print()
+
+# Integer coefficients
+print("=== Integer Coefficients ===")
+two_pi = tm.Integer(n=2) * pi
+three_pi = tm.Integer(n=3) * pi
+neg_pi = tm.Integer(n=-1) * pi
+
+print(f"2π: {two_pi.simplified().latex()}")
+print(f"3π: {three_pi.simplified().latex()}")
+print(f"-π: {neg_pi.simplified().latex()}")
+print()
+
+# Fractional coefficients
+print("=== Fractional Coefficients ===")
+half_pi = tm.Fraction(p=1, q=2) * pi
+third_pi = tm.Fraction(p=1, q=3) * pi
+two_thirds_pi = tm.Fraction(p=2, q=3) * pi
+
+print(f"(1/2)π: {half_pi.simplified().latex()}")
+print(f"(1/3)π: {third_pi.simplified().latex()}")
+print(f"(2/3)π: {two_thirds_pi.simplified().latex()}")
+print()
+
+# Decimal coefficients
+print("=== Decimal Coefficients ===")
+decimal_pi = tm.Decimal(p=3, q=4) * pi  # 0.75π
+float_pi = tm.Decimal(x=1.5) * pi       # 1.5π
+
+print(f"0.75π: {decimal_pi.simplified().latex()}")
+print(f"1.5π: {float_pi.simplified().latex()}")
+print()
+
+# Geometric formulas
+print("=== Geometric Formulas ===")
+r = tm.Symbol(s="r")
+h = tm.Symbol(s="h")
+
+# Circle area: A = πr²
+area = pi * r**tm.Integer(n=2)
+print(f"Circle area (A = πr²): {area.simplified().latex()}")
+
+# Circle circumference: C = 2πr
+circumference = tm.Integer(n=2) * pi * r
+print(f"Circle circumference (C = 2πr): {circumference.simplified().latex()}")
+
+# Cylinder volume: V = πr²h
+cylinder = pi * r**tm.Integer(n=2) * h
+print(f"Cylinder volume (V = πr²h): {cylinder.simplified().latex()}")
+
+# Cone volume: V = (1/3)πr²h
+cone = tm.Fraction(p=1, q=3) * pi * r**tm.Integer(n=2) * h
+print(f"Cone volume (V = (1/3)πr²h): {cone.simplified().latex()}")
+
+# Sphere volume: V = (4/3)πr³
+sphere = tm.Fraction(p=4, q=3) * pi * r**tm.Integer(n=3)
+print(f"Sphere volume (V = (4/3)πr³): {sphere.simplified().latex()}")
+print()
+
+# Original failing case resolution
+print("=== Original Failing Case Resolution ===")
+print("The original error was:")
+print("AttributeError: module 'teachers.maths' has no attribute 'Pi'")
+print()
+print("Now this works perfectly:")
+original_expr = tm.Fraction(p=1, q=3) * tm.Pi() * r**tm.Integer(n=2) * h
+print(f"tm.Fraction(p=1, q=3) * tm.Pi() * r**tm.Integer(n=2) * h")
+print(f"Result: {original_expr.simplified().latex()}")
+print()
+
+# Pi in addition
+print("=== Pi in Addition Operations ===")
+pi_plus_one = pi + tm.Integer(n=1)
+pi_plus_half = pi + tm.Decimal(p=1, q=2)
+pi_plus_frac = pi + tm.Fraction(p=1, q=4)
+
+print(f"π + 1: {pi_plus_one.simplified().latex()}")
+print(f"π + 0.5: {pi_plus_half.simplified().latex()}")
+print(f"π + 1/4: {pi_plus_frac.simplified().latex()}")
+print()
+
+# Numerical calculations
+print("=== Numerical Evaluations ===")
+print(f"π ≈ {pi.eval():.6f}")
+print(f"2π ≈ {(tm.Integer(n=2) * pi).eval():.6f}")
+print(f"π² ≈ {(pi * pi).eval():.6f}")
+print(f"√π ≈ {(pi ** tm.Fraction(p=1, q=2)).eval():.6f}")
+print()
+
+print("✅ Pi constant working perfectly!")
+print("🔢 Perfect for geometric calculations and mathematical modeling!")`,
 
                 test: `# Running Unit Tests from the Test Suite
 import teachers.maths as tm

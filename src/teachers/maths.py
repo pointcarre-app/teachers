@@ -360,6 +360,25 @@ class Inf(MathsObject):
         return "Inf()"
 
 
+class Pi(MathsObject):
+    sympy_expr: sp.Basic = sp.pi
+
+    def latex(self):
+        return "\\pi"
+
+    def eval(self) -> float:
+        return float(sp.pi)
+
+    def simplified(self):
+        return self
+
+    def __repr__(self):
+        return "Pi()"
+
+    def __str__(self):
+        return repr(self)
+
+
 ##################################################
 # BINARY OPERATORS
 ##################################################
@@ -464,6 +483,10 @@ class Add(MathsObject):
             case Symbol(s1), Symbol(s2) if s1 != s2:
                 return Add(l=l, r=r)
             case (Symbol(_), Integer(_) | Decimal(_)) | (Integer(_) | Decimal(_), Symbol(_)):
+                return Add(l=l, r=r)
+
+            # Pi cases
+            case (Pi(), Integer(_) | Decimal(_) | Fraction(_)) | (Integer(_) | Decimal(_) | Fraction(_), Pi()):
                 return Add(l=l, r=r)
 
             # Do nothing
@@ -586,6 +609,18 @@ class Mul(MathsObject):
             case (Decimal(p, q, x), Image(f, pre)) | (Image(f, pre), Decimal(p, q, x)):
                 return Mul(l=Decimal(p=p, q=q, x=x), r=Image(f=f, pre=pre))
 
+            case (Integer(n), Pi()) | (Pi(), Integer(n)):
+                return Mul(l=Integer(n=n), r=Pi())
+
+            case (Decimal(p, q, x), Pi()) | (Pi(), Decimal(p, q, x)):
+                return Mul(l=Decimal(p=p, q=q, x=x), r=Pi())
+
+            case (Fraction(p, q), Pi()) | (Pi(), Fraction(p, q)):
+                return Mul(l=Fraction(p=p, q=q), r=Pi())
+
+            case (Pi(), Pow(base, exp)) | (Pow(base, exp), Pi()):
+                return Mul(l=Pi(), r=Pow(base=base, exp=exp))
+
             case (Mul(mul_l, mul_r), Symbol(s)) | (Symbol(s), Mul(mul_l, mul_r)):
                 # Handle Mul(Mul, Symbol) - distribute the symbol into the Mul
                 return Mul(l=Mul(l=mul_l, r=mul_r), r=Symbol(s=s))
@@ -597,6 +632,10 @@ class Mul(MathsObject):
             case (Mul(mul_l, mul_r), Integer(n)):
                 # Handle Mul * Integer - distribute the integer: (a * b) * n = a * (b * n)
                 return Mul(l=mul_l, r=Mul(l=mul_r, r=Integer(n=n)).simplified()).simplified()
+
+            case (Mul(mul_l, mul_r), Pow(base, exp)) | (Pow(base, exp), Mul(mul_l, mul_r)):
+                # Handle Mul * Pow - preserve both: (a * b) * x^n = (a * b) * x^n
+                return Mul(l=Mul(l=mul_l, r=mul_r), r=Pow(base=base, exp=exp))
 
             case _:
                 # return Mul(l=l, r=r)

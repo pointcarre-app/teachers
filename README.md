@@ -34,8 +34,9 @@ PCA Teachers is designed for educational platforms that need to:
 - **📝 LaTeX Generation**: Clean, properly formatted mathematical notation
 - **🎯 Correction Engine**: Automated student response validation
 - **🔧 Educational Tools**: Specialized formatting for French mathematical education
-- **🧪 100% Test Coverage**: Comprehensive test suite with 128+ tests
-- **🆕 Decimal × Function Support**: NEW! Seamless multiplication of decimal coefficients with function applications
+- **🧪 100% Test Coverage**: Comprehensive test suite with 140+ tests
+- **🆕 Decimal × Function Support**: NEW! Seamless multiplication of decimal coefficients with function applications  
+- **🆕 Pi (π) Mathematical Constant**: NEW! Complete Pi support for geometric formulas and calculations
 
 ## 🚀 Live Demo
 
@@ -130,7 +131,8 @@ MathsObject
 │   ├── Integer(n: int)
 │   ├── Symbol(s: str)  
 │   ├── Decimal(x: float | p: int, q: int)
-│   └── Inf()
+│   ├── Inf()
+│   └── Pi() 🆕
 ├── Binary Operators
 │   ├── Add(l: MathsObject, r: MathsObject)
 │   ├── Mul(l: MathsObject, r: MathsObject)
@@ -259,6 +261,58 @@ print(d3.latex())  # "2.5"
 inf = tm.Inf()
 print(inf.latex())  # "\\infty"
 print(inf.sympy_expr.is_infinite)  # True
+```
+
+#### Pi (π) - NEW in v0.0.12!
+```python
+# Mathematical constant pi
+pi = tm.Pi()
+print(pi.latex())  # "\\pi"
+print(pi.eval())   # 3.141592653589793
+
+# Integer coefficients
+two_pi = tm.Integer(n=2) * pi
+print(two_pi.simplified().latex())  # "2\\pi"
+
+# Fractional coefficients  
+half_pi = tm.Fraction(p=1, q=2) * pi
+print(half_pi.simplified().latex())  # "\\dfrac{1}{2}\\pi"
+
+# Decimal coefficients
+decimal_pi = tm.Decimal(x=0.75) * pi
+print(decimal_pi.simplified().latex())  # "0.75\\pi"
+
+# Negative coefficients (special handling)
+neg_pi = tm.Integer(n=-1) * pi
+print(neg_pi.simplified().latex())  # "-\\pi" (not "-1\\pi")
+
+# Perfect for geometric formulas
+r = tm.Symbol(s="r")
+h = tm.Symbol(s="h")
+
+# Circle area: A = πr²
+area = pi * r**tm.Integer(n=2)
+print(area.simplified().latex())  # "\\pir^{2}"
+
+# Circle circumference: C = 2πr
+circumference = tm.Integer(n=2) * pi * r
+print(circumference.simplified().latex())  # "2\\pir"
+
+# Cylinder volume: V = πr²h
+cylinder = pi * r**tm.Integer(n=2) * h
+print(cylinder.simplified().latex())  # "\\pir^{2}h"
+
+# Cone volume: V = (1/3)πr²h
+cone = tm.Fraction(p=1, q=3) * pi * r**tm.Integer(n=2) * h
+print(cone.simplified().latex())  # "\\dfrac{1}{3}\\pir^{2}h"
+
+# Sphere volume: V = (4/3)πr³
+sphere = tm.Fraction(p=4, q=3) * pi * r**tm.Integer(n=3)
+print(sphere.simplified().latex())  # "\\dfrac{4}{3}\\pir^{3}"
+
+# Addition operations
+pi_plus_one = pi + tm.Integer(n=1)
+print(pi_plus_one.simplified().latex())  # "\\pi + 1"
 ```
 
 ### Binary Operators

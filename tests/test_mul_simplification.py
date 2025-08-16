@@ -200,11 +200,11 @@ def test_decimal_times_image():
     v = Function(name="V")
     decimal_coeff = Decimal(p=1, q=2)  # 0.5
     image = v(n)  # V(n)
-    
+
     mul_expr = Mul(l=decimal_coeff, r=image)
     result = mul_expr.simplified()
     expected = Mul(l=Decimal(p=1, q=2), r=Image(f=Function(name="V"), pre=Symbol(s="n")))
-    
+
     assert result == expected
     print(f"✅ Decimal * Image: {decimal_coeff} * {image} = {result}")
 
@@ -216,11 +216,11 @@ def test_image_times_decimal():
     v = Function(name="V")
     decimal_coeff = Decimal(p=1, q=2)  # 0.5
     image = v(n)  # V(n)
-    
+
     mul_expr = Mul(l=image, r=decimal_coeff)
     result = mul_expr.simplified()
     expected = Mul(l=Decimal(p=1, q=2), r=Image(f=Function(name="V"), pre=Symbol(s="n")))
-    
+
     assert result == expected
     print(f"✅ Image * Decimal: {image} * {decimal_coeff} = {result}")
 
@@ -232,11 +232,11 @@ def test_decimal_times_image_with_float():
     v = Function(name="V")
     decimal_coeff = Decimal(x=0.41)
     image = v(n)  # V(n)
-    
+
     mul_expr = Mul(l=decimal_coeff, r=image)
     result = mul_expr.simplified()
     expected = Mul(l=Decimal(x=0.41), r=Image(f=Function(name="V"), pre=Symbol(s="n")))
-    
+
     assert result == expected
     print(f"✅ Decimal(float) * Image: {decimal_coeff} * {image} = {result}")
 
@@ -248,11 +248,11 @@ def test_decimal_times_image_latex():
     v = Function(name="V")
     decimal_coeff = Decimal(p=1, q=2)  # 0.5
     image = v(n)  # V(n)
-    
+
     mul_expr = Mul(l=decimal_coeff, r=image)
     result = mul_expr.simplified()
     latex_output = result.latex()
-    
+
     # Should be implicit multiplication: coefficient directly followed by function
     expected_latex = "0.5V(n)"
     assert latex_output == expected_latex
@@ -267,11 +267,13 @@ def test_decimal_times_image_complex_function():
     decimal_coeff = Decimal(p=3, q=4)  # 0.75
     arg = Add(l=x, r=Integer(n=1))  # x + 1
     image = f(arg)  # f(x + 1)
-    
+
     mul_expr = Mul(l=decimal_coeff, r=image)
     result = mul_expr.simplified()
-    expected = Mul(l=Decimal(p=3, q=4), r=Image(f=Function(name="f"), pre=Add(l=Symbol(s="x"), r=Integer(n=1))))
-    
+    expected = Mul(
+        l=Decimal(p=3, q=4), r=Image(f=Function(name="f"), pre=Add(l=Symbol(s="x"), r=Integer(n=1)))
+    )
+
     assert result == expected
     print(f"✅ Complex function: {decimal_coeff} * {image} = {result}")
 
@@ -283,18 +285,18 @@ def test_original_failing_case():
     v = Function(name="V")
     decimal_coeff = Decimal(p=1, q=2)
     image = v(n)
-    
+
     # This should not raise NotImplementedError anymore
     mul_expr = Mul(l=decimal_coeff, r=image)
     result = mul_expr.simplified()
-    
+
     # Verify it's properly simplified
     assert isinstance(result, Mul)
     assert result.l == decimal_coeff
     assert result.r == image
-    
+
     # Verify LaTeX works
     latex_output = result.latex()
     assert latex_output == "0.5V(n)"
-    
+
     print(f"✅ Original failing case fixed: {result} → {latex_output}")
