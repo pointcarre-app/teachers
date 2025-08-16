@@ -34,6 +34,16 @@
   - Example: `Integer(n=12345).as_decimal(significant_figures=3)` → `Decimal` formatted as "1.23×10⁴"
   - Useful for physics/chemistry problems requiring precise decimal representation
 
+- [ ] **Factorial Support**: Add factorial operations for integer mathematics (FUTURE - way later)
+  - Implement `Factorial` class as a MathsObject subclass
+  - Support n! notation and computation
+  - Handle simplification of factorial expressions (e.g., n!/n = (n-1)!)
+  - Add LaTeX rendering for factorial notation
+  - Integrate with combinatorics functions (permutations, combinations)
+  - Example: `Factorial(n=5)` → `120` when evaluated, `5!` in LaTeX
+  - Useful for probability, statistics, and combinatorics problems
+  - NOTE: This is low priority - focus on core algebraic operations first
+
 # Edits Sel:
 
 ## **Starting Point**

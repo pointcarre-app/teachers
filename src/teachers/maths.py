@@ -1099,6 +1099,142 @@ class Interval(MathsObject):
 
 
 ##################################################
+# TERM GROUPING AND COLLECTION
+##################################################
+
+
+def group_terms(expr: MathsObject, *symbols: Symbol) -> MathsObject:
+    """
+    Group and collect terms in a mathematical expression by common factors.
+
+    This function uses SymPy's collect() to group terms with common factors,
+    particularly useful for polynomials, exponentials, logarithms, and growth formulas.
+
+    Args:
+        expr: The MathsObject expression to group
+        *symbols: Optional Symbol(s) to collect by. If not provided, collects by all symbols.
+
+    Returns:
+        A MathsObject with terms grouped and ordered (highest degree to lowest for polynomials)
+
+    Examples:
+        >>> x = Symbol(s='x')
+        >>> expr = x + Integer(n=2) * x + Integer(n=3)  # x + 2x + 3
+        >>> grouped = group_terms(expr)  # Returns: 3x + 3
+
+        >>> # Polynomial expansion result
+        >>> expanded = (Integer(n=3) * x + Integer(n=-8)) * (Integer(n=4) * x + Integer(n=-1))
+        >>> simplified = expanded.simplified()  # Gives mixed order terms
+        >>> grouped = group_terms(simplified)  # Returns: 12x² - 35x + 8 (proper polynomial form)
+
+        >>> # Works with exponentials and logarithms
+        >>> from sympy import exp, log
+        >>> # Will properly group e^x terms, log(x) terms, etc.
+    """
+    try:
+        # Get the SymPy expression
+        sympy_expr = expr.sympy_expr
+
+        # Determine which symbols to collect by
+        if symbols:
+            # Use provided symbols
+            sympy_symbols = [s.sympy_expr for s in symbols]
+        else:
+            # Collect by all free symbols in the expression
+            sympy_symbols = list(sympy_expr.free_symbols)
+            # Sort symbols alphabetically for consistent ordering
+            sympy_symbols.sort(key=lambda s: str(s))
+
+        # Apply SymPy's collect to group terms
+        if sympy_symbols:
+            # First expand to ensure we have a flat polynomial
+            expanded = sp.expand(sympy_expr)
+
+            # Then collect terms for each symbol
+            collected = sp.collect(expanded, sympy_symbols)
+
+            # Ensure the result is fully expanded (no nested multiplications)
+            collected = sp.expand(collected)
+        else:
+            # No symbols to collect by, just simplify
+            collected = sp.simplify(sympy_expr)
+
+        # Convert back to MathsObject
+        result = MathsObjectParser.from_sympy(collected)
+
+        return result
+
+    except Exception as e:
+        # If anything fails, return the original expression
+        # This ensures the function is safe to use in production
+        print(f"Warning: group_terms failed with error: {e}")
+        return expr
+
+
+##################################################
+# TERM GROUPING
+##################################################
+
+
+def group_terms(expr: MathsObject, symbol: Optional[Symbol] = None) -> MathsObject:
+    """
+    Group and collect like terms in a mathematical expression.
+    
+    This function uses SymPy's collect() to group terms with the same variables
+    and powers, returning a properly structured expression with terms ordered
+    by degree (highest to lowest for polynomials).
+    
+    Args:
+        expr: The MathsObject expression to group
+        symbol: Optional specific symbol to collect by. If None, collects by all symbols.
+    
+    Returns:
+        A MathsObject with grouped terms
+        
+    Examples:
+        >>> x = Symbol(s='x')
+        >>> expr = x + Integer(n=2) * x + Integer(n=3)
+        >>> grouped = group_terms(expr)  # Returns 3x + 3
+        
+        >>> # Polynomial expansion result
+        >>> expr = (Integer(n=3)*x + Integer(n=-8)) * (Integer(n=4)*x + Integer(n=-1))
+        >>> simplified = expr.simplified()
+        >>> grouped = group_terms(simplified)  # Returns 12x² - 35x + 8
+    """
+    try:
+        # Get the SymPy expression
+        sympy_expr = expr.sympy_expr
+        
+        # If a specific symbol is provided, use its SymPy representation
+        if symbol is not None:
+            sympy_symbol = symbol.sympy_expr
+            # Collect terms by the specified symbol
+            collected = sp.collect(sympy_expr, sympy_symbol)
+        else:
+            # Collect by all free symbols in the expression
+            free_symbols = sympy_expr.free_symbols
+            if free_symbols:
+                # Collect by all symbols
+                collected = sp.collect(sympy_expr, list(free_symbols))
+            else:
+                # No symbols to collect, just simplify
+                collected = sympy_expr
+        
+        # Expand and simplify to ensure proper form
+        collected = sp.expand(collected)
+        
+        # Convert back to MathsObject
+        result = MathsObjectParser.from_sympy(collected)
+        
+        return result
+        
+    except Exception:
+        # If anything goes wrong, return the original expression
+        # This ensures the function is safe to use in production
+        return expr
+
+
+##################################################
 # PARSER
 ##################################################
 

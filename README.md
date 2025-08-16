@@ -34,11 +34,12 @@ PCA Teachers is designed for educational platforms that need to:
 - **📝 LaTeX Generation**: Clean, properly formatted mathematical notation
 - **🎯 Correction Engine**: Automated student response validation
 - **🔧 Educational Tools**: Specialized formatting for French mathematical education
-- **🧪 100% Test Coverage**: Comprehensive test suite with 185+ tests
+- **🧪 100% Test Coverage**: Comprehensive test suite with 205+ tests
 - **🆕 Decimal × Function Support**: NEW! Seamless multiplication of decimal coefficients with function applications  
 - **🆕 Pi (π) Mathematical Constant**: NEW! Complete Pi support for geometric formulas and calculations
 - **🔧 Fraction Symbol/Mul Fix**: FIXED! Symbol over multiplication simplification (V/(π*r²)) now works perfectly
 - **🚀 Polynomial Expansion**: NEW! Add × Add multiplication with FOIL expansion ((3x-8)(4x-1)) and SymPy fallback
+- **📊 Term Grouping**: NEW! group_terms function for collecting like terms in standard polynomial form
 
 ## 🚀 Live Demo
 
@@ -450,6 +451,56 @@ def generator_scenario():
 
 result = generator_scenario()
 print(f"Generator result: {result.latex()}")
+```
+
+#### Term Grouping - NEW in v0.0.15!
+```python
+# group_terms function for collecting like terms in standard polynomial form
+# Essential for educational content generators
+
+# Basic polynomial term grouping
+x = tm.Symbol(s="x")
+expr = x + tm.Integer(n=2) * x + tm.Integer(n=3)
+grouped = tm.group_terms(expr)
+print(grouped.latex())  # "3x + 3"
+
+# Educational generator scenario (exact user case)
+a1, b1 = tm.Integer(n=3), tm.Integer(n=-8)
+a2, b2 = tm.Integer(n=4), tm.Integer(n=-1)
+expr = (a1 * x + b1) * (a2 * x + b2)  # (3x - 8)(4x - 1)
+simplified = expr.simplified()         # Polynomial expansion
+grouped = tm.group_terms(simplified)   # Standard form
+print(grouped.latex())  # "12x² - 35x + 8" ✅
+
+# Higher degree polynomials
+x_cubed = x ** tm.Integer(n=3)
+x_squared = x ** tm.Integer(n=2)
+expr = x_cubed + tm.Integer(n=2) * x_squared + x_cubed + tm.Integer(n=3) * x + x_squared + tm.Integer(n=5)
+grouped = tm.group_terms(expr)
+print(grouped.latex())  # "2x³ + 3x² + 3x + 5"
+
+# Multiple variables
+y = tm.Symbol(s="y")
+expr = x * y + tm.Integer(n=2) * x + y + tm.Integer(n=3) * x * y + x + tm.Integer(n=-2) * y
+grouped = tm.group_terms(expr)
+print(grouped.latex())  # "4xy + 3x - y"
+
+# Specify collection symbol
+expr = tm.Integer(n=2) * x * y + tm.Integer(n=3) * x + tm.Integer(n=4) * y
+grouped_by_x = tm.group_terms(expr, x)  # Group by x
+grouped_by_y = tm.group_terms(expr, y)  # Group by y
+
+# Works with fractions and decimals
+half = tm.Fraction(p=1, q=2)
+third = tm.Fraction(p=1, q=3)
+expr = half * x + third * x + tm.Integer(n=1)
+grouped = tm.group_terms(expr)  # Combines fractional coefficients
+
+# Exponential and logarithmic terms (for growth formulas)
+exp_func = tm.Function(name="exp")
+log_func = tm.Function(name="log")
+expr = tm.Integer(n=2) * exp_func(x) + tm.Integer(n=3) * exp_func(x) + log_func(x)
+grouped = tm.group_terms(expr)  # Groups exponential terms
 ```
 
 #### Powers
@@ -946,7 +997,7 @@ python -m unittest tests.test_latex_output
 
 ### Test Coverage
 
-- **155+ tests total** with **100% pass rate**
+- **205+ tests total** with **100% pass rate**
 - **Unit tests**: Individual object behavior
 - **Integration tests**: Cross-object interactions  
 - **LaTeX tests**: Output formatting validation
@@ -969,6 +1020,7 @@ tests/
 ├── test_fraction_symbol_mul.py  # Fraction Symbol/Mul simplification tests
 ├── test_polynomial_expansion.py # Polynomial expansion and FOIL tests
 ├── test_sympy_fallback.py    # SymPy fallback and edge case tests
+├── test_group_terms.py       # Term grouping and collection tests
 ├── test_deserialization_from_sympy.py  # SymPy conversion tests
 └── test_deserialization_from_formal.py # Parser tests
 ```

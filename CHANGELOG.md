@@ -6,6 +6,44 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.0.15] - 2025-01-16
+
+### Added
+- **group_terms Function**: New mathematical term grouping and collection functionality
+  - Collects and groups like terms in polynomial and algebraic expressions
+  - Uses SymPy's `collect()` for mathematically correct term grouping
+  - Supports single and multi-variable polynomials
+  - Handles exponential and logarithmic terms (via Function objects)
+  - Orders polynomial terms by degree (highest to lowest)
+  - Essential for educational content generators requiring standard polynomial form
+  - Resolves the `AttributeError: module 'teachers.maths' has no attribute 'group_terms'` issue
+
+### Enhanced
+- **Comprehensive Test Suite**: Added `test_group_terms.py` with 20 test cases
+  - Tests polynomial grouping, multi-variable expressions, fractions, decimals, Pi
+  - Tests exponential and logarithmic term grouping for growth formula comparisons
+  - Validates LaTeX output quality and mathematical equivalence preservation
+  - Includes idempotency and error handling tests
+  - Tests the exact failing user scenario from educational generators
+
+- **Playground Examples**: Already includes group_terms demonstrations
+  - Educational generator scenario: `(3x - 8)(4x - 1)` → `12x² - 35x + 8`
+  - Simple polynomial grouping examples
+  - Higher degree polynomial demonstrations
+  - Multi-variable expression grouping
+
+### Technical Details
+- **Implementation**: Safe wrapper around SymPy's `collect()` and `expand()` functions
+  - Automatic symbol detection for collection
+  - Optional specific symbol parameter for targeted grouping
+  - Graceful error handling with fallback to original expression
+  - Full integration with MathsObject ecosystem and LaTeX rendering
+
+### Fixed
+- **Generator Compatibility**: Educational content generators now work with polynomial expansion + grouping
+  - The exact code pattern `expr.simplified()` followed by `tm.group_terms()` now works
+  - Produces standard polynomial form required by educational materials
+
 ## [0.0.14] - 2025-01-16
 
 ### Fixed
@@ -582,7 +620,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.14...HEAD
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.15...HEAD
+[0.0.15]: https://github.com/pointcarre-app/teachers/compare/0.0.14...0.0.15
 [0.0.14]: https://github.com/pointcarre-app/teachers/compare/0.0.13...0.0.14
 [0.0.13]: https://github.com/pointcarre-app/teachers/compare/0.0.12...0.0.13
 [0.0.12]: https://github.com/pointcarre-app/teachers/compare/0.0.11...0.0.12

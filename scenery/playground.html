@@ -1281,5 +1281,137 @@ print("Negative integer exponents now correctly produce Fractions instead of try
             initializeManager();
         });
     </script>
-  </body>
+
+    <!-- Group Terms Example (added dynamically via JavaScript) -->
+    <script>
+        // Add group_terms example to the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Find the container with polynomial expansion example
+            const container = document.querySelector('.container');
+            if (container) {
+                const groupTermsHTML = `
+                    <!-- Group Terms Example -->
+                    <div class="example-card" id="group_terms">
+                        <div class="card-header">
+                            <h3>Term Grouping & Collection</h3>
+                            <span class="version-badge">v0.0.15</span>
+                        </div>
+                        <div class="card-content">
+                            <p class="description">
+                                The <code>group_terms</code> function collects and groups mathematical terms by common factors,
+                                particularly useful for polynomials, exponentials, logarithms, and growth formulas.
+                                It ensures proper polynomial form with terms ordered from highest to lowest degree.
+                            </p>
+                            
+                            <div class="code-section">
+                                <h4>Python Code:</h4>
+                                <pre><code class="language-python">import teachers.maths as tm
+
+# Example 1: User's generator scenario - polynomial expansion and grouping
+print("📚 Educational Generator Scenario")
+print("=" * 50)
+
+x = tm.Symbol(s="x")
+a1, b1 = tm.Integer(n=3), tm.Integer(n=-8)
+a2, b2 = tm.Integer(n=4), tm.Integer(n=-1)
+
+# Create polynomial expression: (3x - 8)(4x - 1)
+expr = (a1 * x + b1) * (a2 * x + b2)
+print(f"Expression: {expr.latex()}")
+
+# Simplify (performs FOIL expansion)
+simplified = expr.simplified()
+print(f"Simplified: {simplified.latex()}")
+
+# Group terms into proper polynomial form
+grouped = tm.group_terms(simplified)
+print(f"Grouped: {grouped.latex()}")
+
+print("\\n📊 Simple Polynomial Grouping")
+print("=" * 50)
+
+# Example 2: Collecting like terms
+expr2 = x + tm.Integer(n=2) * x + tm.Integer(n=3)
+print(f"Original: {expr2.latex()}")  # x + 2x + 3
+
+grouped2 = tm.group_terms(expr2)
+print(f"Grouped: {grouped2.latex()}")  # 3x + 3
+
+print("\\n🔬 Higher Degree Polynomials")
+print("=" * 50)
+
+# Example 3: Cubic polynomial with mixed terms
+x_cubed = x ** tm.Integer(n=3)
+x_squared = x ** tm.Integer(n=2)
+
+expr3 = x_cubed + tm.Integer(n=2) * x_squared + x_cubed + tm.Integer(n=3) * x + x_squared + tm.Integer(n=5)
+print(f"Original: {expr3.latex()}")
+
+grouped3 = tm.group_terms(expr3)
+print(f"Grouped: {grouped3.latex()}")  # 2x³ + 3x² + 3x + 5
+
+print("\\n🌐 Multiple Variables")
+print("=" * 50)
+
+# Example 4: Multi-variable polynomial
+y = tm.Symbol(s="y")
+expr4 = x * y + tm.Integer(n=2) * x + y + tm.Integer(n=3) * x * y + x + tm.Integer(n=-2) * y
+print(f"Original: {expr4.latex()}")
+
+grouped4 = tm.group_terms(expr4)
+print(f"Grouped: {grouped4.latex()}")  # 4xy + 3x - y
+
+print("\\n✅ All grouping operations completed successfully!")
+print("🎓 Ready for educational content generation!")</code></pre>
+                            </div>
+                            
+                            <div class="output-section">
+                                <h4>Expected Output:</h4>
+                                <pre><code>📚 Educational Generator Scenario
+==================================================
+Expression: (3x - 8) × (4x - 1)
+Simplified: x(-35 + 12x) + 8
+Grouped: 12x² - 35x + 8
+
+📊 Simple Polynomial Grouping
+==================================================
+Original: x + 2x + 3
+Grouped: 3x + 3
+
+🔬 Higher Degree Polynomials
+==================================================
+Original: x³ + 2x² + x³ + 3x + x² + 5
+Grouped: 2x³ + 3x² + 3x + 5
+
+🌐 Multiple Variables
+==================================================
+Original: xy + 2x + y + 3xy + x - 2y
+Grouped: 4xy + 3x - y
+
+✅ All grouping operations completed successfully!
+🎓 Ready for educational content generation!</code></pre>
+                            </div>
+                            
+                            <div class="latex-output">
+                                <h4>LaTeX Rendering:</h4>
+                                <div class="latex-content">
+                                    <p>Grouped polynomial: \\(12x^2 - 35x + 8\\)</p>
+                                    <p>Simple grouping: \\(3x + 3\\)</p>
+                                    <p>Cubic polynomial: \\(2x^3 + 3x^2 + 3x + 5\\)</p>
+                                    <p>Multi-variable: \\(4xy + 3x - y\\)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add the new example after the last example card
+                const lastCard = container.querySelector('.example-card:last-of-type');
+                if (lastCard) {
+                    lastCard.insertAdjacentHTML('afterend', groupTermsHTML);
+                }
+            }
+        });
+    </script>
+</body>
 </html>
