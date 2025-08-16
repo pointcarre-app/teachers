@@ -245,6 +245,10 @@ class Integer(MathsObject):
         return self
 
     @property
+    def as_decimal(self):
+        return Decimal(x=float(self.n))
+
+    @property
     def primefactors(self):
         return primefactors(self.n)
 
@@ -285,9 +289,13 @@ class Decimal(MathsObject):
             return f"Decimal(p={self.p}, q={self.q})"
 
     def latex(self):
-        latex = str(self.eval())
-        latex = latex.replace(".", ",")
-        return latex
+        value = self.eval()
+        # Check if it's a whole number
+        if value.is_integer():
+            return str(int(value))
+        else:
+            # Use period as decimal separator, not comma
+            return str(value)
 
     def eval(self):
         if self.x is not None:

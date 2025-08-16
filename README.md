@@ -207,6 +207,16 @@ print(num.eval())   # 42
 # Negative numbers
 neg = tm.Integer(n=-17)
 print(neg.latex())  # "-17"
+
+# as_decimal property for clean decimal conversion
+integer = tm.Integer(n=5)
+decimal = integer.as_decimal
+print(decimal.latex())  # "5" (clean, no decimal point)
+
+# Useful for expressions that may result in Integer or Fraction
+result = (some_fraction * some_integer).simplified()
+clean_decimal = result.as_decimal  # Works for both Integer and Fraction results
+print(clean_decimal.latex())  # Always clean decimal formatting
 ```
 
 #### Symbol
@@ -223,13 +233,17 @@ print(alpha.latex())  # "α"
 
 #### Decimal
 ```python
-# European formatting (comma decimal separator)
+# Clean decimal formatting (period separator, no unnecessary decimals)
 d1 = tm.Decimal(x=3.14)
-print(d1.latex())  # "3,14"
+print(d1.latex())  # "3.14"
+
+# Whole numbers without decimal points
+d2 = tm.Decimal(x=5.0)
+print(d2.latex())  # "5" (not "5.0")
 
 # Fraction-based decimals
-d2 = tm.Decimal(p=5, q=2)  # 5/2 = 2.5
-print(d2.latex())  # "2,5"
+d3 = tm.Decimal(p=5, q=2)  # 5/2 = 2.5
+print(d3.latex())  # "2.5"
 ```
 
 #### Infinity
@@ -702,7 +716,9 @@ print(complex_expr.latex())
 ✅ **Clean Output**: `\dfrac{1}{2}` not `\\\\dfrac\\{1\\}\\{2\\}`  
 ✅ **Proper Braces**: `x^{3}` not `x^\\{3\\}`  
 ✅ **Smart Parentheses**: `\left(x + y\right)^{2}`  
-✅ **Consistent Spacing**: `\lbracket 0; 5\rbracket`
+✅ **Consistent Spacing**: `\lbracket 0; 5\rbracket`  
+✅ **Clean Decimals**: `5` not `5.0`, `3.14` not `3,14`  
+✅ **International Format**: Period decimal separator for global compatibility
 
 ## 🎯 Correction System
 

@@ -46,6 +46,7 @@ const sourceFiles = [
 const testFiles = [
     "tests/test_add_simplification.py",
     "tests/test_mul_simplification.py",
+    "tests/test_as_decimal.py",
     "tests/test_complex_operations.py",
     "tests/test_deserialization_from_formal.py",
     "tests/test_deserialization_from_sympy.py",
@@ -107,12 +108,32 @@ async function runTest(testFile, index) {
     const summaryId = `summary-${moduleName}`;
     const detailsId = `details-${moduleName}`;
 
+    // Get test description based on filename
+    const getTestDescription = (fileName) => {
+        const descriptions = {
+            'test_complex_operations.py': 'Complex mathematical operations and interactions',
+            'test_deserialization_from_formal.py': 'Formal representation parsing and deserialization',
+            'test_deserialization_from_sympy.py': 'SymPy expression conversion and integration',
+            'test_generator.py': 'Mathematical content generation utilities',
+            'test_maths_objects.py': 'Core mathematical object creation and validation',
+            'test_latex_output.py': 'LaTeX generation and formatting',
+            'test_interval.py': 'Mathematical intervals and set operations',
+            'test_corrector.py': 'Student response correction and feedback',
+            'test_formatting.py': 'Educational formatting standards (French)',
+            'test_eval_methods.py': 'Numerical evaluation and computation',
+            'test_inf.py': 'Infinity handling and mathematical limits',
+            'test_maths_collection_sympy.py': 'Mathematical collections and SymPy integration'
+        };
+        return descriptions[fileName] || 'Mathematical framework functionality';
+    };
+
+    const description = getTestDescription(testFileName);
     const row = document.createElement("tr");
     row.id = rowId;
     row.innerHTML = `
-        <td style="text-align: right;vertical-align: top;">${index + 2}️⃣</td>
-        <td style="text-align: left;vertical-align: top;"><code>teachers</code></td>
-        <td style="text-align: left;vertical-align: top;">${testFileName}</td>
+        <td style="text-align: right;vertical-align: top;">${index + 8}️⃣</td>
+        <td style="text-align: left;vertical-align: top;"><code>${testFileName}</code></td>
+        <td style="text-align: left;vertical-align: top;"><code>teachers</code><br/>${description}</td>
         <td id="${statusId}" class="test-status-pending">⏳</td>
     `;
     tbody.appendChild(row);
@@ -441,7 +462,38 @@ try:
     except Exception as e:
         results.append({"id": "status-teachers-mul-simplification", "status": "fail", "error": str(e)})
     
-    # Test 5: Original scenario
+    # Test 5: as_decimal property (Integer.as_decimal and clean Decimal.latex())
+    try:
+        # Test Integer.as_decimal property
+        integer = tm.Integer(n=5)
+        decimal_result = integer.as_decimal
+        if isinstance(decimal_result, tm.Decimal):
+            # Test clean LaTeX output for whole numbers (no decimal point)
+            latex_output = decimal_result.latex()
+            if latex_output == "5":  # Should be "5", not "5.0" or "5,0"
+                # Test fractional decimal LaTeX (should use period, not comma)
+                frac_decimal = tm.Decimal(x=3.25)
+                frac_latex = frac_decimal.latex()
+                if frac_latex == "3.25" and "," not in frac_latex:
+                    # Test the original user scenario: (p * n1).simplified().as_decimal
+                    p = tm.Fraction(p=tm.Integer(n=146), q=tm.Integer(n=10))  # 14.6
+                    n1 = tm.Integer(n=3)
+                    user_result = (p * n1).simplified()
+                    user_decimal = user_result.as_decimal  # This was failing before
+                    if hasattr(user_result, 'as_decimal') and isinstance(user_decimal, tm.Decimal):
+                        results.append({"id": "status-teachers-as-decimal", "status": "pass"})
+                    else:
+                        results.append({"id": "status-teachers-as-decimal", "status": "fail", "error": "User scenario failed"})
+                else:
+                    results.append({"id": "status-teachers-as-decimal", "status": "fail", "error": "Fractional LaTeX failed"})
+            else:
+                results.append({"id": "status-teachers-as-decimal", "status": "fail", "error": "Whole number LaTeX failed"})
+        else:
+            results.append({"id": "status-teachers-as-decimal", "status": "fail", "error": "as_decimal not Decimal type"})
+    except Exception as e:
+        results.append({"id": "status-teachers-as-decimal", "status": "fail", "error": str(e)})
+    
+    # Test 6: Original scenario
     try:
         gen = tg.MathsGenerator(0)
         n1 = gen.random_integer(1, 4)
@@ -471,6 +523,7 @@ except Exception as e:
         {"id": "status-teachers-decimal-conv", "status": "fail", "error": error_msg},
         {"id": "status-teachers-add-simplification", "status": "fail", "error": error_msg},
         {"id": "status-teachers-mul-simplification", "status": "fail", "error": error_msg},
+        {"id": "status-teachers-as-decimal", "status": "fail", "error": error_msg},
         {"id": "status-teachers-original-bug", "status": "fail", "error": error_msg}
     ]})
 `;
@@ -509,7 +562,7 @@ try {
         }
     } else {
         // If tests failed to run, mark them as failed
-        ['status-teachers-negative-exp', 'status-teachers-decimal-conv', 'status-teachers-add-simplification', 'status-teachers-mul-simplification', 'status-teachers-original-bug'].forEach(id => {
+        ['status-teachers-negative-exp', 'status-teachers-decimal-conv', 'status-teachers-add-simplification', 'status-teachers-mul-simplification', 'status-teachers-as-decimal', 'status-teachers-original-bug'].forEach(id => {
             const statusCell = document.getElementById(id);
             if (statusCell) {
                 statusCell.className = 'test-status-fail';
@@ -520,7 +573,7 @@ try {
     }
 } catch (error) {
     console.error("Error running negative exponent tests:", error);
-    ['status-teachers-negative-exp', 'status-teachers-decimal-conv', 'status-teachers-add-simplification', 'status-teachers-mul-simplification', 'status-teachers-original-bug'].forEach(id => {
+    ['status-teachers-negative-exp', 'status-teachers-decimal-conv', 'status-teachers-add-simplification', 'status-teachers-mul-simplification', 'status-teachers-as-decimal', 'status-teachers-original-bug'].forEach(id => {
         const statusCell = document.getElementById(id);
         if (statusCell) {
             statusCell.className = 'test-status-fail';
@@ -529,10 +582,21 @@ try {
     });
 }
 
-// Run all other tests
-console.log("Running unit tests...");
-for (const [index, testFile] of testFiles.entries()) {
-    console.log(`Running test ${index + 1}/${testFiles.length}: ${testFile}`);
+// Run all individual test files (but exclude duplicates that are already in Unit Tests)
+console.log("Running individual test files...");
+const individualTests = testFiles.filter(testFile => {
+    // Exclude tests that are already covered in the Unit Tests section above
+    const excludedTests = [
+        'tests/test_negative_exponents.py',
+        'tests/test_add_simplification.py', 
+        'tests/test_mul_simplification.py',
+        'tests/test_as_decimal.py'
+    ];
+    return !excludedTests.includes(testFile);
+});
+
+for (const [index, testFile] of individualTests.entries()) {
+    console.log(`Running individual test ${index + 1}/${individualTests.length}: ${testFile}`);
     await runTest(testFile, index);
 }
 console.log("All tests completed.");

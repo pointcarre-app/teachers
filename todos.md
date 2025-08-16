@@ -24,6 +24,15 @@
 
 - [ ] #sel: fix tests for dirty package import via filesystem
 
+## Future Features
+
+- [ ] **Significant Figures Support**: Enhance as_decimal property with significant figures formatting
+  - Add optional `significant_figures` parameter to `as_decimal` property
+  - Implement rounding/formatting based on sig figs for `Integer.as_decimal()` 
+  - Extend to other numeric types (`Fraction.as_decimal`, `Decimal` formatting)
+  - Add LaTeX formatting options for scientific notation when needed
+  - Example: `Integer(n=12345).as_decimal(significant_figures=3)` → `Decimal` formatted as "1.23×10⁴"
+  - Useful for physics/chemistry problems requiring precise decimal representation
 
 # Edits Sel:
 

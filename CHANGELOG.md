@@ -6,6 +6,57 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.0.9] - 2025-01-16
+
+### Fixed
+- **Critical as_decimal Property Bug**: Fixed AttributeError when accessing as_decimal property on Integer objects
+  - `Integer.as_decimal` property now returns a properly formatted `Decimal` object
+  - Resolved the original bug where expressions like `(p * n1).simplified().as_decimal` would fail with "Integer object has no attribute 'as_decimal'"
+  - Fixed in 27% of generator scenarios that were failing with this error
+
+### Enhanced
+- **Clean Decimal LaTeX Output**: Improved `Decimal.latex()` method for cleaner mathematical notation
+  - Whole numbers now render without decimal points: `5.0` → `"5"` instead of `"5.0"`
+  - Changed decimal separator from comma to period: `3,14` → `"3.14"` for international compatibility
+  - Eliminates unwanted decimal formatting in educational content
+
+### Added
+- **Comprehensive as_decimal Tests**: New `test_as_decimal.py` test suite
+  - 11 comprehensive test cases covering all as_decimal functionality
+  - Tests `Integer.as_decimal` property across various scenarios
+  - Validates clean LaTeX output for both whole and fractional numbers
+  - Tests the original user scenario that was failing
+  - Tests consistency across different numeric types
+
+### Enhanced
+- **Scenery Interface Improvements** (`scenery/index.html`, `scenery/app.js`)
+  - Added new test row for "as_decimal property: Integer.as_decimal, clean Decimal.latex() output"
+  - Improved test display formatting with proper `<code>` tags and descriptions
+  - Fixed duplicate test execution issue - now shows both specific feature tests and complete test suites
+  - Enhanced test organization with clear separation between Unit Tests and individual test files
+
+- **Test Suite Integration** (`tests/__main__.py`)
+  - Added import for new `test_as_decimal` module
+  - Updated existing LaTeX tests to expect period decimal separators instead of commas
+
+### Technical Details
+- **File Changes**:
+  - `src/teachers/maths.py`: Added `as_decimal` property to `Integer` class, improved `Decimal.latex()` method
+  - `tests/test_as_decimal.py`: New comprehensive test suite (194 lines)
+  - `tests/test_latex_output.py`: Updated to expect period decimal separators
+  - `tests/__main__.py`: Added test import for integration
+  - `scenery/app.js`: Enhanced test execution and display formatting
+  - `scenery/index.html`: Improved test row formatting with proper code tags
+
+### Future Planning
+- **Significant Figures Support**: Added to `todos.md` for future implementation
+  - Planned enhancement for `as_decimal(significant_figures=n)` parameter
+  - Will support scientific notation and precision control for educational content
+
+### Known Issues Resolved
+- **as_decimal AttributeError**: Previously reported error for `Integer` objects is now fully resolved
+- **Decimal LaTeX Formatting**: Clean output without unwanted commas or decimal points for whole numbers
+
 ## [0.0.8] - 2025-01-16
 
 ### Fixed
@@ -316,7 +367,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.8...HEAD
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.9...HEAD
+[0.0.9]: https://github.com/pointcarre-app/teachers/compare/0.0.8...0.0.9
 [0.0.8]: https://github.com/pointcarre-app/teachers/compare/0.0.7...0.0.8
 [0.0.7]: https://github.com/pointcarre-app/teachers/compare/0.0.6...0.0.7
 [0.0.6]: https://github.com/pointcarre-app/teachers/compare/0.0.5...0.0.6

@@ -86,17 +86,17 @@ class TestLatexOutput(unittest.TestCase):
         - Different decimal representations
         - Formatting consistency
 
-        Ensures decimals follow European mathematical conventions.
+        Ensures decimals use period as decimal separator (no commas).
         """
         # Test simple decimal with x parameter
         d1 = tm.Decimal(x=3.14)
         latex_output = d1.latex()
-        self.assertIn("3,14", latex_output)  # European format
+        self.assertIn("3.14", latex_output)  # Period format (no commas)
 
         # Test decimal with p/q parameters
         d2 = tm.Decimal(p=5, q=2)
         latex_output = d2.latex()
-        self.assertIn("2,5", latex_output)  # Should be 2.5 → 2,5
+        self.assertIn("2.5", latex_output)  # Should be 2.5 with period
 
         # Test zero decimal
         d3 = tm.Decimal(x=0.0)

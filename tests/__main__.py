@@ -7,6 +7,7 @@ from tests.test_deserialization_from_formal import *
 from tests.test_deserialization_from_sympy import *
 from tests.test_add_simplification import *
 from tests.test_mul_simplification import *
+from tests.test_as_decimal import *
 
 
 if __name__ == "__main__":
