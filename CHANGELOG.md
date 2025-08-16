@@ -6,6 +6,46 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.0.7] - 2025-01-16
+
+### Fixed
+- **Critical Add Simplification Bug**: Fixed NotImplementedError when simplifying mixed numeric type additions
+  - `Add.simplified()` now correctly handles `Integer + Decimal` combinations in both orders
+  - Added support for `Decimal + Fraction` combinations in both orders  
+  - Added support for `Decimal + Decimal` combinations
+  - Resolved the original bug where expressions like `10^4 + Decimal(0.0001) + Fraction(1/10)` would fail
+  - All combinations now return appropriate `Decimal` objects with computed results
+
+### Added
+- **Comprehensive Add Simplification Tests**: New `test_add_simplification.py` test suite
+  - 12 comprehensive test cases covering all mixed numeric type combinations
+  - Tests for Integer+Decimal, Decimal+Fraction, and Decimal+Decimal operations
+  - Validates both p/q and x forms of Decimal objects
+  - Tests edge cases including zero values, large numbers, and nested expressions
+  - Validates the complete fix for the original problematic scenario
+
+### Enhanced
+- **Scenery Interface** (`scenery/index.html`, `scenery/app.js`)
+  - Added new test row for "Add simplification: Integer+Decimal, Decimal+Fraction combinations"
+  - Updated test execution logic to include the new Add simplification validation
+  - Enhanced UI styling with improved font family (Segoe UI)
+  - Fixed width layout for better consistency
+
+- **Test Suite Integration** (`tests/__main__.py`)
+  - Added import for new `test_add_simplification` module
+  - Ensures comprehensive test coverage for the Add simplification fix
+
+### Technical Details
+- **File Changes**:
+  - `src/teachers/maths.py`: Core fix for Add simplification with mixed numeric types (lines 412-436)
+  - `tests/test_add_simplification.py`: New comprehensive test suite (203 lines)
+  - `tests/__main__.py`: Added test import for integration
+  - `scenery/app.js`: Updated test execution and error handling
+  - `scenery/index.html`: Added UI row and improved styling
+
+### Known Issues Resolved
+- **Add Simplification**: Previously reported NotImplementedError for Integer + Decimal combinations is now fully resolved
+
 ## [0.0.6] - 2025-01-16
 
 ### Fixed
@@ -235,7 +275,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.6...HEAD
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.7...HEAD
+[0.0.7]: https://github.com/pointcarre-app/teachers/compare/0.0.6...0.0.7
 [0.0.6]: https://github.com/pointcarre-app/teachers/compare/0.0.5...0.0.6
 [0.0.5]: https://github.com/pointcarre-app/teachers/compare/0.0.4...0.0.5
 [0.0.4]: https://github.com/pointcarre-app/teachers/compare/0.0.3...0.0.4

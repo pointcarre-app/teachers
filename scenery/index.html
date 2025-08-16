@@ -12,7 +12,8 @@
         body {
             margin: auto;
             padding: 20px;
-            width: 800px;
+            width: 1000px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         h2 {
@@ -33,7 +34,7 @@
         }
 
         table {
-            width: 100%;
+            max-width: 1200px;
             border-collapse: collapse;
             margin-top: 1rem;
         }
@@ -49,6 +50,7 @@
             padding: 8px;
             text-align: left;
             vertical-align: top;
+            overflow-x: scroll;
         }
 
         th {
@@ -134,7 +136,7 @@
   <body>
     <h1>Nagini x Teachers for Scenery</h1>
 
-    <nav style="margin: 20px 0; padding: 15px; background-color: #f0f8ff; border-radius: 5px;">
+    <nav style="margin: auto; padding: 15px; background-color: #f0f8ff; border-radius: 5px;">
       <h3 style="margin: 0 0 10px 0;">🧮 Interactive Demo Pages</h3>
       <a href="playground.html"
          style="display: inline-block;
@@ -202,6 +204,16 @@
         </tr>
         <tr>
           <td style="text-align: right;vertical-align: top;">4️⃣</td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>teachers.maths</code>
+          </td>
+          <td style="text-align: left;vertical-align: top;">
+            Add simplification: Integer+Decimal, Decimal+Fraction combinations
+          </td>
+          <td id="status-teachers-add-simplification" class="test-status-pending">⏳</td>
+        </tr>
+        <tr>
+          <td style="text-align: right;vertical-align: top;">5️⃣</td>
           <td style="text-align: left;vertical-align: top;">
             <code>teachers.generator</code>
           </td>

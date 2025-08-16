@@ -44,6 +44,7 @@ const sourceFiles = [
 ];
 
 const testFiles = [
+    "tests/test_add_simplification.py",
     "tests/test_complex_operations.py",
     "tests/test_deserialization_from_formal.py",
     "tests/test_deserialization_from_sympy.py",
@@ -391,7 +392,29 @@ try:
     except Exception as e:
         results.append({"id": "status-teachers-decimal-conv", "status": "fail", "error": str(e)})
     
-    # Test 3: Original scenario
+    # Test 3: Add simplification (Integer + Decimal, Decimal + Fraction)
+    try:
+        # Test Integer + Decimal
+        integer = tm.Integer(n=5)
+        decimal = tm.Decimal(p=1, q=4)  # 0.25
+        add_expr = integer + decimal
+        simplified = add_expr.simplified()
+        if isinstance(simplified, tm.Decimal) and simplified.x == 5.25:
+            # Test Decimal + Fraction
+            decimal2 = tm.Decimal(p=1, q=4)  # 0.25
+            fraction = tm.Fraction(p=tm.Integer(n=1), q=tm.Integer(n=2))  # 0.5
+            add_expr2 = decimal2 + fraction
+            simplified2 = add_expr2.simplified()
+            if isinstance(simplified2, tm.Decimal) and simplified2.x == 0.75:
+                results.append({"id": "status-teachers-add-simplification", "status": "pass"})
+            else:
+                results.append({"id": "status-teachers-add-simplification", "status": "fail", "error": "Decimal+Fraction failed"})
+        else:
+            results.append({"id": "status-teachers-add-simplification", "status": "fail", "error": "Integer+Decimal failed"})
+    except Exception as e:
+        results.append({"id": "status-teachers-add-simplification", "status": "fail", "error": str(e)})
+    
+    # Test 4: Original scenario
     try:
         gen = tg.MathsGenerator(0)
         n1 = gen.random_integer(1, 4)
@@ -419,6 +442,7 @@ except Exception as e:
     missive({"type": "batch_update", "results": [
         {"id": "status-teachers-negative-exp", "status": "fail", "error": error_msg},
         {"id": "status-teachers-decimal-conv", "status": "fail", "error": error_msg},
+        {"id": "status-teachers-add-simplification", "status": "fail", "error": error_msg},
         {"id": "status-teachers-original-bug", "status": "fail", "error": error_msg}
     ]})
 `;
@@ -457,7 +481,7 @@ try {
         }
     } else {
         // If tests failed to run, mark them as failed
-        ['status-teachers-negative-exp', 'status-teachers-decimal-conv', 'status-teachers-original-bug'].forEach(id => {
+        ['status-teachers-negative-exp', 'status-teachers-decimal-conv', 'status-teachers-add-simplification', 'status-teachers-original-bug'].forEach(id => {
             const statusCell = document.getElementById(id);
             if (statusCell) {
                 statusCell.className = 'test-status-fail';
@@ -468,7 +492,7 @@ try {
     }
 } catch (error) {
     console.error("Error running negative exponent tests:", error);
-    ['status-teachers-negative-exp', 'status-teachers-decimal-conv', 'status-teachers-original-bug'].forEach(id => {
+    ['status-teachers-negative-exp', 'status-teachers-decimal-conv', 'status-teachers-add-simplification', 'status-teachers-original-bug'].forEach(id => {
         const statusCell = document.getElementById(id);
         if (statusCell) {
             statusCell.className = 'test-status-fail';

@@ -409,6 +409,32 @@ class Add(MathsObject):
             case (Fraction(p, q), Integer(n)) | (Integer(n), Fraction(p, q)):
                 return Fraction(p=p + Integer(n=n) * q, q=q).simplified()
 
+            # Integer + Decimal combinations
+            case (Integer(n), Decimal(p, q, x)) | (Decimal(p, q, x), Integer(n)):
+                if x is not None:
+                    return Decimal(x=n + x)
+                else:
+                    return Decimal(x=n + (p / q))
+
+            # Decimal + Fraction combinations
+            case (Decimal(p1, q1, x1), Fraction(p2, q2)) | (Fraction(p2, q2), Decimal(p1, q1, x1)):
+                if x1 is not None:
+                    # Convert fraction to decimal and add
+                    frac_decimal = p2.eval() / q2.eval()
+                    return Decimal(x=x1 + frac_decimal)
+                else:
+                    # Convert both to decimal
+                    dec_value = p1 / q1
+                    frac_value = p2.eval() / q2.eval()
+                    return Decimal(x=dec_value + frac_value)
+
+            # Decimal + Decimal combinations
+            case Decimal(p1, q1, x1), Decimal(p2, q2, x2):
+                # Convert both to their decimal values and add
+                val1 = x1 if x1 is not None else p1 / q1
+                val2 = x2 if x2 is not None else p2 / q2
+                return Decimal(x=val1 + val2)
+
             case Add(l, r), Decimal(p, q, x):
                 if x:
                     return Add(l=l, r=Add(l=r, r=Decimal(x=x)))
