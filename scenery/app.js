@@ -481,7 +481,19 @@ try:
                     user_result = (p * n1).simplified()
                     user_decimal = user_result.as_decimal  # This was failing before
                     if hasattr(user_result, 'as_decimal') and isinstance(user_decimal, tm.Decimal):
-                        results.append({"id": "status-teachers-as-decimal", "status": "pass"})
+                        # Test Integer.as_percent property (new fix)
+                        test_integer = tm.Integer(n=4)
+                        percent_result = test_integer.as_percent
+                        if isinstance(percent_result, tm.Integer) and percent_result.n == 400:
+                            # Test user percent scenario: (n-1).simplified().as_percent
+                            n = tm.Integer(n=5)
+                            percent_scenario = (n - tm.Integer(n=1)).simplified().as_percent
+                            if isinstance(percent_scenario, tm.Integer) and percent_scenario.n == 400:
+                                results.append({"id": "status-teachers-as-decimal", "status": "pass"})
+                            else:
+                                results.append({"id": "status-teachers-as-decimal", "status": "fail", "error": "Percent scenario failed"})
+                        else:
+                            results.append({"id": "status-teachers-as-decimal", "status": "fail", "error": "as_percent failed"})
                     else:
                         results.append({"id": "status-teachers-as-decimal", "status": "fail", "error": "User scenario failed"})
                 else:

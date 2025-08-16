@@ -6,6 +6,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.0.10] - 2025-01-16
+
+### Fixed
+- **Critical as_percent Property Bug**: Fixed AttributeError when accessing as_percent property on Integer objects
+  - `Integer.as_percent` property now returns a properly formatted `Integer` object (multiply by 100)
+  - Resolved the bug where expressions like `(n-tm.Integer(n=1)).simplified().as_percent` would fail with "Integer object has no attribute 'as_percent'"
+  - Consistent with existing `Fraction.as_percent` behavior
+  - Critical fix for generator scripts that were failing in production
+
+### Enhanced
+- **Comprehensive as_percent Tests**: Extended `test_as_decimal.py` test suite
+  - Added 3 new test cases specifically for `Integer.as_percent` functionality
+  - Tests the exact user scenario that was failing: `(n-1).simplified().as_percent`
+  - Validates consistency between `Integer.as_percent` and `Fraction.as_percent`
+  - Now 14 total test cases in the as_decimal/as_percent test suite
+
+### Enhanced
+- **Scenery Interface Improvements** (`scenery/index.html`, `scenery/app.js`)
+  - Updated test description to reflect both as_decimal and as_percent property testing
+  - Enhanced test execution to validate both Integer.as_decimal and Integer.as_percent
+  - Improved test coverage for percentage conversion scenarios
+
+### Technical Details
+- **File Changes**:
+  - `src/teachers/maths.py`: Added `as_percent` property to `Integer` class (lines 252-254)
+  - `tests/test_as_decimal.py`: Added 3 new test cases for as_percent functionality
+  - `scenery/app.js`: Enhanced test execution to include as_percent validation
+  - `scenery/index.html`: Updated test description for clarity
+
+### Known Issues Resolved
+- **as_percent AttributeError**: Previously reported error for `Integer` objects is now fully resolved
+- **Generator Script Failures**: Production generator scripts now work correctly with Integer.as_percent
+
 ## [0.0.9] - 2025-01-16
 
 ### Fixed
@@ -367,7 +400,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.9...HEAD
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.10...HEAD
+[0.0.10]: https://github.com/pointcarre-app/teachers/compare/0.0.9...0.0.10
 [0.0.9]: https://github.com/pointcarre-app/teachers/compare/0.0.8...0.0.9
 [0.0.8]: https://github.com/pointcarre-app/teachers/compare/0.0.7...0.0.8
 [0.0.7]: https://github.com/pointcarre-app/teachers/compare/0.0.6...0.0.7

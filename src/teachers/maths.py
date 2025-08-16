@@ -249,6 +249,11 @@ class Integer(MathsObject):
         return Decimal(x=float(self.n))
 
     @property
+    def as_percent(self):
+        x = 100 * self.n
+        return Integer(n=x)
+
+    @property
     def primefactors(self):
         return primefactors(self.n)
 

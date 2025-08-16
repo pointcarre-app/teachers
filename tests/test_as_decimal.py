@@ -217,6 +217,60 @@ def test_no_comma_in_decimal_latex():
             assert float(latex_output) == value
 
 
+def test_integer_as_percent_property():
+    """Test that Integer objects have as_percent property."""
+    integer = Integer(n=4)
+
+    # Should have as_percent property
+    assert hasattr(integer, "as_percent")
+
+    # Should return an Integer object (since 4 * 100 = 400 is a whole number)
+    percent = integer.as_percent
+    assert isinstance(percent, Integer)
+
+    # Should have the correct value (multiply by 100)
+    assert percent.n == 400
+    assert percent.latex() == "400"
+
+
+def test_integer_as_percent_values():
+    """Test as_percent property with various integer values."""
+    test_cases = [
+        (0, 0),
+        (1, 100),
+        (2, 200),
+        (3, 300),
+        (4, 400),
+        (5, 500),
+        (-1, -100),
+        (-2, -200),
+    ]
+
+    for int_val, expected_percent in test_cases:
+        integer = Integer(n=int_val)
+        percent = integer.as_percent
+
+        assert percent.n == expected_percent
+        assert isinstance(percent, Integer)
+        assert percent.latex() == str(expected_percent)
+
+
+def test_user_percent_scenario():
+    """Test the exact user scenario that was failing."""
+    # From the user's code: (n-tm.Integer(n=1)).simplified().as_percent
+    n = Integer(n=5)
+    result = (n - Integer(n=1)).simplified()
+
+    # This should not raise AttributeError
+    percent_result = result.as_percent
+
+    # Should match the expected doctest result
+    assert isinstance(percent_result, Integer)
+    assert percent_result.n == 400
+    assert repr(percent_result) == "Integer(n=400)"
+    assert percent_result.latex() == "400"
+
+
 # Run tests individually for compatibility with existing test framework
 if __name__ == "__main__":
     test_functions = [
@@ -231,6 +285,9 @@ if __name__ == "__main__":
         test_consistency_with_fraction_as_decimal,
         test_decimal_types_consistency,
         test_no_comma_in_decimal_latex,
+        test_integer_as_percent_property,
+        test_integer_as_percent_values,
+        test_user_percent_scenario,
     ]
 
     passed = 0

@@ -213,10 +213,17 @@ integer = tm.Integer(n=5)
 decimal = integer.as_decimal
 print(decimal.latex())  # "5" (clean, no decimal point)
 
+# as_percent property for percentage conversion
+integer = tm.Integer(n=4)
+percent = integer.as_percent
+print(percent.latex())  # "400" (4 * 100)
+
 # Useful for expressions that may result in Integer or Fraction
 result = (some_fraction * some_integer).simplified()
 clean_decimal = result.as_decimal  # Works for both Integer and Fraction results
+clean_percent = result.as_percent   # Works for both Integer and Fraction results
 print(clean_decimal.latex())  # Always clean decimal formatting
+print(clean_percent.latex())   # Always clean percentage formatting
 ```
 
 #### Symbol
