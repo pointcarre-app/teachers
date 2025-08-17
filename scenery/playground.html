@@ -329,6 +329,16 @@
           expanded = expr.simplified()  # FOIL expansion!
         </div>
       </div>
+
+      <div class="example-card" onclick="loadExample('interval')">
+        <div class="example-title">📏 Interval Edge Cases</div>
+        <div class="example-description">Test interval creation and validation</div>
+        <div class="example-preview">
+          # Tests EmptySet handling
+          # Root ordering fix
+          # Bounds validation
+        </div>
+      </div>
     </div>
 
     <h2>💻 Code Editor</h2>
@@ -1266,7 +1276,114 @@ print(f"Simplified: {expr.simplified().latex()}")
 print(f"Value: {expr.eval()}")
 
 print("\n✅ Success! The negative exponent bug has been fixed!")
-print("Negative integer exponents now correctly produce Fractions instead of trying to create Integers with float values.")`
+print("Negative integer exponents now correctly produce Fractions instead of trying to create Integers with float values.")`,
+
+                interval: `# Interval Edge Cases Testing
+import teachers.maths as tm
+
+print("=== Testing Interval Creation and Edge Cases ===")
+print("=" * 50)
+
+# Test 1: Basic valid interval
+print("\\n1. Basic Interval (2, 5):")
+a = tm.Integer(n=2)
+b = tm.Integer(n=5)
+interval = tm.Interval(l=a, r=b, left_open=True, right_open=True)
+print(f"  Interval: {interval.latex()}")
+print(f"  Left bound: {interval.l.latex()}")
+print(f"  Right bound: {interval.r.latex()}")
+print(f"  ✅ Valid interval created")
+
+# Test 2: Interval with infinity bounds (as used in generator)
+print("\\n2. Intervals with Infinity:")
+neg_inf = tm.Mul(l=tm.Integer(n=-1), r=tm.Inf())  # -∞
+pos_inf = tm.Inf()  # +∞
+five = tm.Integer(n=5)
+
+interval1 = tm.Interval(l=neg_inf, r=five, left_open=True, right_open=True)
+print(f"  (-∞, 5): {interval1.latex()}")
+
+interval2 = tm.Interval(l=five, r=pos_inf, left_open=True, right_open=True)
+print(f"  (5, +∞): {interval2.latex()}")
+
+interval3 = tm.Interval(l=neg_inf, r=pos_inf, left_open=True, right_open=True)
+print(f"  (-∞, +∞): {interval3.latex()}")
+print(f"  ✅ All infinity intervals work")
+
+# Test 3: Generator scenario with root ordering
+print("\\n3. Generator Scenario - Root Ordering:")
+print("  Simulating: f(x) = (a₁x + b₁)(a₂x + b₂)")
+
+# Test case from seed 3 that was failing
+a1 = tm.Integer(n=-3)
+b1 = tm.Integer(n=7)
+a2 = tm.Integer(n=8)
+b2 = tm.Integer(n=-6)
+
+print(f"  a₁={a1.n}, b₁={b1.n}, a₂={a2.n}, b₂={b2.n}")
+
+# Calculate roots: root = -(b/a)
+root1_num = tm.Mul(l=tm.Integer(n=-1), r=b1)
+root1 = tm.Fraction(p=root1_num, q=a1)  # 7/3
+
+root2_num = tm.Mul(l=tm.Integer(n=-1), r=b2)
+root2 = tm.Fraction(p=root2_num, q=a2)  # 3/4
+
+print(f"  Initial roots: root1={root1.latex()} ≈ {root1.eval():.3f}, root2={root2.latex()} ≈ {root2.eval():.3f}")
+
+# THE FIX: Ensure root1 <= root2 (not root1 >= root2)
+if root1.eval() > root2.eval():
+    root1, root2 = root2, root1
+    print(f"  After ordering: root1={root1.latex()} ≈ {root1.eval():.3f}, root2={root2.latex()} ≈ {root2.eval():.3f}")
+
+# Now all three interval types work correctly
+try:
+    interval_left = tm.Interval(l=neg_inf, r=root1, left_open=True, right_open=True)
+    print(f"  Type 0: (-∞, {root1.latex()}): ✅ Valid")
+    
+    interval_mid = tm.Interval(l=root1, r=root2, left_open=True, right_open=True)
+    print(f"  Type 1: ({root1.latex()}, {root2.latex()}): ✅ Valid")
+    
+    interval_right = tm.Interval(l=root2, r=pos_inf, left_open=True, right_open=True)
+    print(f"  Type 2: ({root2.latex()}, +∞): ✅ Valid")
+    
+except Exception as e:
+    print(f"  ❌ Error: {e}")
+
+# Test 4: Invalid intervals (should fail)
+print("\\n4. Testing Invalid Intervals:")
+try:
+    # This should fail: left > right
+    invalid = tm.Interval(l=b, r=a, left_open=True, right_open=True)  # 5 > 2
+    print(f"  ❌ Unexpected: Invalid interval (5, 2) was created!")
+except Exception as e:
+    print(f"  ✅ Expected error for (5, 2): EmptySet validation caught")
+
+try:
+    # This should fail: open interval with equal bounds
+    same = tm.Integer(n=3)
+    empty = tm.Interval(l=same, r=same, left_open=True, right_open=True)  # (3, 3)
+    print(f"  ❌ Unexpected: Empty interval (3, 3) was created!")
+except Exception as e:
+    print(f"  ✅ Expected error for (3, 3): EmptySet validation caught")
+
+# Test 5: Fraction with zero denominator
+print("\\n5. Testing Zero Denominator Protection:")
+try:
+    zero = tm.Integer(n=0)
+    five = tm.Integer(n=5)
+    bad_frac = tm.Fraction(p=five, q=zero)  # 5/0
+    print(f"  ❌ Unexpected: Division by zero allowed!")
+except Exception as e:
+    print(f"  ✅ Expected error: {str(e)[:50]}...")
+
+print("\\n" + "=" * 50)
+print("Summary:")
+print("✅ Interval bounds must satisfy left < right")
+print("✅ Open intervals with equal bounds return EmptySet")
+print("✅ Root ordering fix: ensure root1 <= root2 before creating intervals")
+print("✅ Zero denominator protection works correctly")
+print("\\n🎉 All interval edge cases handled properly!")`
             };
 
             if (examples[exampleType]) {

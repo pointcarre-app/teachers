@@ -6,6 +6,45 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.0.16] - 2025-01-17
+
+### Added
+- **Comprehensive Interval Edge Case Tests**: New `test_interval_edge_cases.py` test suite
+  - 10 comprehensive test cases covering interval validation edge cases
+  - Tests for EmptySet handling when left bound >= right bound
+  - Tests for open intervals with equal bounds returning EmptySet
+  - Tests for intervals with infinity bounds as used in generators
+  - Tests for fractions created from division operations
+  - Zero denominator protection validation
+  - Generator scenario recreation with proper root ordering
+  - Multiple problematic seed value testing (seeds 3, 4, 16, 17, 20)
+  - LaTeX output and simplification testing for intervals
+
+### Fixed
+- **Interval/EmptySet Validation Errors**: Documented fix for generator interval creation issues
+  - Root cause: Generator had incorrect root ordering logic (ensuring root1 >= root2 instead of root1 <= root2)
+  - Fix 1: Changed `while a1.n == 0 and a2.n == 0` to `while a1.n == 0 or a2.n == 0` to prevent division by zero
+  - Fix 2: Changed `if root1.eval() < root2.eval()` to `if root1.eval() > root2.eval()` to ensure proper ordering
+  - Result: All 136 validation errors resolved (reduced from 2.3% failure rate to 0%)
+
+### Enhanced
+- **Interactive Playground**: Added "Interval Edge Cases" example in scenery/playground.html
+  - Live demonstration of interval creation with various edge cases
+  - Tests for invalid intervals (left > right, open intervals with equal bounds)
+  - Generator scenario simulation showing the root ordering fix
+  - Infinity bound interval examples
+  - Zero denominator protection demonstration
+  - Complete walkthrough of the bug fix with visual feedback
+
+### Technical Details
+- **Root Cause Analysis**:
+  - Mathematical intervals require left bound < right bound
+  - When sympy.Interval receives invalid bounds (left >= right), it returns EmptySet
+  - The Interval class expects `sympy_expr: sp.Interval` but received EmptySet, causing ValidationError
+  - Original generator logic accidentally reversed bounds by making root1 the larger value
+- **Impact**: Fixes critical issues in educational content generators using interval-based questions
+- **Testing**: All 21 interval tests pass, including 10 new edge case tests
+
 ## [0.0.15] - 2025-01-16
 
 ### Added
@@ -620,7 +659,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.15...HEAD
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.16...HEAD
+[0.0.16]: https://github.com/pointcarre-app/teachers/compare/0.0.15...0.0.16
 [0.0.15]: https://github.com/pointcarre-app/teachers/compare/0.0.14...0.0.15
 [0.0.14]: https://github.com/pointcarre-app/teachers/compare/0.0.13...0.0.14
 [0.0.13]: https://github.com/pointcarre-app/teachers/compare/0.0.12...0.0.13

@@ -1179,23 +1179,23 @@ def group_terms(expr: MathsObject, *symbols: Symbol) -> MathsObject:
 def group_terms(expr: MathsObject, symbol: Optional[Symbol] = None) -> MathsObject:
     """
     Group and collect like terms in a mathematical expression.
-    
+
     This function uses SymPy's collect() to group terms with the same variables
     and powers, returning a properly structured expression with terms ordered
     by degree (highest to lowest for polynomials).
-    
+
     Args:
         expr: The MathsObject expression to group
         symbol: Optional specific symbol to collect by. If None, collects by all symbols.
-    
+
     Returns:
         A MathsObject with grouped terms
-        
+
     Examples:
         >>> x = Symbol(s='x')
         >>> expr = x + Integer(n=2) * x + Integer(n=3)
         >>> grouped = group_terms(expr)  # Returns 3x + 3
-        
+
         >>> # Polynomial expansion result
         >>> expr = (Integer(n=3)*x + Integer(n=-8)) * (Integer(n=4)*x + Integer(n=-1))
         >>> simplified = expr.simplified()
@@ -1204,7 +1204,7 @@ def group_terms(expr: MathsObject, symbol: Optional[Symbol] = None) -> MathsObje
     try:
         # Get the SymPy expression
         sympy_expr = expr.sympy_expr
-        
+
         # If a specific symbol is provided, use its SymPy representation
         if symbol is not None:
             sympy_symbol = symbol.sympy_expr
@@ -1219,15 +1219,15 @@ def group_terms(expr: MathsObject, symbol: Optional[Symbol] = None) -> MathsObje
             else:
                 # No symbols to collect, just simplify
                 collected = sympy_expr
-        
+
         # Expand and simplify to ensure proper form
         collected = sp.expand(collected)
-        
+
         # Convert back to MathsObject
         result = MathsObjectParser.from_sympy(collected)
-        
+
         return result
-        
+
     except Exception:
         # If anything goes wrong, return the original expression
         # This ensures the function is safe to use in production
