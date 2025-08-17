@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.0.17] - 2025-01-17
+
+### Fixed
+- **GitHub Pages URL Construction**: Fixed incorrect file loading URLs on GitHub Pages deployment
+  - Fixed antlr4 test files being loaded from wrong path (`/tests/` instead of `/teachers/tests/`)
+  - Added proper baseUrl detection for antlr4 test file loading in `scenery/app.js`
+  - Ensures `/teachers/` subdirectory is included in URLs when running on GitHub Pages
+  - Resolves HTTP 404 errors when loading `tests/__init__.py` and `tests/test_antlr4.py`
+
+### Technical Details
+- **Root Cause**: JavaScript was constructing URLs without the `/teachers/` subdirectory path
+- **Impact**: Fixes test suite loading failures on https://pointcarre-app.github.io/teachers/
+- **Files Updated**: `scenery/app.js` - Added `baseUrlForAntlr` with proper GitHub Pages detection
+
 ## [0.0.16] - 2025-01-17
 
 ### Added
@@ -659,7 +673,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.16...HEAD
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.17...HEAD
+[0.0.17]: https://github.com/pointcarre-app/teachers/compare/0.0.16...0.0.17
 [0.0.16]: https://github.com/pointcarre-app/teachers/compare/0.0.15...0.0.16
 [0.0.15]: https://github.com/pointcarre-app/teachers/compare/0.0.14...0.0.15
 [0.0.14]: https://github.com/pointcarre-app/teachers/compare/0.0.13...0.0.14
