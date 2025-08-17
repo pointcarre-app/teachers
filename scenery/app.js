@@ -4,14 +4,18 @@ import { Nagini } from "https://cdn.jsdelivr.net/gh/pointcarre-app/nagini@v0.0.2
 // Create minimal manager just for testing micropip installation
 console.log("📦 Creating minimal Nagini manager for micropip test...");
 
+// Detect if we're running on GitHub Pages or localhost (for antlr4 test)
+const isGitHubPagesForAntlr = window.location.hostname.includes('github.io');
+const baseUrlForAntlr = isGitHubPagesForAntlr ? window.location.origin + '/teachers/' : window.location.origin + '/';
+
 // Load the antlr4 test file and tests/__init__.py
 const antlr4TestFiles = [
     {
-        url: `${window.location.origin}/tests/__init__.py`,
+        url: `${baseUrlForAntlr}tests/__init__.py`,
         path: "tests/__init__.py"
     },
     {
-        url: `${window.location.origin}/tests/test_antlr4.py`,
+        url: `${baseUrlForAntlr}tests/test_antlr4.py`,
         path: "tests/test_antlr4.py"
     }
 ];
