@@ -4,9 +4,14 @@
 | Dependency | License | Usage Type | Compatibility with AGPL v3.0 |
 |------------|---------|------------|------------------------------|
 | **antlr4-python3-runtime** | BSD 3-Clause | Runtime | ✅ Compatible |
-<!-- | **Jinja2** | BSD 3-Clause | Runtime | ✅ Compatible | -->
 | **Pydantic** | MIT License | Runtime | ✅ Compatible |
 | **SymPy** | BSD 3-Clause | Runtime | ✅ Compatible |
+
+
+
+
+<!-- We'll see later if we need to add more dependencies -->
+<!-- | **Jinja2** | BSD 3-Clause | Runtime | ✅ Compatible | -->
 
 ## Usage Model
 
