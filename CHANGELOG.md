@@ -5,23 +5,23 @@ All notable changes to the PCA Teachers project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.20] - 2025-08-17
+## [0.0.20] 
 
 - Production version   
 - Changelog updated
 
 
 
-## [0.0.19] - 2025-08-17
+## [0.0.19] 
 
 **Erased in the end to avoid inconsistencies.**
 
  
-## [0.0.18] - 2025-08-17
+## [0.0.18] 
 
 **Erased in the end to avoid inconsistencies.**
 
-## [0.0.17] - 2025-01-17
+## [0.0.17] 
 
 ### Fixed
 - **GitHub Pages URL Construction**: Fixed incorrect file loading URLs on GitHub Pages deployment
@@ -35,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Impact**: Fixes test suite loading failures on https://pointcarre-app.github.io/teachers/
 - **Files Updated**: `scenery/app.js` - Added `baseUrlForAntlr` with proper GitHub Pages detection
 
-## [0.0.16] - 2025-01-17
+## [0.0.16] 
 
 ### Added
 - **Comprehensive Interval Edge Case Tests**: New `test_interval_edge_cases.py` test suite
@@ -74,7 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Impact**: Fixes critical issues in educational content generators using interval-based questions
 - **Testing**: All 21 interval tests pass, including 10 new edge case tests
 
-## [0.0.15] - 2025-01-16
+## [0.0.15] 
 
 ### Added
 - **group_terms Function**: New mathematical term grouping and collection functionality
@@ -112,7 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The exact code pattern `expr.simplified()` followed by `tm.group_terms()` now works
   - Produces standard polynomial form required by educational materials
 
-## [0.0.14] - 2025-01-16
+## [0.0.14] 
 
 ### Fixed
 - **Critical Polynomial Expansion Bug**: Fixed NotImplementedError when simplifying Add × Add multiplication (polynomial expansion)
@@ -165,7 +165,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Mathematical Robustness**: SymPy fallback ensures the system never fails on valid mathematical expressions
 - **Production Readiness**: Framework now handles any polynomial algebra needed for educational content
 
-## [0.0.13] - 2025-01-16
+## [0.0.13] 
 
 ### Fixed
 - **Critical Fraction Symbol/Mul Simplification Bug**: Fixed NotImplementedError when simplifying fractions with Symbol numerators and Mul denominators
@@ -203,7 +203,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Geometric Formula Support**: Mathematical expressions like V/(π*r²) now work seamlessly in educational content
 - **Generator Script Compatibility**: Production generator scripts using symbolic fractions now work without errors
 
-## [0.0.12] - 2025-01-16
+## [0.0.12] 
 
 ### Added
 - **Pi (π) Mathematical Constant**: New `Pi` class for geometric calculations and mathematical formulas
@@ -253,7 +253,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Geometric Formula Support**: All standard geometric formulas now work seamlessly
 - **Mathematical Notation**: Proper coefficient-first LaTeX rendering (2π, not π2)
 
-## [0.0.11] - 2025-01-16
+## [0.0.11] 
 
 ### Fixed
 - **Critical Decimal × Function Multiplication Bug**: Fixed NotImplementedError when simplifying decimal coefficients with function applications
@@ -294,7 +294,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Generator Script Failures**: Production generator scripts now work correctly with decimal coefficients and function applications
 - **LaTeX Rendering**: Proper coefficient-first notation (`0.5V(n)`) with implicit multiplication formatting
 
-## [0.0.10] - 2025-01-16
+## [0.0.10] 
 
 ### Fixed
 - **Critical as_percent Property Bug**: Fixed AttributeError when accessing as_percent property on Integer objects
@@ -327,7 +327,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **as_percent AttributeError**: Previously reported error for `Integer` objects is now fully resolved
 - **Generator Script Failures**: Production generator scripts now work correctly with Integer.as_percent
 
-## [0.0.9] - 2025-01-16
+## [0.0.9]
 
 ### Fixed
 - **Critical as_decimal Property Bug**: Fixed AttributeError when accessing as_decimal property on Integer objects
@@ -378,7 +378,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **as_decimal AttributeError**: Previously reported error for `Integer` objects is now fully resolved
 - **Decimal LaTeX Formatting**: Clean output without unwanted commas or decimal points for whole numbers
 
-## [0.0.8] - 2025-01-16
+## [0.0.8] 
 
 ### Fixed
 - **Critical Mul Simplification Bug**: Fixed NotImplementedError when simplifying nested multiplication operations
@@ -419,7 +419,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Mul Simplification**: Previously reported NotImplementedError for Integer * Mul combinations is now fully resolved
 - **Polynomial Expansion**: Complex polynomial expressions like `(ax + b)^2` now expand correctly without errors
 
-## [0.0.7] - 2025-01-16
+## [0.0.7] 
 
 ### Fixed
 - **Critical Add Simplification Bug**: Fixed NotImplementedError when simplifying mixed numeric type additions
@@ -459,7 +459,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Known Issues Resolved
 - **Add Simplification**: Previously reported NotImplementedError for Integer + Decimal combinations is now fully resolved
 
-## [0.0.6] - 2025-01-16
+## [0.0.6] 
 
 ### Fixed
 - **Critical Negative Exponent Bug**: Fixed ValidationError when simplifying negative integer exponents
@@ -520,7 +520,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Corrector Tests**: Currently failing (5/12 passed) - investigation needed
 - **Add Simplification**: NotImplementedError for Integer + Decimal combinations
 
-## [0.0.5] - 2025-01-09
+## [0.0.5] 
 
 ### Added
 - **Interactive Code Playground**: New `playground.html` page with CodeMirror editor for real-time testing
@@ -552,7 +552,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Example Library**: Comprehensive collection of predefined scripts demonstrating framework capabilities
 - **Enhanced UI/UX**: Modern responsive design with improved visual feedback and interactions
 
-## [0.0.4] - 2025-01-09
+## [0.0.4] 
 
 ### Changed
 - **License Update**: Changed from MIT to AGPL-3.0-or-later (GNU Affero General Public License v3+)
@@ -570,7 +570,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `pyproject.toml` license classifier to match AGPL-3.0-or-later
 - Enhanced README structure for better discoverability of live resources
 
-## [0.0.3] - 2025-01-29
+## [0.0.3] 
 
 ### Fixed
 - **Critical GitHub Pages Deployment Fix**
@@ -586,7 +586,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Much simpler and more reliable deployment process
   - Better error handling and path resolution
 
-## [0.0.2] - 2025-01-29
+## [0.0.2] 
 
 ### Fixed
 - **GitHub Pages Deployment Issues**
@@ -610,12 +610,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Relative path support for GitHub Pages
   - Improved file loading reliability
 
-## [0.0.1] - 2025-01-29
+## [0.0.1] 
 
 ### Added
 - Python 3.13.5 and Pyodide 0.27.7 compatibility information in README
 
-## [0.0.1] - 2025-01-29
+## [0.0.1] 
 
 ### Added
 - **Core Mathematical Framework**
