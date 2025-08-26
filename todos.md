@@ -1,3 +1,7 @@
+
+- [ ] fix the sqrt display in latex function (see cubrick for regex solution)
+- [ ] fix the issue in latex display occuring in spe_sujet1_auto_09_question (see cubrick)
+
 - [ ] #corrector: make choice about the input types (if .from_ ??)
 
 - [ ] #sel #mad communicate about the escaping and raw strings
