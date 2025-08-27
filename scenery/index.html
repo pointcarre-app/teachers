@@ -264,6 +264,95 @@
           </td>
           <td id="status-teachers-original-bug" class="test-status-pending">⏳</td>
         </tr>
+        <tr class="test-group-sqrt-notation" style="background-color: #fff0f5;">
+          <td colspan="4">
+            <strong>Square Root LaTeX Notation Tests</strong>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: right;vertical-align: top;">8️⃣</td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>sqrt notation test</code>
+          </td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>teachers.maths.Pow</code>
+            <br />
+            Basic square root: 49^(1/2) → \sqrt{49}
+          </td>
+          <td id="status-teachers-sqrt-basic" class="test-status-pending">⏳</td>
+        </tr>
+        <tr>
+          <td style="text-align: right;vertical-align: top;">9️⃣</td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>sqrt notation test</code>
+          </td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>teachers.maths.Pow</code>
+            <br />
+            Negative square root: -(49^(1/2)) → -\sqrt{49}
+          </td>
+          <td id="status-teachers-sqrt-negative" class="test-status-pending">⏳</td>
+        </tr>
+        <tr>
+          <td style="text-align: right;vertical-align: top;">🔟</td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>sqrt notation test</code>
+          </td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>teachers.maths.MathsCollection</code>
+            <br />
+            User's inequality case: x > \sqrt{49}, -\sqrt{49} > x
+          </td>
+          <td id="status-teachers-sqrt-inequality" class="test-status-pending">⏳</td>
+        </tr>
+        <tr>
+          <td style="text-align: right;vertical-align: top;">1️⃣1️⃣</td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>sqrt notation test</code>
+          </td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>teachers.maths.Pow</code>
+            <br />
+            Other fractions unchanged: 8^(1/3) stays as power notation
+          </td>
+          <td id="status-teachers-sqrt-other-fractions" class="test-status-pending">⏳</td>
+        </tr>
+        <tr>
+          <td style="text-align: right;vertical-align: top;">1️⃣2️⃣</td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>sqrt notation test</code>
+          </td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>teachers.maths.Pow</code>
+            <br />
+            Complex base: (x+1)^(1/2) → \sqrt{x+1}
+          </td>
+          <td id="status-teachers-sqrt-complex" class="test-status-pending">⏳</td>
+        </tr>
+        <tr>
+          <td style="text-align: right;vertical-align: top;">1️⃣3️⃣</td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>sqrt notation test</code>
+          </td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>teachers.maths.Pow</code>
+            <br />
+            Fraction base: (3/5)^(1/2) → \sqrt{\dfrac{3}{5}}
+          </td>
+          <td id="status-teachers-sqrt-fraction" class="test-status-pending">⏳</td>
+        </tr>
+        <tr>
+          <td style="text-align: right;vertical-align: top;">1️⃣4️⃣</td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>sqrt notation test</code>
+          </td>
+          <td style="text-align: left;vertical-align: top;">
+            <code>teachers.maths.Pow</code>
+            <br />
+            Fraction with variables: (x/y)^(1/2) → \sqrt{\dfrac{x}{y}}
+          </td>
+          <td id="status-teachers-sqrt-fraction-vars" class="test-status-pending">⏳</td>
+        </tr>
       </tbody>
     </table>
     <!---- <h2>Run tests</h2> ---->

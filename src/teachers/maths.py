@@ -932,6 +932,19 @@ class Pow(MathsObject):
         return repr(self)
 
     def latex(self):
+        # Special case: detect square root (exponent = 1/2)
+        if (
+            isinstance(self.exp, Fraction)
+            and isinstance(self.exp.p, Integer)
+            and self.exp.p.n == 1
+            and isinstance(self.exp.q, Integer)
+            and self.exp.q.n == 2
+        ):
+            base = self.base.latex()
+            # For square roots, we don't need the outer parentheses that regular powers use
+            return f"\\sqrt{{{base}}}"
+
+        # Original logic for other exponents
         base = self.base.latex()
         if isinstance(self.base, (Add, Mul, Fraction)):
             base = "\\left(" + base + "\\right)"

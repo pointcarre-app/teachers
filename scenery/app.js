@@ -598,6 +598,189 @@ try {
     });
 }
 
+// Test sqrt notation conversion (^{1/2} -> \sqrt{})
+const sqrtTestCode = `
+import teachers.maths as tm
+
+try:
+    results = []
+    
+    # Test 1: Basic square root conversion
+    try:
+        n = tm.Integer(n=49)
+        sqrt_expr = n ** tm.Fraction(p=tm.Integer(n=1), q=tm.Integer(n=2))
+        latex_output = sqrt_expr.latex()
+        
+        # Should be \\sqrt{49}, not 49^{\\dfrac{1}{2}}
+        if latex_output == "\\\\sqrt{49}":
+            results.append({"id": "status-teachers-sqrt-basic", "status": "pass"})
+        else:
+            results.append({"id": "status-teachers-sqrt-basic", "status": "fail", "error": f"Expected \\\\sqrt{{49}}, got {latex_output}"})
+    except Exception as e:
+        results.append({"id": "status-teachers-sqrt-basic", "status": "fail", "error": str(e)})
+    
+    # Test 2: Negative square root
+    try:
+        n = tm.Integer(n=49)
+        sqrt_expr = n ** tm.Fraction(p=tm.Integer(n=1), q=tm.Integer(n=2))
+        neg_sqrt = -sqrt_expr
+        latex_output = neg_sqrt.latex()
+        
+        # Should be -\\sqrt{49}
+        if latex_output == "-\\\\sqrt{49}":
+            results.append({"id": "status-teachers-sqrt-negative", "status": "pass"})
+        else:
+            results.append({"id": "status-teachers-sqrt-negative", "status": "fail", "error": f"Expected -\\\\sqrt{{49}}, got {latex_output}"})
+    except Exception as e:
+        results.append({"id": "status-teachers-sqrt-negative", "status": "fail", "error": str(e)})
+    
+    # Test 3: User's original inequality case
+    try:
+        n = tm.Integer(n=49)
+        x = tm.Symbol(s="x")
+        answer = tm.MathsCollection(elements=[x > n ** tm.Fraction(p=1, q=2), x < -(n ** tm.Fraction(p=1, q=2))])
+        latex_output = answer.latex()
+        
+        # Should contain \\sqrt{49} and -\\sqrt{49}, not ^{\\dfrac{1}{2}}
+        if "\\\\sqrt{49}" in latex_output and "\\\\dfrac{1}{2}" not in latex_output:
+            results.append({"id": "status-teachers-sqrt-inequality", "status": "pass"})
+        else:
+            results.append({"id": "status-teachers-sqrt-inequality", "status": "fail", "error": f"Expected sqrt notation in {latex_output}"})
+    except Exception as e:
+        results.append({"id": "status-teachers-sqrt-inequality", "status": "fail", "error": str(e)})
+    
+    # Test 4: Other fractional exponents should remain unchanged
+    try:
+        n = tm.Integer(n=8)
+        cube_root = n ** tm.Fraction(p=tm.Integer(n=1), q=tm.Integer(n=3))
+        latex_output = cube_root.latex()
+        
+        # Should still be 8^{\\dfrac{1}{3}}, not changed
+        if "^{\\\\dfrac{1}{3}}" in latex_output and "sqrt" not in latex_output:
+            results.append({"id": "status-teachers-sqrt-other-fractions", "status": "pass"})
+        else:
+            results.append({"id": "status-teachers-sqrt-other-fractions", "status": "fail", "error": f"Expected power notation for cube root, got {latex_output}"})
+    except Exception as e:
+        results.append({"id": "status-teachers-sqrt-other-fractions", "status": "fail", "error": str(e)})
+    
+    # Test 5: Complex base square root
+    try:
+        x = tm.Symbol(s="x")
+        complex_base = x + tm.Integer(n=1)
+        sqrt_expr = complex_base ** tm.Fraction(p=tm.Integer(n=1), q=tm.Integer(n=2))
+        latex_output = sqrt_expr.latex()
+        
+        # Should be \\sqrt{x + 1}
+        if "\\\\sqrt{" in latex_output and "x + 1" in latex_output:
+            results.append({"id": "status-teachers-sqrt-complex", "status": "pass"})
+        else:
+            results.append({"id": "status-teachers-sqrt-complex", "status": "fail", "error": f"Expected sqrt of complex expression, got {latex_output}"})
+    except Exception as e:
+        results.append({"id": "status-teachers-sqrt-complex", "status": "fail", "error": str(e)})
+    
+    # Test 6: Fraction base square root - CRITICAL TEST for \\sqrt{\\dfrac{a}{b}}
+    try:
+        # Test simple fraction: (3/5)^(1/2) should become \\sqrt{\\dfrac{3}{5}}
+        frac_base = tm.Fraction(p=tm.Integer(n=3), q=tm.Integer(n=5))
+        sqrt_frac = frac_base ** tm.Fraction(p=tm.Integer(n=1), q=tm.Integer(n=2))
+        latex_output = sqrt_frac.latex()
+        
+        # Should be \\sqrt{\\dfrac{3}{5}}
+        expected = "\\\\sqrt{\\\\dfrac{3}{5}}"
+        if latex_output == expected:
+            results.append({"id": "status-teachers-sqrt-fraction", "status": "pass"})
+        else:
+            results.append({"id": "status-teachers-sqrt-fraction", "status": "fail", "error": f"Expected {expected}, got {latex_output}"})
+    except Exception as e:
+        results.append({"id": "status-teachers-sqrt-fraction", "status": "fail", "error": str(e)})
+    
+    # Test 7: Fraction with variables square root
+    try:
+        x = tm.Symbol(s="x")
+        y = tm.Symbol(s="y")
+        frac_base = tm.Fraction(p=x, q=y)
+        sqrt_frac = frac_base ** tm.Fraction(p=tm.Integer(n=1), q=tm.Integer(n=2))
+        latex_output = sqrt_frac.latex()
+        
+        # Should be \\sqrt{\\dfrac{x}{y}}
+        if "\\\\sqrt{\\\\dfrac{x}{y}}" in latex_output:
+            results.append({"id": "status-teachers-sqrt-fraction-vars", "status": "pass"})
+        else:
+            results.append({"id": "status-teachers-sqrt-fraction-vars", "status": "fail", "error": f"Expected sqrt of fraction with vars, got {latex_output}"})
+    except Exception as e:
+        results.append({"id": "status-teachers-sqrt-fraction-vars", "status": "fail", "error": str(e)})
+    
+    # Send results
+    missive({"type": "sqrt_batch_update", "results": results})
+    
+except Exception as e:
+    # If imports fail, mark all as failed
+    error_msg = str(e)
+    missive({"type": "sqrt_batch_update", "results": [
+        {"id": "status-teachers-sqrt-basic", "status": "fail", "error": error_msg},
+        {"id": "status-teachers-sqrt-negative", "status": "fail", "error": error_msg},
+        {"id": "status-teachers-sqrt-inequality", "status": "fail", "error": error_msg},
+        {"id": "status-teachers-sqrt-other-fractions", "status": "fail", "error": error_msg},
+        {"id": "status-teachers-sqrt-complex", "status": "fail", "error": error_msg},
+        {"id": "status-teachers-sqrt-fraction", "status": "fail", "error": error_msg},
+        {"id": "status-teachers-sqrt-fraction-vars", "status": "fail", "error": error_msg}
+    ]})
+`;
+
+try {
+    const sqrtResult = await manager.executeAsync("sqrt_test.py", sqrtTestCode);
+    console.log("Sqrt test result:", sqrtResult);
+    
+    if (sqrtResult && sqrtResult.stderr) {
+        console.error("Sqrt test stderr:", sqrtResult.stderr);
+    }
+    
+    if (sqrtResult && sqrtResult.missive) {
+        let msg;
+        try {
+            msg = typeof sqrtResult.missive === 'string' ? JSON.parse(sqrtResult.missive) : sqrtResult.missive;
+        } catch (e) {
+            console.error("Failed to parse sqrt test missive:", e);
+            msg = null;
+        }
+        
+        if (msg && msg.type === 'sqrt_batch_update' && msg.results) {
+            msg.results.forEach(update => {
+                const statusCell = document.getElementById(update.id);
+                if (statusCell) {
+                    if (update.status === 'pass') {
+                        statusCell.className = 'test-status-pass';
+                        statusCell.textContent = '✅';
+                    } else {
+                        statusCell.className = 'test-status-fail';
+                        statusCell.textContent = '❌';
+                        console.error(`Sqrt test ${update.id} failed:`, update.error);
+                    }
+                }
+            });
+        }
+    } else {
+        // If tests failed to run, mark them as failed
+        ['status-teachers-sqrt-basic', 'status-teachers-sqrt-negative', 'status-teachers-sqrt-inequality', 'status-teachers-sqrt-other-fractions', 'status-teachers-sqrt-complex', 'status-teachers-sqrt-fraction', 'status-teachers-sqrt-fraction-vars'].forEach(id => {
+            const statusCell = document.getElementById(id);
+            if (statusCell) {
+                statusCell.className = 'test-status-fail';
+                statusCell.textContent = '❌';
+            }
+        });
+        console.error("Failed to run sqrt tests - no missive");
+    }
+} catch (error) {
+    console.error("Error running sqrt tests:", error);
+    ['status-teachers-sqrt-basic', 'status-teachers-sqrt-negative', 'status-teachers-sqrt-inequality', 'status-teachers-sqrt-other-fractions', 'status-teachers-sqrt-complex', 'status-teachers-sqrt-fraction', 'status-teachers-sqrt-fraction-vars'].forEach(id => {
+        const statusCell = document.getElementById(id);
+        if (statusCell) {
+            statusCell.className = 'test-status-fail';
+            statusCell.textContent = '❌';
+        }
+    });
+}
+
 // Run all individual test files (but exclude duplicates that are already in Unit Tests)
 console.log("Running individual test files...");
 const individualTests = testFiles.filter(testFile => {

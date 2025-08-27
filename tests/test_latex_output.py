@@ -295,8 +295,8 @@ class TestLatexOutput(unittest.TestCase):
         half = tm.Fraction(p=1, q=2)
         sqrt_x = x**half
         latex_output = sqrt_x.latex()
-        self.assertIn("x^{", latex_output)
-        self.assertIn("\\dfrac{1}{2}", latex_output)
+        # \\sqrt{x}
+        self.assertEqual(latex_output, "\\sqrt{x}")
 
     def test_equality_latex(self):
         """
@@ -518,7 +518,7 @@ class TestLatexOutput(unittest.TestCase):
         h = tm.Symbol(s="h")
 
         # Circle area: πr²
-        area = pi * r**tm.Integer(n=2)
+        area = pi * r ** tm.Integer(n=2)
         self.assertEqual(area.simplified().latex(), "\\pir^{2}")
 
         # Circle circumference: 2πr
@@ -526,15 +526,15 @@ class TestLatexOutput(unittest.TestCase):
         self.assertEqual(circumference.simplified().latex(), "2\\pir")
 
         # Cylinder volume: πr²h
-        cylinder = pi * r**tm.Integer(n=2) * h
+        cylinder = pi * r ** tm.Integer(n=2) * h
         self.assertEqual(cylinder.simplified().latex(), "\\pir^{2}h")
 
         # Cone volume: (1/3)πr²h
-        cone = tm.Fraction(p=1, q=3) * pi * r**tm.Integer(n=2) * h
+        cone = tm.Fraction(p=1, q=3) * pi * r ** tm.Integer(n=2) * h
         self.assertEqual(cone.simplified().latex(), "\\dfrac{1}{3}\\pir^{2}h")
 
         # Sphere volume: (4/3)πr³
-        sphere = tm.Fraction(p=4, q=3) * pi * r**tm.Integer(n=3)
+        sphere = tm.Fraction(p=4, q=3) * pi * r ** tm.Integer(n=3)
         self.assertEqual(sphere.simplified().latex(), "\\dfrac{4}{3}\\pir^{3}")
 
     def test_decimal_image_multiplication_latex(self):
