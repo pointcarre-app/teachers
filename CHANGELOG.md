@@ -749,7 +749,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Distribution**: Ready for PyPI publication
 - **Automated Deployment**: GitHub Actions workflow for Pages
 
-[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.17...HEAD
+[Unreleased]: https://github.com/pointcarre-app/teachers/compare/0.0.22...HEAD
+[0.0.22]: https://github.com/pointcarre-app/teachers/compare/0.0.21...0.0.22
+[0.0.21]: https://github.com/pointcarre-app/teachers/compare/0.0.20...0.0.21
+[0.0.20]: https://github.com/pointcarre-app/teachers/compare/0.0.19...0.0.20
+[0.0.19]: https://github.com/pointcarre-app/teachers/compare/0.0.18...0.0.19
+[0.0.18]: https://github.com/pointcarre-app/teachers/compare/0.0.17...0.0.18
 [0.0.17]: https://github.com/pointcarre-app/teachers/compare/0.0.16...0.0.17
 [0.0.16]: https://github.com/pointcarre-app/teachers/compare/0.0.15...0.0.16
 [0.0.15]: https://github.com/pointcarre-app/teachers/compare/0.0.14...0.0.15
