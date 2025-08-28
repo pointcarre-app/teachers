@@ -23,6 +23,38 @@
   - exemple développer 
   - cf arpege/generator querstions already generated
 
+
+
+## Serialization + Bridging (JS / other python libs...) 
+
+
+- [ ] #sel enable non explicit usage in the generators (ie components_"evaled"/"formatted" - idk)
+
+```
+def eval_float(self):
+    """Fallback: get close float approximation"""
+    if self.sympy_expr.is_number:
+        return float(self.sympy_expr.evalf())
+    return None
+```
+
+Direct SymPy usage examples:
+- self.sympy_expr.is_integer - check if exact integer
+- self.sympy_expr.is_rational - check if exact rational
+- int(self.sympy_expr) - get exact int (if integer)
+- float(self.sympy_expr) - get exact float (if exact decimal)
+- self.sympy_expr.evalf() - get numerical approximation
+
+Key SymPy properties for numerical detection:
+- self.sympy_expr.is_number - is it a pure number (no symbols)
+- self.sympy_expr.is_integer - exact integer
+- self.sympy_expr.is_rational - exact fraction
+- self.sympy_expr.is_real - real number
+
+
+
+
+
 ## Scenery
 
 
