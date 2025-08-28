@@ -263,6 +263,16 @@
         </div>
       </div>
 
+      <div class="example-card" onclick="loadExample('double_minus_fix')">
+        <div class="example-title">🔧 Double Minus Fix</div>
+        <div class="example-description">Test the fix for double minus LaTeX issues</div>
+        <div class="example-preview">
+          x = tm.Symbol(s="x")
+          expr = x - (-5 + tm.Fraction(p=1, q=2))
+          print(expr.latex())
+        </div>
+      </div>
+
       <div class="example-card" onclick="loadExample('complex')">
         <div class="example-title">🔬 Complex Expressions</div>
         <div class="example-description">Build and simplify complex mathematical expressions</div>
@@ -694,6 +704,55 @@ numerical_expr = tm.Fraction(p=3, q=4) + tm.Fraction(p=1, q=4)
 print(f"3/4 + 1/4: {numerical_expr.latex()}")
 print(f"Simplified: {numerical_expr.simplified().latex()}")
 print(f"Numerical value: {numerical_expr.eval()}")`,
+
+                double_minus_fix: `# Double Minus Fix Testing
+import teachers.maths as tm
+
+print("=== Testing Double Minus Fix ===")
+print("Before the fix, expressions like 'x - (-5 + 1/2)' would render as 'x --5 + 1/2'")
+print("Now they render correctly with parentheses!")
+print()
+
+x = tm.Symbol(s="x")
+
+# Test case 1: Original issue scenario
+print("1. Original Issue Test:")
+a2 = tm.Fraction(p=tm.Integer(n=1), q=tm.Integer(n=5))
+b2 = tm.Integer(n=-8)
+c2 = tm.Integer(n=8)
+expr1 = a2 * x - (b2 + tm.Integer(n=1) / (c2 ** (tm.Integer(n=1) / tm.Integer(n=2))))
+print(f"   Expression: {expr1.latex()}")
+print(f"   No double minus: {'--' not in expr1.latex()}")
+print()
+
+# Test case 2: Simple negative complex expression
+print("2. Negative Add Expression:")
+y = tm.Symbol(s="y")
+z = tm.Symbol(s="z")
+expr2 = x - (y + z)
+print(f"   x - (y + z): {expr2.latex()}")
+print()
+
+# Test case 3: Negative fraction
+print("3. Negative Fraction:")
+frac = tm.Fraction(p=tm.Integer(n=1), q=tm.Integer(n=3))
+expr3 = x - frac
+print(f"   x - 1/3: {expr3.latex()}")
+print()
+
+# Test case 4: Simple negative number (should NOT get extra parentheses)
+print("4. Simple Negative Number:")
+expr4 = x + tm.Integer(n=-5)
+print(f"   x + (-5): {expr4.latex()}")
+print(f"   No extra parentheses: {'\\\\left(' not in expr4.latex()}")
+print()
+
+# Test case 5: Complex nested expression
+print("5. Complex Nested Expression:")
+inner = tm.Add(l=tm.Integer(n=-3), r=tm.Fraction(p=tm.Integer(n=1), q=tm.Integer(n=2)))
+expr5 = x - inner
+print(f"   x - (-3 + 1/2): {expr5.latex()}")
+print("   Clear parentheses for educational purposes!")`,
 
                 decimal_functions: `# Decimal Coefficients with Functions - NEW FEATURE!
 import teachers.maths as tm

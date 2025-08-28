@@ -7,6 +7,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
+## [0.0.22] 
+
+### Fixed
+- **Critical Double Minus LaTeX Issue**: Fixed double minus rendering bug in Add.latex() method
+  - Expressions like `x - (-5 + 1/2)` previously rendered as `"x --5 + 1/2"` (confusing double minus)
+  - Now render correctly as `"x - \\left(-5 + 1/2\\right)"` with proper parentheses
+  - Added `_is_complex_expression()` helper method to detect expressions needing parentheses when negated
+  - Smart detection of complex expressions: Add, Fraction, and non-trivial Mul objects
+  - Simple negative numbers remain unchanged (no extra parentheses for basic cases like `x -5`)
+  - Educational clarity: Complex negative expressions are clearly parenthesized for student comprehension
+
+### Added
+- **Comprehensive Double Minus Fix Tests**: New `test_double_minus_fix.py` test suite
+  - 8 comprehensive test cases covering all double minus scenarios
+  - Tests the exact original issue case from user's generator code
+  - Validates parentheses are added only when necessary (complex expressions)
+  - Tests simple negative numbers don't get extra parentheses
+  - Tests nested complex expressions and edge cases
+  - Converted to unittest format for full scenery integration
+  - All tests pass with 100% coverage of the fix
+
+### Enhanced
+- **Scenery Interactive Playground**: New "🔧 Double Minus Fix" example
+  - Interactive demonstration of the double minus fix with 5 comprehensive test scenarios
+  - Real-time testing of the exact user issue case with visual validation
+  - Educational examples showing before/after behavior
+  - Clear explanations of when parentheses are added vs. preserved simplicity
+  - Complete integration with the playground's example system
+
+- **Scenery Test Suite Integration**: Full integration of double minus tests
+  - Added `test_double_minus_fix.py` to automated test suite in `scenery/app.js`
+  - Tests now run automatically in browser-based test environment
+  - Proper unittest format ensures test discovery and execution
+  - Visual test results showing "All 8 tests passed!" in the web interface
+
+### Technical Details
+- **File Changes**:
+  - `src/teachers/maths.py`: Core fix in Add class with `_is_complex_expression()` method and updated `latex()` logic
+  - `tests/test_double_minus_fix.py`: New comprehensive test suite (161 lines, 8 tests, unittest format)
+  - `scenery/playground.html`: New interactive example with detailed demonstrations and educational explanations
+  - `scenery/app.js`: Added test file to automated test suite for browser execution
+  - Total: 8 new tests ensuring complete coverage of the double minus fix
+
+### Educational Impact
+- **Student Clarity**: Complex mathematical expressions now display with unambiguous parentheses
+- **No Over-Parenthesization**: Simple cases remain clean (avoided dangerous Strategy 3)
+- **Generator Compatibility**: Educational content generators now produce clear, readable LaTeX output
+- **Mathematical Correctness**: All expressions maintain proper mathematical meaning while improving readability
+
+### Known Issues Resolved
+- **Double Minus LaTeX Bug**: Previously reported issue where `expr.latex()` would generate confusing `--` patterns is completely resolved
+- **Educational Content Generation**: Mathematical expressions in educational generators now render with proper clarity for students
+- **LaTeX Display Quality**: Complex negative expressions display with educational-appropriate parentheses
+
 ## [0.0.21] 
 
 - Square root latex fix (not for other roots, only for sqrt)

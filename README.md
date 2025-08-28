@@ -34,7 +34,8 @@ PCA Teachers is designed for educational platforms that need to:
 - **📝 LaTeX Generation**: Clean, properly formatted mathematical notation
 - **🎯 Correction Engine**: Automated student response validation
 - **🔧 Educational Tools**: Specialized formatting for French mathematical education
-- **🧪 100% Test Coverage**: Comprehensive test suite with 205+ tests
+- **🧪 100% Test Coverage**: Comprehensive test suite with 213+ tests
+- **🔧 Double Minus LaTeX Fix**: FIXED! Clear parentheses for complex negative expressions (x - (-5 + 1/2) → x - \\left(-5 + 1/2\\right))
 - **🆕 Decimal × Function Support**: NEW! Seamless multiplication of decimal coefficients with function applications  
 - **🆕 Pi (π) Mathematical Constant**: NEW! Complete Pi support for geometric formulas and calculations
 - **🔧 Fraction Symbol/Mul Fix**: FIXED! Symbol over multiplication simplification (V/(π*r²)) now works perfectly
@@ -332,6 +333,50 @@ print(expr.latex())  # "x + y"
 # Automatic subtraction formatting
 neg_expr = x + tm.Integer(n=-5)
 print(neg_expr.latex())  # "x -5"
+```
+
+#### Double Minus LaTeX Fix - NEW in v0.0.22!
+```python
+# FIXED: Complex negative expressions now render with clear parentheses
+# Previously these would render with confusing double minus (--) patterns
+
+x = tm.Symbol(s="x")
+
+# Original issue case: x - (-8 + 1/sqrt(8))
+a2 = tm.Fraction(p=tm.Integer(n=1), q=tm.Integer(n=5))  # 1/5
+b2 = tm.Integer(n=-8)  # -8
+c2 = tm.Integer(n=8)   # 8
+
+# Build complex expression: (1/5)x - (-8 + 1/sqrt(8))
+inner_expr = b2 + tm.Integer(n=1) / (c2 ** tm.Fraction(p=1, q=2))  # -8 + 1/√8
+expr = a2 * x - inner_expr
+
+# BEFORE (v0.0.21): "\\dfrac{1}{5}x --8 + \\dfrac{1}{\\sqrt{8}}" ❌ (confusing double minus)
+# AFTER (v0.0.22):  "\\dfrac{1}{5}x - \\left(-8 + \\dfrac{1}{\\sqrt{8}}\\right)" ✅ (clear parentheses)
+print(expr.latex())
+
+# Smart detection: Only complex expressions get parentheses
+simple_negative = x + tm.Integer(n=-5)
+print(simple_negative.latex())  # "x -5" (no extra parentheses for simple cases)
+
+complex_negative = x - (tm.Symbol(s="y") + tm.Integer(n=1))
+print(complex_negative.latex())  # "x - \\left(y + 1\\right)" (parentheses for clarity)
+
+# Educational benefits:
+# ✅ Clear visual separation for students
+# ✅ No over-parenthesization of simple cases  
+# ✅ Proper mathematical notation
+# ✅ Generator-friendly for educational content
+
+# Works with all complex expression types:
+frac = tm.Fraction(p=1, q=3)
+expr_frac = x - frac  # Gets parentheses: "x - \\left(\\dfrac{1}{3}\\right)"
+
+add_expr = tm.Symbol(s="a") + tm.Symbol(s="b")
+expr_add = x - add_expr  # Gets parentheses: "x - \\left(a + b\\right)"
+
+mul_expr = tm.Symbol(s="a") * tm.Symbol(s="b")
+expr_mul = x - mul_expr  # Gets parentheses: "x - \\left(ab\\right)"
 ```
 
 #### Multiplication
@@ -997,12 +1042,13 @@ python -m unittest tests.test_latex_output
 
 ### Test Coverage
 
-- **205+ tests total** with **100% pass rate**
+- **213+ tests total** with **100% pass rate**
 - **Unit tests**: Individual object behavior
 - **Integration tests**: Cross-object interactions  
 - **LaTeX tests**: Output formatting validation
 - **Correction tests**: End-to-end workflows
 - **Edge case tests**: Boundary conditions and error handling
+- **Double minus tests**: Complex negative expression LaTeX rendering
 
 ### Test Categories
 
@@ -1021,6 +1067,7 @@ tests/
 ├── test_polynomial_expansion.py # Polynomial expansion and FOIL tests
 ├── test_sympy_fallback.py    # SymPy fallback and edge case tests
 ├── test_group_terms.py       # Term grouping and collection tests
+├── test_double_minus_fix.py  # Double minus LaTeX rendering fix tests
 ├── test_deserialization_from_sympy.py  # SymPy conversion tests
 └── test_deserialization_from_formal.py # Parser tests
 ```

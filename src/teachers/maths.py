@@ -408,22 +408,29 @@ class Add(MathsObject):
     def __str__(self):
         return repr(self)
 
-    def latex(self):
-        left, right = self.l.latex(), self.r.latex()
-        # return f"{self.l.latex()} + {self.r.latex()}"
+    def _is_complex_expression(self, expr):
+        """Check if an expression is complex enough to need parentheses when negated."""
+        return isinstance(expr, (Add, Fraction)) or (
+            isinstance(expr, Mul) and not (isinstance(expr.l, Integer) and expr.l.n == -1)
+        )
 
-        if right.startswith("-"):
-            return f"{left} {right}"
-        else:
-            return f"{left} + {right}"
-        # match self.l, self.r:
-        #     # case _, Mul(Integer(-1), Add(_)):
-        #     # right =
-        #         # return f"{left} - {right}"
-        #     case _, Mul(Integer(-1), _):
-        #         return f"{left} {right}"
-        #     case _:
-        #         return f"{self.l.latex()} + {self.r.latex()}"
+    def latex(self):
+        left = self.l.latex()
+
+        # Handle the case where right operand is Mul(Integer(-1), complex_expr)
+        # This prevents double minus issues like "x --5"
+        match self.r:
+            case Mul(Integer(n=-1), inner_expr) if self._is_complex_expression(inner_expr):
+                # For negative complex expressions, use parentheses: "x - (complex_expr)"
+                inner_latex = inner_expr.latex()
+                return f"{left} - \\left({inner_latex}\\right)"
+            case _:
+                # Default behavior
+                right = self.r.latex()
+                if right.startswith("-"):
+                    return f"{left} {right}"
+                else:
+                    return f"{left} + {right}"
 
     def eval(self):
         return self.l.eval() + self.r.eval()

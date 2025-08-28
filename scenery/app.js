@@ -63,7 +63,8 @@ const testFiles = [
     "tests/test_eval_methods.py",
     "tests/test_inf.py",
     "tests/test_maths_collection_sympy.py",
-    "tests/test_negative_exponents.py"
+    "tests/test_negative_exponents.py",
+    "tests/test_double_minus_fix.py"
 ];
 
 // Detect if we're running on GitHub Pages or localhost
