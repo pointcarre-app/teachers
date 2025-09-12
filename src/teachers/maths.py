@@ -364,7 +364,7 @@ class Pi(MathsObject):
     sympy_expr: sp.Basic = sp.pi
 
     def latex(self):
-        return "\\pi"
+        return "\\pi "
 
     def eval(self) -> float:
         return float(sp.pi)
