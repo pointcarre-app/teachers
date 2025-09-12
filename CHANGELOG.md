@@ -5,7 +5,20 @@ All notable changes to the PCA Teachers project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.25]
 
+### Fixed
+- **Critical Double Minus LaTeX Issue**: Fixed double minus rendering bug in Add.latex() method
+  - Expressions like `x - (-5 + 1/2)` previously rendered as `"x --5 + 1/2"` (confusing double minus)
+  - Now render correctly as `"x - \\left(-5 + 1/2\\right)"` with proper parentheses
+  - Added `_is_complex_expression()` helper method to detect expressions needing parentheses when negated
+  - Smart detection of complex expressions: Add, Fraction, and non-trivial Mul objects
+  - Simple negative numbers remain unchanged (no extra parentheses for basic cases like `x -5`)
+  - Educational clarity: Complex negative expressions are clearly parenthesized for student comprehension
+
+- *Pi* LaTeX fix (not for other roots, only for pi)
+
+- group terms polynomial
 
 ## [0.0.22] 
 

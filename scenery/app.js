@@ -66,7 +66,8 @@ const testFiles = [
     "tests/test_negative_exponents.py",
     "tests/test_double_minus_fix.py",
     "tests/test_group_terms.py",
-    "tests/test_latex_formatting.py"
+    "tests/test_latex_formatting.py",
+    "tests/test_multiplication_symbols.py"
 ];
 
 // Detect if we're running on GitHub Pages or localhost
@@ -786,6 +787,148 @@ try {
     });
 }
 
+// Run multiplication symbol tests
+console.log("Running multiplication symbol tests...");
+const multTestCode = `
+try:
+    import teachers.maths as tm
+    
+    results = []
+    
+    # Test 1: Integer × Fraction should have \\times symbol
+    try:
+        coef = tm.Integer(n=28)
+        frac = tm.Fraction(p=tm.Integer(n=29), q=tm.Integer(n=4))
+        mult = coef * frac
+        latex_output = mult.latex()
+        
+        if "\\\\times" in latex_output and latex_output == "28 \\\\times \\\\dfrac{29}{4}":
+            results.append({"id": "status-teachers-mult-int-frac", "status": "pass"})
+        else:
+            results.append({"id": "status-teachers-mult-int-frac", "status": "fail", "error": f"Expected '28 \\\\times \\\\dfrac{{29}}{{4}}', got '{latex_output}'"})
+    except Exception as e:
+        results.append({"id": "status-teachers-mult-int-frac", "status": "fail", "error": str(e)})
+    
+    # Test 2: Negative fractions should have parentheses and \\times
+    try:
+        frac1 = tm.Fraction(p=tm.Integer(n=17), q=tm.Integer(n=2))
+        neg_frac = tm.Fraction(p=tm.Integer(n=-9), q=tm.Integer(n=10))
+        mult = frac1 * neg_frac
+        latex_output = mult.latex()
+        
+        expected = "\\\\dfrac{17}{2} \\\\times \\\\left(-\\\\dfrac{9}{10}\\\\right)"
+        if "\\\\times" in latex_output and "\\\\left(" in latex_output and latex_output == expected:
+            results.append({"id": "status-teachers-mult-neg-frac", "status": "pass"})
+        else:
+            results.append({"id": "status-teachers-mult-neg-frac", "status": "fail", "error": f"Expected '{expected}', got '{latex_output}'"})
+    except Exception as e:
+        results.append({"id": "status-teachers-mult-neg-frac", "status": "fail", "error": str(e)})
+    
+    # Test 3: Coefficient notation tests
+    try:
+        # Test 5x (no times symbol)
+        coef = tm.Integer(n=5)
+        symbol = tm.Symbol(s="x")
+        mult = coef * symbol
+        latex_5x = mult.latex()
+        
+        # Test 1x → x (coefficient 1 omitted)
+        one = tm.Integer(n=1)
+        mult_1x = one * symbol
+        latex_1x = mult_1x.latex()
+        
+        if latex_5x == "5x" and latex_1x == "x" and "\\\\times" not in latex_5x and "\\\\times" not in latex_1x:
+            results.append({"id": "status-teachers-mult-coeff", "status": "pass"})
+        else:
+            results.append({"id": "status-teachers-mult-coeff", "status": "fail", "error": f"Expected '5x' and 'x', got '{latex_5x}' and '{latex_1x}'"})
+    except Exception as e:
+        results.append({"id": "status-teachers-mult-coeff", "status": "fail", "error": str(e)})
+    
+    # Test 4: User scenario - 19/5 + 28 × 29/4
+    try:
+        frac1 = tm.Fraction(p=tm.Integer(n=19), q=tm.Integer(n=5))
+        coef = tm.Integer(n=28)
+        frac2 = tm.Fraction(p=tm.Integer(n=29), q=tm.Integer(n=4))
+        mult = coef * frac2
+        expr = frac1 + mult
+        latex_output = expr.latex()
+        
+        expected = "\\\\dfrac{19}{5} + 28 \\\\times \\\\dfrac{29}{4}"
+        if "\\\\times" in latex_output and latex_output == expected:
+            results.append({"id": "status-teachers-mult-user-scenario", "status": "pass"})
+        else:
+            results.append({"id": "status-teachers-mult-user-scenario", "status": "fail", "error": f"Expected '{expected}', got '{latex_output}'"})
+    except Exception as e:
+        results.append({"id": "status-teachers-mult-user-scenario", "status": "fail", "error": str(e)})
+    
+    # Send results
+    missive({"type": "mult_batch_update", "results": results})
+    
+except Exception as e:
+    # If imports fail, mark all as failed
+    error_msg = str(e)
+    missive({"type": "mult_batch_update", "results": [
+        {"id": "status-teachers-mult-int-frac", "status": "fail", "error": error_msg},
+        {"id": "status-teachers-mult-neg-frac", "status": "fail", "error": error_msg},
+        {"id": "status-teachers-mult-coeff", "status": "fail", "error": error_msg},
+        {"id": "status-teachers-mult-user-scenario", "status": "fail", "error": error_msg}
+    ]})
+`;
+
+try {
+    const multResult = await manager.executeAsync("mult_test.py", multTestCode);
+    console.log("Multiplication test result:", multResult);
+    
+    if (multResult && multResult.stderr) {
+        console.error("Multiplication test stderr:", multResult.stderr);
+    }
+    
+    if (multResult && multResult.missive) {
+        let msg;
+        try {
+            msg = typeof multResult.missive === 'string' ? JSON.parse(multResult.missive) : multResult.missive;
+        } catch (e) {
+            console.error("Failed to parse multiplication test missive:", e);
+            msg = null;
+        }
+        
+        if (msg && msg.type === 'mult_batch_update' && msg.results) {
+            msg.results.forEach(update => {
+                const statusCell = document.getElementById(update.id);
+                if (statusCell) {
+                    if (update.status === 'pass') {
+                        statusCell.className = 'test-status-pass';
+                        statusCell.textContent = '✅';
+                    } else {
+                        statusCell.className = 'test-status-fail';
+                        statusCell.textContent = '❌';
+                        console.error(`Multiplication test ${update.id} failed:`, update.error);
+                    }
+                }
+            });
+        }
+    } else {
+        // If tests failed to run, mark them as failed
+        ['status-teachers-mult-int-frac', 'status-teachers-mult-neg-frac', 'status-teachers-mult-coeff', 'status-teachers-mult-user-scenario'].forEach(id => {
+            const statusCell = document.getElementById(id);
+            if (statusCell) {
+                statusCell.className = 'test-status-fail';
+                statusCell.textContent = '❌';
+            }
+        });
+        console.error("Failed to run multiplication tests - no missive");
+    }
+} catch (error) {
+    console.error("Error running multiplication tests:", error);
+    ['status-teachers-mult-int-frac', 'status-teachers-mult-neg-frac', 'status-teachers-mult-coeff', 'status-teachers-mult-user-scenario'].forEach(id => {
+        const statusCell = document.getElementById(id);
+        if (statusCell) {
+            statusCell.className = 'test-status-fail';
+            statusCell.textContent = '❌';
+        }
+    });
+}
+
 // Run all individual test files (but exclude duplicates that are already in Unit Tests)
 console.log("Running individual test files...");
 const individualTests = testFiles.filter(testFile => {
@@ -794,7 +937,8 @@ const individualTests = testFiles.filter(testFile => {
         'tests/test_negative_exponents.py',
         'tests/test_add_simplification.py', 
         'tests/test_mul_simplification.py',
-        'tests/test_as_decimal.py'
+        'tests/test_as_decimal.py',
+        'tests/test_multiplication_symbols.py'
     ];
     return !excludedTests.includes(testFile);
 });

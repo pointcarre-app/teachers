@@ -364,7 +364,7 @@ class Pi(MathsObject):
     sympy_expr: sp.Basic = sp.pi
 
     def latex(self):
-        return "\\pi "
+        return "\\pi"
 
     def eval(self) -> float:
         return float(sp.pi)
@@ -546,6 +546,12 @@ class Mul(MathsObject):
     def __str__(self):
         return repr(self)
 
+    def _needs_parentheses_in_multiplication(self, expr):
+        """Check if an expression needs parentheses when used as right operand in multiplication."""
+        # Check if the latex representation starts with a minus sign
+        latex_repr = expr.latex()
+        return latex_repr.startswith("-")
+
     def latex(self):
         if self.l == Integer(n=-1):
             return "-" + self.r.latex()
@@ -557,7 +563,11 @@ class Mul(MathsObject):
                     if isinstance(self.l, Integer) and self.l.n == 1:
                         return self.r.latex()
                     else:
-                        return self.l.latex() + self.r.latex()
+                        left_latex = self.l.latex()
+                        right_latex = self.r.latex()
+                        # For coefficient multiplication, we typically don't add parentheses around symbols
+                        # even if they start with minus (which shouldn't happen for symbols anyway)
+                        return left_latex + right_latex
 
                 # Coefficient × Power should have no × symbol (e.g., 27x² not 27×x²)
                 case Integer(_) | Decimal(_) | Fraction(_), Pow(_):
@@ -565,15 +575,42 @@ class Mul(MathsObject):
                     if isinstance(self.l, Integer) and self.l.n == 1:
                         return self.r.latex()
                     else:
-                        return self.l.latex() + self.r.latex()
+                        left_latex = self.l.latex()
+                        right_latex = self.r.latex()
+                        # For coefficient multiplication with powers, we typically don't add parentheses
+                        return left_latex + right_latex
 
                 # Number × Number should have × symbol (e.g., 3×4)
                 case Integer(_) | Decimal(_), Integer(_) | Decimal():
-                    return self.l.latex() + " \\times " + self.r.latex()
+                    left_latex = self.l.latex()
+                    right_latex = self.r.latex()
+                    if self._needs_parentheses_in_multiplication(self.r):
+                        right_latex = f"\\left({right_latex}\\right)"
+                    return left_latex + " \\times " + right_latex
+
+                # Number × Fraction should have × symbol (e.g., 3×(-1/2))
+                case Integer(_) | Decimal(_), Fraction(_):
+                    left_latex = self.l.latex()
+                    right_latex = self.r.latex()
+                    if self._needs_parentheses_in_multiplication(self.r):
+                        right_latex = f"\\left({right_latex}\\right)"
+                    return left_latex + " \\times " + right_latex
+
+                # Fraction × Number should have × symbol (e.g., (-1/2)×3)
+                case Fraction(_), Integer(_) | Decimal(_):
+                    left_latex = self.l.latex()
+                    right_latex = self.r.latex()
+                    if self._needs_parentheses_in_multiplication(self.r):
+                        right_latex = f"\\left({right_latex}\\right)"
+                    return left_latex + " \\times " + right_latex
 
                 # Fraction × Fraction should have × symbol
                 case Fraction(_), Fraction(_):
-                    return self.l.latex() + " \\times " + self.r.latex()
+                    left_latex = self.l.latex()
+                    right_latex = self.r.latex()
+                    if self._needs_parentheses_in_multiplication(self.r):
+                        right_latex = f"\\left({right_latex}\\right)"
+                    return left_latex + " \\times " + right_latex
 
                 # Complex expressions need parentheses and × symbol
                 case Mul(_) | Add(_), Mul(_) | Add(_):
@@ -590,11 +627,19 @@ class Mul(MathsObject):
                         left = "\\left(" + left + "\\right)"
                     if isinstance(self.r, Add):
                         right = "\\left(" + right + "\\right)"
+                    elif self._needs_parentheses_in_multiplication(self.r):
+                        right = f"\\left({right}\\right)"
                     return left + " \\times " + right
 
                 # Default: no × symbol for most cases (coefficient-like behavior)
                 case _:
-                    return self.l.latex() + self.r.latex()
+                    left_latex = self.l.latex()
+                    right_latex = self.r.latex()
+                    # For the default case, we still need to check if parentheses are needed
+                    # to avoid ambiguity with negative expressions
+                    if self._needs_parentheses_in_multiplication(self.r):
+                        right_latex = f"\\left({right_latex}\\right)"
+                    return left_latex + right_latex
 
     def eval(self):
         return self.l.eval() * self.r.eval()
