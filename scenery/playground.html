@@ -1537,6 +1537,29 @@ print(f"Original: {expr4.latex()}")
 grouped4 = tm.group_terms(expr4)
 print(f"Grouped: {grouped4.latex()}")  # 4xy + 3x - y
 
+print("\\n🧪 User's Specific Test Case")
+print("=" * 50)
+
+# User's exact example: (2x+3)(-(1/2)x+1)
+print("Testing: (2x + 3)(-(1/2)x + 1)")
+term1 = tm.Integer(n=2) * x + tm.Integer(n=3)  # 2x + 3
+term2 = tm.Fraction(p=-1, q=2) * x + tm.Integer(n=1)  # -(1/2)x + 1
+
+user_expr = term1 * term2
+print(f"Original product: {user_expr.latex()}")
+
+user_simplified = user_expr.simplified()
+print(f"Simplified: {user_simplified.latex()}")
+
+user_grouped = tm.group_terms(user_simplified)
+print(f"Grouped (descending powers): {user_grouped.latex()}")
+
+# Verify the polynomial is in ax² + bx + c form
+import sympy as sp
+coeffs = sp.Poly(user_grouped.sympy_expr, sp.Symbol('x')).all_coeffs()
+print(f"Coefficients [a, b, c]: {coeffs}")
+print(f"Expected: -x² + (1/2)x + 3")
+
 print("\\n✅ All grouping operations completed successfully!")
 print("🎓 Ready for educational content generation!")</code></pre>
                             </div>

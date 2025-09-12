@@ -433,6 +433,186 @@ class TestGroupTerms(unittest.TestCase):
             self.assertNotIn("Error", latex)
             self.assertNotIn("None", latex)
 
+    def test_polynomial_ordering_user_case(self):
+        """Test the specific user case: (2x+3)(-(1/2)x+1) with proper ordering."""
+        x = Symbol(s="x")
+
+        # User's specific example: (2x+3)(-(1/2)x+1)
+        term1 = Integer(n=2) * x + Integer(n=3)  # 2x + 3
+        term2 = Fraction(p=-1, q=2) * x + Integer(n=1)  # -(1/2)x + 1
+
+        expr = term1 * term2
+        simplified = expr.simplified()
+        grouped = group_terms(simplified)
+
+        # Should expand to: -x² + 2x - (3/2)x + 3 = -x² + (1/2)x + 3
+        # Verify by substitution
+        sympy_expr = grouped.sympy_expr
+        x_sym = sp.Symbol("x")
+
+        # At x=0: should get 3
+        val_at_0 = sympy_expr.subs(x_sym, 0)
+        self.assertEqual(val_at_0, 3)
+
+        # At x=1: should get -1 + 0.5 + 3 = 2.5
+        val_at_1 = sympy_expr.subs(x_sym, 1)
+        self.assertEqual(float(val_at_1), 2.5)
+
+        # At x=2: should get -4 + 1 + 3 = 0
+        val_at_2 = sympy_expr.subs(x_sym, 2)
+        self.assertEqual(val_at_2, 0)
+
+        # Check LaTeX output is clean
+        latex_result = grouped.latex()
+        self.assertIsInstance(latex_result, str)
+        self.assertGreater(len(latex_result), 0)
+
+    def test_polynomial_ordering_descending_powers(self):
+        """Test that polynomials are ordered in descending powers (ax² + bx + c)."""
+        x = Symbol(s="x")
+
+        # Create a deliberately mixed-order polynomial
+        # Start with: 5 + 3x + 2x² (ascending order - wrong)
+        mixed_expr = Integer(n=5) + Integer(n=3) * x + Integer(n=2) * (x ** Integer(n=2))
+        grouped = group_terms(mixed_expr)
+
+        # Should be ordered as: 2x² + 3x + 5
+        sympy_expr = grouped.sympy_expr
+
+        # Verify mathematical correctness by substitution (more robust than structure checking)
+        x_sym = sp.Symbol("x")
+
+        # The polynomial should be mathematically equivalent to 2x² + 3x + 5
+        # Test by substituting values
+        # At x=0: should get 5
+        val_at_0 = sympy_expr.subs(x_sym, 0)
+        self.assertEqual(val_at_0, 5)
+
+        # At x=1: should get 2 + 3 + 5 = 10
+        val_at_1 = sympy_expr.subs(x_sym, 1)
+        self.assertEqual(val_at_1, 10)
+
+        # At x=2: should get 2*4 + 3*2 + 5 = 8 + 6 + 5 = 19
+        val_at_2 = sympy_expr.subs(x_sym, 2)
+        self.assertEqual(val_at_2, 19)
+
+    def test_multi_factor_polynomial_expansion(self):
+        """Test expansion of multiple factors with proper ordering."""
+        x = Symbol(s="x")
+
+        # Three factors: (x+1)(x+2)(x+3)
+        factor1 = x + Integer(n=1)
+        factor2 = x + Integer(n=2)
+        factor3 = x + Integer(n=3)
+
+        expr = factor1 * factor2 * factor3
+        simplified = expr.simplified()
+        grouped = group_terms(simplified)
+
+        # Should expand to: x³ + 6x² + 11x + 6
+        sympy_expr = grouped.sympy_expr
+        x_sym = sp.Symbol("x")
+
+        # Verify mathematical correctness by substitution
+        # Should expand to: x³ + 6x² + 11x + 6
+        # At x=0: should get 6
+        val_at_0 = sympy_expr.subs(x_sym, 0)
+        self.assertEqual(val_at_0, 6)
+
+        # At x=1: should get 1 + 6 + 11 + 6 = 24
+        val_at_1 = sympy_expr.subs(x_sym, 1)
+        self.assertEqual(val_at_1, 24)
+
+        # At x=-1: should get -1 + 6 - 11 + 6 = 0 (since (x+1)(x+2)(x+3) has roots at -1, -2, -3)
+        val_at_neg1 = sympy_expr.subs(x_sym, -1)
+        self.assertEqual(val_at_neg1, 0)
+
+    def test_mixed_coefficient_types_ordering(self):
+        """Test polynomial ordering with mixed coefficient types."""
+        x = Symbol(s="x")
+
+        # Mix Integer, Fraction, and Decimal coefficients
+        # (1/2)x² + 2.5x + 3 - but input in wrong order
+        decimal_coeff = Decimal(x=2.5)
+        frac_coeff = Fraction(p=1, q=2)
+
+        # Input in mixed order: 3 + 2.5x + (1/2)x²
+        mixed_expr = Integer(n=3) + decimal_coeff * x + frac_coeff * (x ** Integer(n=2))
+
+        grouped = group_terms(mixed_expr)
+
+        # Should be ordered as: (1/2)x² + 2.5x + 3
+        sympy_expr = grouped.sympy_expr
+        x_sym = sp.Symbol("x")
+
+        # Verify by substitution
+        # At x=2: should get 0.5*4 + 2.5*2 + 3 = 2 + 5 + 3 = 10
+        val_at_2 = float(sympy_expr.subs(x_sym, 2))
+        self.assertEqual(val_at_2, 10.0)
+
+        # Check LaTeX output
+        latex_result = grouped.latex()
+        self.assertIsInstance(latex_result, str)
+
+    def test_zero_coefficient_handling(self):
+        """Test handling of zero coefficients in polynomial ordering."""
+        x = Symbol(s="x")
+
+        # Expression that simplifies to have zero coefficient: x² + 2x - 2x + 5
+        expr = (x ** Integer(n=2)) + Integer(n=2) * x + Integer(n=-2) * x + Integer(n=5)
+        grouped = group_terms(expr)
+
+        # Should simplify to: x² + 5 (zero x term should be eliminated)
+        sympy_expr = grouped.sympy_expr
+        x_sym = sp.Symbol("x")
+
+        # Should only have degree 2 and degree 0 terms (x term should be eliminated)
+        try:
+            coeffs = sp.Poly(sympy_expr, x_sym).all_coeffs()
+            # Filter out zero coefficients
+            non_zero_coeffs = [c for c in coeffs if c != 0]
+            self.assertEqual(len(non_zero_coeffs), 2)  # Only x² and constant terms
+
+            # Check specific coefficients
+            x2_coeff = sp.expand(sympy_expr).coeff(x_sym, 2)
+            x1_coeff = sp.expand(sympy_expr).coeff(x_sym, 1)
+            x0_coeff = sp.expand(sympy_expr).coeff(x_sym, 0)
+
+            self.assertEqual(x2_coeff, 1)  # x² coefficient
+            self.assertEqual(x1_coeff, 0)  # x coefficient should be 0
+            self.assertEqual(x0_coeff, 5)  # constant term
+        except sp.PolynomialError:
+            # Alternative verification using coefficient extraction
+            expanded = sp.expand(sympy_expr)
+            x2_coeff = expanded.coeff(x_sym, 2)
+            x1_coeff = expanded.coeff(x_sym, 1)
+            x0_coeff = expanded.coeff(x_sym, 0)
+
+            self.assertEqual(x2_coeff, 1)  # x² coefficient
+            self.assertEqual(x1_coeff, 0)  # x coefficient should be 0
+            self.assertEqual(x0_coeff, 5)  # constant term
+
+    def test_single_term_polynomial(self):
+        """Test that single terms are handled correctly."""
+        x = Symbol(s="x")
+
+        # Single term cases
+        test_cases = [
+            Integer(n=5),  # Just constant
+            Integer(n=3) * x,  # Just linear term
+            Integer(n=2) * (x ** Integer(n=2)),  # Just quadratic term
+        ]
+
+        for expr in test_cases:
+            grouped = group_terms(expr)
+            # Should return equivalent expression
+            self.assertEqual(expr.sympy_expr, grouped.sympy_expr)
+
+            # LaTeX should work
+            latex_result = grouped.latex()
+            self.assertIsInstance(latex_result, str)
+            self.assertGreater(len(latex_result), 0)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1123,74 +1123,6 @@ class Interval(MathsObject):
 ##################################################
 
 
-def group_terms(expr: MathsObject, *symbols: Symbol) -> MathsObject:
-    """
-    Group and collect terms in a mathematical expression by common factors.
-
-    This function uses SymPy's collect() to group terms with common factors,
-    particularly useful for polynomials, exponentials, logarithms, and growth formulas.
-
-    Args:
-        expr: The MathsObject expression to group
-        *symbols: Optional Symbol(s) to collect by. If not provided, collects by all symbols.
-
-    Returns:
-        A MathsObject with terms grouped and ordered (highest degree to lowest for polynomials)
-
-    Examples:
-        >>> x = Symbol(s='x')
-        >>> expr = x + Integer(n=2) * x + Integer(n=3)  # x + 2x + 3
-        >>> grouped = group_terms(expr)  # Returns: 3x + 3
-
-        >>> # Polynomial expansion result
-        >>> expanded = (Integer(n=3) * x + Integer(n=-8)) * (Integer(n=4) * x + Integer(n=-1))
-        >>> simplified = expanded.simplified()  # Gives mixed order terms
-        >>> grouped = group_terms(simplified)  # Returns: 12x² - 35x + 8 (proper polynomial form)
-
-        >>> # Works with exponentials and logarithms
-        >>> from sympy import exp, log
-        >>> # Will properly group e^x terms, log(x) terms, etc.
-    """
-    try:
-        # Get the SymPy expression
-        sympy_expr = expr.sympy_expr
-
-        # Determine which symbols to collect by
-        if symbols:
-            # Use provided symbols
-            sympy_symbols = [s.sympy_expr for s in symbols]
-        else:
-            # Collect by all free symbols in the expression
-            sympy_symbols = list(sympy_expr.free_symbols)
-            # Sort symbols alphabetically for consistent ordering
-            sympy_symbols.sort(key=lambda s: str(s))
-
-        # Apply SymPy's collect to group terms
-        if sympy_symbols:
-            # First expand to ensure we have a flat polynomial
-            expanded = sp.expand(sympy_expr)
-
-            # Then collect terms for each symbol
-            collected = sp.collect(expanded, sympy_symbols)
-
-            # Ensure the result is fully expanded (no nested multiplications)
-            collected = sp.expand(collected)
-        else:
-            # No symbols to collect by, just simplify
-            collected = sp.simplify(sympy_expr)
-
-        # Convert back to MathsObject
-        result = MathsObjectParser.from_sympy(collected)
-
-        return result
-
-    except Exception as e:
-        # If anything fails, return the original expression
-        # This ensures the function is safe to use in production
-        print(f"Warning: group_terms failed with error: {e}")
-        return expr
-
-
 ##################################################
 # TERM GROUPING
 ##################################################
@@ -1198,59 +1130,116 @@ def group_terms(expr: MathsObject, *symbols: Symbol) -> MathsObject:
 
 def group_terms(expr: MathsObject, symbol: Optional[Symbol] = None) -> MathsObject:
     """
-    Group and collect like terms in a mathematical expression.
+    Group and collect like terms in a mathematical expression with proper polynomial ordering.
 
-    This function uses SymPy's collect() to group terms with the same variables
-    and powers, returning a properly structured expression with terms ordered
-    by degree (highest to lowest for polynomials).
+    This function uses SymPy's Poly class to ensure polynomial terms are ordered by
+    descending powers (ax² + bx + c), providing consistent mathematical presentation.
 
     Args:
         expr: The MathsObject expression to group
         symbol: Optional specific symbol to collect by. If None, collects by all symbols.
 
     Returns:
-        A MathsObject with grouped terms
+        A MathsObject with grouped terms in descending power order
 
     Examples:
         >>> x = Symbol(s='x')
         >>> expr = x + Integer(n=2) * x + Integer(n=3)
-        >>> grouped = group_terms(expr)  # Returns 3x + 3
+        >>> grouped = group_terms(expr)  # Returns: 3x + 3
 
-        >>> # Polynomial expansion result
-        >>> expr = (Integer(n=3)*x + Integer(n=-8)) * (Integer(n=4)*x + Integer(n=-1))
+        >>> # Polynomial expansion with proper ordering
+        >>> expr = (Integer(n=2)*x + Integer(n=3)) * (Fraction(p=-1, q=2)*x + Integer(n=1))
         >>> simplified = expr.simplified()
-        >>> grouped = group_terms(simplified)  # Returns 12x² - 35x + 8
+        >>> grouped = group_terms(simplified)  # Returns: -x² + (-1/2)x + 3 (descending powers)
     """
     try:
-        # Get the SymPy expression
+        # Get the SymPy expression and force complete expansion
         sympy_expr = expr.sympy_expr
 
-        # If a specific symbol is provided, use its SymPy representation
-        if symbol is not None:
-            sympy_symbol = symbol.sympy_expr
-            # Collect terms by the specified symbol
-            collected = sp.collect(sympy_expr, sympy_symbol)
-        else:
-            # Collect by all free symbols in the expression
-            free_symbols = sympy_expr.free_symbols
-            if free_symbols:
-                # Collect by all symbols
-                collected = sp.collect(sympy_expr, list(free_symbols))
-            else:
-                # No symbols to collect, just simplify
-                collected = sympy_expr
+        # Force complete flattening using a more aggressive approach
+        def completely_flatten(expr):
+            """Aggressively flatten nested structures by converting to string and back"""
+            # Convert to string representation and parse back
+            # This forces SymPy to rebuild the expression from scratch
+            try:
+                expr_str = str(expr)
+                # Use SymPy's sympify to parse the string back to an expression
+                flattened = sp.sympify(expr_str)
+                return sp.expand(flattened)
+            except:
+                # Fallback to regular expand if string conversion fails
+                return sp.expand(expr)
 
-        # Expand and simplify to ensure proper form
-        collected = sp.expand(collected)
+        # Apply aggressive flattening
+        expanded = completely_flatten(sympy_expr)
+
+        # Determine symbols to work with
+        if symbol is not None:
+            target_symbols = [symbol.sympy_expr]
+        else:
+            target_symbols = list(expanded.free_symbols)
+            target_symbols.sort(key=str)
+
+        # Process based on number of symbols
+        if not target_symbols:
+            # No symbols - just return expanded form
+            ordered = expanded
+        elif len(target_symbols) == 1:
+            # Single variable - use manual coefficient extraction and reconstruction
+            sym = target_symbols[0]
+
+            # Extract all terms and their coefficients manually
+            # This bypasses SymPy's Poly limitations with nested structures
+            def extract_polynomial_terms(expr, symbol):
+                """Extract coefficients for each power of the symbol"""
+                coeffs = {}
+
+                # Force expansion first
+                expr = sp.expand(expr)
+
+                # Use SymPy's built-in methods to extract coefficients for all powers
+                # This is more reliable than manual parsing
+                max_degree = sp.degree(expr, symbol)
+
+                for power in range(max_degree + 1):
+                    coeff = expr.coeff(symbol, power)
+                    if coeff != 0:
+                        coeffs[power] = coeff
+
+                return coeffs
+
+            # Extract coefficients
+            coeff_dict = extract_polynomial_terms(expanded, sym)
+
+            if coeff_dict:
+                # Rebuild polynomial in descending order
+                terms = []
+                for power in sorted(coeff_dict.keys(), reverse=True):
+                    coeff = coeff_dict[power]
+                    if coeff != 0:
+                        if power == 0:
+                            terms.append(coeff)
+                        elif power == 1:
+                            terms.append(coeff * sym)
+                        else:
+                            terms.append(coeff * sym**power)
+
+                if terms:
+                    ordered = sp.Add(*terms, evaluate=False)
+                else:
+                    ordered = sp.S.Zero
+            else:
+                ordered = expanded
+        else:
+            # Multiple variables - use collect
+            ordered = sp.collect(expanded, target_symbols, evaluate=True)
 
         # Convert back to MathsObject
-        result = MathsObjectParser.from_sympy(collected)
-
+        result = MathsObjectParser.from_sympy(ordered)
         return result
 
     except Exception:
-        # If anything goes wrong, return the original expression
-        # This ensures the function is safe to use in production
+        # Ultimate fallback - return original expression
         return expr
 
 
