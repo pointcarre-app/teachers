@@ -65,7 +65,8 @@ const testFiles = [
     "tests/test_maths_collection_sympy.py",
     "tests/test_negative_exponents.py",
     "tests/test_double_minus_fix.py",
-    "tests/test_group_terms.py"
+    "tests/test_group_terms.py",
+    "tests/test_latex_formatting.py"
 ];
 
 // Detect if we're running on GitHub Pages or localhost
@@ -129,7 +130,8 @@ async function runTest(testFile, index) {
             'test_eval_methods.py': 'Numerical evaluation and computation',
             'test_inf.py': 'Infinity handling and mathematical limits',
             'test_maths_collection_sympy.py': 'Mathematical collections and SymPy integration',
-            'test_group_terms.py': 'Mathematical term grouping and collection functionality'
+            'test_group_terms.py': 'Mathematical term grouping and collection functionality',
+            'test_latex_formatting.py': 'LaTeX formatting and coefficient-variable multiplication'
         };
         return descriptions[fileName] || 'Mathematical framework functionality';
     };

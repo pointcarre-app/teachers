@@ -1560,6 +1560,48 @@ coeffs = sp.Poly(user_grouped.sympy_expr, sp.Symbol('x')).all_coeffs()
 print(f"Coefficients [a, b, c]: {coeffs}")
 print(f"Expected: -x² + (1/2)x + 3")
 
+print("\\n🔧 LaTeX Formatting Test (No × symbols for coefficients)")
+print("=" * 60)
+
+# Test coefficient-variable multiplication (should have no × symbol)
+coeff_var_tests = [
+    (tm.Integer(n=27), x),                           # 27x
+    (tm.Decimal(x=3.5), x),                         # 3.5x  
+    (tm.Fraction(p=2, q=3), x),                     # (2/3)x
+    (tm.Integer(n=27), x ** tm.Integer(n=2)),       # 27x²
+    (tm.Integer(n=-5), x),                          # -5x
+]
+
+for coeff, var in coeff_var_tests:
+    term = coeff * var
+    latex_output = term.latex()
+    print(f"{coeff.latex()} × {var.latex()} = {latex_output}")
+    # Should NOT contain \\times for coefficient-variable multiplication
+
+print("\\nExpected: No \\\\times symbols in coefficient-variable terms above")
+
+print("\\n🧮 Number-Number Multiplication (should have × symbol)")
+print("=" * 50)
+
+# Test number-number multiplication (should have × symbol)
+num1 = tm.Integer(n=3)
+num2 = tm.Integer(n=4)
+num_mult = num1 * num2
+print(f"{num1.latex()} × {num2.latex()} = {num_mult.latex()}")
+print("Expected: Should contain \\\\times for number-number multiplication")
+
+print("\\n🎯 Complete Polynomial Test")
+print("=" * 30)
+
+# Test your original failing case
+a1, b1 = tm.Integer(n=27), tm.Integer(n=-39)
+a2, b2 = tm.Integer(n=-56), tm.Integer(n=1)
+polynomial_expr = a1 * (x ** tm.Integer(n=2)) + b1 * x + a2
+
+grouped_poly = tm.group_terms(polynomial_expr)
+print(f"Polynomial: {grouped_poly.latex()}")
+print("Expected: 27x^{{2}} - 39x - 56 (no × symbols)")
+
 print("\\n✅ All grouping operations completed successfully!")
 print("🎓 Ready for educational content generation!")</code></pre>
                             </div>

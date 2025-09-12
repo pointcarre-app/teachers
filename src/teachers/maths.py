@@ -551,10 +551,31 @@ class Mul(MathsObject):
             return "-" + self.r.latex()
         else:
             match self.l, self.r:
-                case Integer(_) | Pow(_) | Decimal(_), Integer(_) | Pow(_) | Decimal():
+                # Coefficient × Variable should have no × symbol (e.g., 27x not 27×x)
+                case Integer(_) | Decimal(_) | Fraction(_), Symbol(_):
+                    # Special case: coefficient 1 should be omitted (1x → x)
+                    if isinstance(self.l, Integer) and self.l.n == 1:
+                        return self.r.latex()
+                    else:
+                        return self.l.latex() + self.r.latex()
+
+                # Coefficient × Power should have no × symbol (e.g., 27x² not 27×x²)
+                case Integer(_) | Decimal(_) | Fraction(_), Pow(_):
+                    # Special case: coefficient 1 should be omitted (1x² → x²)
+                    if isinstance(self.l, Integer) and self.l.n == 1:
+                        return self.r.latex()
+                    else:
+                        return self.l.latex() + self.r.latex()
+
+                # Number × Number should have × symbol (e.g., 3×4)
+                case Integer(_) | Decimal(_), Integer(_) | Decimal():
                     return self.l.latex() + " \\times " + self.r.latex()
+
+                # Fraction × Fraction should have × symbol
                 case Fraction(_), Fraction(_):
                     return self.l.latex() + " \\times " + self.r.latex()
+
+                # Complex expressions need parentheses and × symbol
                 case Mul(_) | Add(_), Mul(_) | Add(_):
                     left, right = self.l.latex(), self.r.latex()
                     if isinstance(self.l, Add):
@@ -562,6 +583,7 @@ class Mul(MathsObject):
                     if isinstance(self.r, Add):
                         right = "\\left(" + right + "\\right)"
                     return left + " \\times " + right
+
                 case Fraction(_) | Add(_), Fraction(_) | Add(_):
                     left, right = self.l.latex(), self.r.latex()
                     if isinstance(self.l, Add):
@@ -569,6 +591,8 @@ class Mul(MathsObject):
                     if isinstance(self.r, Add):
                         right = "\\left(" + right + "\\right)"
                     return left + " \\times " + right
+
+                # Default: no × symbol for most cases (coefficient-like behavior)
                 case _:
                     return self.l.latex() + self.r.latex()
 
