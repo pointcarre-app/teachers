@@ -6,6 +6,7 @@ A comprehensive Python framework for educational mathematical content creation, 
 
 ## 📋 Table of Contents
 
+
 - [Overview](#overview)
 - [Live Demo](#live-demo)
 - [Architecture](#architecture)
@@ -66,7 +67,7 @@ src/teachers/
 ├── generator.py      # Mathematical content generation utilities  
 ├── formatting.py     # Educational formatting guidelines (French)
 ├── defaults.py       # System constants and defaults
-└── __init__.py       # Package initialization
+└── __init__.py       # Package initialization / s
 ```
 
 ### Technology Stack
