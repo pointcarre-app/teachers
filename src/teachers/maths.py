@@ -1095,7 +1095,17 @@ class Interval(MathsObject):
         return Interval(l=l, r=r, left_open=self.left_open, right_open=self.right_open)
 
     def latex(self):
-        return "\\lbracket " + self.l.latex() + "; " + self.r.latex() + "\\rbracket"
+        # return "\\lbracket " + self.l.latex() + "; " + self.r.latex() + "\\rbracket"
+        if self.left_open:
+            l_char = "\\rbracket"
+        else:
+            l_char = "\\lbracket"
+        if self.right_open:
+            r_char = "\\lbracket"
+        else:
+            r_char = "\\rbracket"
+        
+        return l_char + " " + self.l.latex() + "; " + self.r.latex() + " " + r_char
 
 
 ##################################################
